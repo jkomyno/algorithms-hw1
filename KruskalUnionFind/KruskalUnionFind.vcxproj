@@ -148,7 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AdjListGraph.h" />
-    <ClInclude Include="AdjListGraphFactory.h" />
+    <ClInclude Include="adj_list_graph_factory.h" />
     <ClInclude Include="DisjointSet.h" />
     <ClInclude Include="kruskal_mst.h" />
     <ClInclude Include="sum_weights.h" />

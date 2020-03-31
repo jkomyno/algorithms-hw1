@@ -32,7 +32,7 @@
     <ClInclude Include="kruskal_mst.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="AdjListGraphFactory.h">
+    <ClInclude Include="adj_list_graph_factory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

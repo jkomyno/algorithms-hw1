@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 
-#include "AdjListGraphFactory.h"
+#include "adj_list_graph_factory.h"
 #include "kruskal_mst.h"
 #include "sum_weights.h"
 
