@@ -20,9 +20,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AdjListGraph.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="DisjointSet.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -31,9 +28,6 @@
     </ClInclude>
     <ClInclude Include="kruskal_mst.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="adj_list_graph_factory.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
