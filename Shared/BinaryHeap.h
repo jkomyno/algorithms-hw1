@@ -4,6 +4,7 @@
 #include <algorithm> // std::swap
 #include <assert.h>  // std::assert
 
+// support comparator
 template <typename T>
 class BinaryHeap {
     std::vector<T> nodes;

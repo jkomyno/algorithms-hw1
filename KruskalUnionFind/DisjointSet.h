@@ -3,6 +3,7 @@
 #include <vector>     // std::vector
 #include <algorithm>  // std::transform
 #include <functional> // std::function
+#include "map_index.h"
 
 /**
  * Union-by-size implementation of a Disjoint-Set.
@@ -72,11 +73,6 @@ public:
         }
     }
 };
-
-template <typename T>
-size_t map_to_index(const T& element) noexcept {
-    return element - 1;
-}
 
 template <typename T>
 DisjointSet<T> disjoint_set_factory(std::vector<T>&& x_list) noexcept {

@@ -15,7 +15,12 @@ class Edge {
     Weight weight;
 
 public:
-	explicit Edge(const Label from, const Label to, const Weight weight) noexcept :
+	Edge() noexcept :
+	    from(Label()),
+	    to(Label()),
+	    weight(Weight()) {}
+
+	explicit Edge(const Label& from, const Label& to, const Weight& weight) noexcept :
 		from(from),
 	    to(to),
 		weight(weight) { }
@@ -62,9 +67,9 @@ std::ostream& operator<<(std::ostream& os, const Edge<Label, Weight>& edge) {
  */
 template <typename Label, typename Weight>
 class AdjListGraph {
-
+public:
 	/**
-     * Edge is a struct that represents the end of an edge and its weight from
+     * WeightedEdgeLink is a struct that represents the end of an edge and its weight from
      * a source vertex. It's used for the implementation of AdjListGraph.
      */
 	struct WeightedEdgeLink {
@@ -76,6 +81,7 @@ class AdjListGraph {
 			weight(weight) { }
 	};
 
+private:
 	// vector of vectors that represents an adjacency list
 	std::unordered_map<Label, std::vector<WeightedEdgeLink>> adj_map_list;
 
@@ -104,8 +110,12 @@ public:
 		}
 
 		for (const auto& edge : edge_list) {
-            auto w_edge_link = WeightedEdgeLink(edge.get_to(), edge.get_weight());
-			adj_map_list[edge.get_from()].emplace_back(w_edge_link);
+			// avoid self-loops
+			bool is_self_loop = edge.get_from() == edge.get_to();
+			if (!is_self_loop) {
+				auto w_edge_link = WeightedEdgeLink(edge.get_to(), edge.get_weight());
+				adj_map_list[edge.get_from()].emplace_back(w_edge_link);
+			}
 		}
 	}
 
@@ -125,10 +135,12 @@ public:
 	template <typename L, typename W>
 	friend std::ostream& operator<<(std::ostream& os, const AdjListGraph<L, W>& adj_list_graph);
 
+	// return the number of vertexes in the Adjacency List
 	[[nodiscard]] size_t vertexes_size() const {
 		return adj_map_list.size();
 	}
 
+	// return the list of vertexes in the Adjacency List. There's no ordering guarantee.
     [[nodiscard]] std::vector<Label> get_vertexes() const {
 		std::vector<Label> vertexes;
 		vertexes.reserve(adj_map_list.size());
@@ -139,6 +151,7 @@ public:
 		return vertexes;
 	}
 
+	// return the list of edges in the Adjacency List. There's no ordering guarantee.
     [[nodiscard]] std::vector<Edge<Label, Weight>> get_edges() const {
 		std::vector<Edge<Label, Weight>> edges;
 
@@ -154,6 +167,13 @@ public:
 		}
 
 		return edges;
+	}
+
+	// return the list of the nodes adjacent to the given vertex. The given vertex must exist in
+	// the Adjacency List. Each returned node also contains the weight cost from the given vertex
+	// to that node.
+	[[nodiscard]] std::vector<WeightedEdgeLink> get_adjacent_vertexes(const Label& vertex) const {
+		return adj_map_list.at(vertex);
 	}
 };
 
