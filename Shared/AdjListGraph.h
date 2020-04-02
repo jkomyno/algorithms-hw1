@@ -125,6 +125,10 @@ public:
 	template <typename L, typename W>
 	friend std::ostream& operator<<(std::ostream& os, const AdjListGraph<L, W>& adj_list_graph);
 
+	[[nodiscard]] size_t vertexes_size() const {
+		return adj_map_list.size();
+	}
+
     [[nodiscard]] std::vector<Label> get_vertexes() const {
 		std::vector<Label> vertexes;
 		vertexes.reserve(adj_map_list.size());
