@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>    // std::vector
 #include <algorithm> // std::sort
 #include "AdjListGraph.h"
 #include "BinaryHeap.h"
