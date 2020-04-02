@@ -5,11 +5,14 @@
 #include "AdjListGraph.h"
 
 /**
- * Compute the sum of the weights of every edge in mst.
+ * Compute the sum of the weights of every edge in mst. It expects in input the
+ * cbegin() and cend() iterator of the data structure holding the MST.
  */
-template <typename Label, typename Weight>
-auto sum_weights(const std::vector<Edge<Label, Weight>>& mst) -> Weight {
-    return std::accumulate(mst.cbegin(), mst.cend(), Weight(0), [](const auto acc, const auto elem) {
+template <typename Label, typename Weight, typename It, typename = typename std::enable_if<
+    std::is_same<typename std::iterator_traits<It>::value_type, Edge<Label, Weight>>::value
+>::type>
+Weight sum_weights(const It& cbegin, const It& cend) {
+    return std::accumulate(cbegin, cend, Weight(0), [](const auto acc, const auto elem) {
         return acc + elem.get_weight();
     });
 }
