@@ -1,25 +1,21 @@
-// PrimBinaryHeap.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
-#include "BinaryHeap.h"
+#include "adj_list_graph_factory.h"
+#include "prim_binary_heap_mst.h"
+#include "sum_weights.h"
 
 int main()
 {
-    std::vector<float> data{
-        53.0F,
-        82.3F,
-        12.2F,
-        23.01F,
-        03.2F,
-        38.1F
-    };
+    typedef size_t Label; // nodes are identified by size_t type
+    typedef size_t Weight; // weights are of type size_t
 
-    BinaryHeap<float> heap(std::move(data));
+    AdjListGraph<size_t, size_t> adj_list_graph(adj_list_graph_factory<Label, Weight>());
 
-    std::cout << "Heap size: " << heap.size() << std::endl;
+    // compute Minimum Spanning Tree with Prim algorithm using Binary Heap
+    const auto& mst = prim_binary_heap_mst(std::move(adj_list_graph));
 
-    while (heap.size() > 0) {
-        std::cout << "Min: " << heap.extract_min() << std::endl;
-    }
+    // total weight of the mst found by Kruskal's algorithm
+    const auto total_weight = sum_weights(mst);
+
+    // use std::fixed to avoid displaying numbers in scientific notation
+    std::cout << std::fixed << total_weight << std::endl;
 }

@@ -14,7 +14,6 @@ int main() {
 
     AdjListGraph<size_t, size_t> adj_list_graph(adj_list_graph_factory<Label, Weight>());
 
-    /*
     std::cout << adj_list_graph;
 
     const auto& vertexes = adj_list_graph.get_vertexes();
@@ -30,7 +29,6 @@ int main() {
     for (const auto& e : edges) {
         std::cout << e;
     }
-    */
 
     // compute Minimum Spanning Tree with Kruskal algorithm using Disjoint-Set data structure
     const auto& mst = kruskal_mst(std::move(adj_list_graph), disjoint_set_factory<Label>);
