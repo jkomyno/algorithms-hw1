@@ -1,6 +1,7 @@
 #pragma once
 
-#include <algorithm> // sort
+#include <vector>    // std::vector
+#include <algorithm> // std::sort
 #include "AdjListGraph.h"
 #include "DisjointSet.h"
 
@@ -38,7 +39,7 @@ auto kruskal_mst(AdjListGraph<Label, Weight>&& adj_list_graph,
         const auto& w = edge.get_to();
 
         if (disjoint_set.find(v) != disjoint_set.find(w)) {
-            mst.push_back(edge);
+            mst.emplace_back(edge);
             disjoint_set.unionBySize(v, w);
         }
     }
