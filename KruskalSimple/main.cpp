@@ -1,10 +1,13 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
 #include <iostream>
 #include "adj_list_graph_factory.h"
 #include "kruskal_simple_mst.h"
 #include "sum_weights.h"
 
-int main()
-{
+int main() {
     typedef size_t Label; // nodes are identified by size_t type
     typedef long Weight; // weights are of type long
 
