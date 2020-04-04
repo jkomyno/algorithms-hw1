@@ -3,6 +3,8 @@
 #include "prim_binary_heap_mst.h"
 #include "sum_weights.h"
 
+#include "BinaryHeap.h"
+
 int main() {
     typedef size_t Label; // nodes are identified by size_t type
     typedef long Weight; // weights are of type long
