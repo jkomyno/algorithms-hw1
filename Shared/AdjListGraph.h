@@ -105,7 +105,7 @@ public:
 		/**
 		 * Assume that the vertexes are identified by a value x where Label(1) <= x <= Label(n_vertex).
 		 */
-		for (Label x = 0; x <= n_vertex; x++) {
+		for (Label x = 0; x < n_vertex; x++) {
 			/**
              * using operator[](x) sets a new key if it doesn't exist yet.
              * Vectors are automatically initialized to their 0-value,
