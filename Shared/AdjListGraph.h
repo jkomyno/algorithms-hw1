@@ -57,13 +57,16 @@ public:
 
 template <typename Label, typename Weight>
 std::ostream& operator<<(std::ostream& os, const Edge<Label, Weight>& edge) {
-	os << edge.from << " -> " << edge.to << " (" << edge.weight << ")" << std::endl;
+	os << edge.from << " <-> " << edge.to << " (" << edge.weight << ")" << std::endl;
 	return os;
 }
 
 /**
- * Adjacent List class for directed weighted graphs.
- * Label is the type of vertex identifiers, Weight is the type of the weight value.
+ * Adjacent List class for undirected weighted graphs.
+ * The given nodes must be labeled as unsigned numbers x, where 0 <= x <= n.
+ *
+ * Label is the type of a node label, which must be an unsigned integer.
+ * Weight is the type of an edge weight, which must be a signed integer.
  */
 template <typename Label, typename Weight>
 class AdjListGraph {
@@ -86,6 +89,11 @@ private:
 	std::unordered_map<Label, std::vector<WeightedEdgeLink>> adj_map_list;
 
 public:
+	/**
+	 * edge_list: vector of edges to insert into the graph
+	 * n_vertex: total number of vertexes in the graph
+	 * init_value: initial label for the nodes
+	 */
 	explicit AdjListGraph(std::vector<Edge<Label, Weight>>&& edge_list, const size_t n_vertex) noexcept {
 		/**
 		 * Reserve exactly as many buckets as the number of keys in the map
@@ -95,10 +103,9 @@ public:
 		adj_map_list.reserve(n_vertex);
 
 		/**
-		 * Assume that the vertexes are identified by a number x where 1 <= x <= n_vertex.
+		 * Assume that the vertexes are identified by a value x where Label(1) <= x <= Label(n_vertex).
 		 */
-
-		for (size_t x = 1; x <= n_vertex; x++) {
+		for (Label x = 0; x <= n_vertex; x++) {
 			/**
              * using operator[](x) sets a new key if it doesn't exist yet.
              * Vectors are automatically initialized to their 0-value,
@@ -110,13 +117,16 @@ public:
 		}
 
 		for (const auto& edge : edge_list) {
-			// avoid self-loops
-			bool is_self_loop = edge.get_from() == edge.get_to();
-			if (!is_self_loop) {
-				auto w_edge_link = WeightedEdgeLink(edge.get_to(), edge.get_weight());
-				adj_map_list[edge.get_from()].emplace_back(w_edge_link);
-			}
+			const auto from = edge.get_from();
+			const auto to = edge.get_to();
+			const auto weight = edge.get_weight();
+
+			// we're dealing with undirected graphs, so the edges should go in both ways
+		    adj_map_list[from].emplace_back(to, weight);
+			adj_map_list[to].emplace_back(from, weight);
 		}
+
+		// TODO: remove duplicate arcs of non-minimum weight
 	}
 
 	// disable copy constructor
@@ -184,7 +194,7 @@ std::ostream& operator<<(std::ostream& os, const AdjListGraph<Label, Weight>& ad
 		const auto& w_edge_link_list = map_entry.second;
 
 		for (const auto& w_edge_link : w_edge_link_list) {
-			os << key << " -> " << w_edge_link.vertex << " (" << w_edge_link.weight << ")" << std::endl;
+			os << key << " <-> " << w_edge_link.vertex << " (" << w_edge_link.weight << ")" << std::endl;
 		}
 	}
 
