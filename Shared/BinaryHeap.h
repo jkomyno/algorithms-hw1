@@ -3,11 +3,17 @@
 #include <vector>    // std::vector
 #include <utility>   // std::forward
 #include <algorithm> // std::swap, std::find
-#include <unordered_map> // std::unordered_map
 #include <optional>  // std::optional
-#include <cassert>  // std::assert
+#include <cassert>   // std::assert
 
-// support comparator
+/**
+ * Binary Heap implementation.
+ * T is the type of the objects stored in the heap.
+ * Compare is the type of a comparison function.
+ * Use std::greater<> to obtain a Min Heap, use std::less<> to obtain a Max Heap.
+ * In case a non-standard comparator is needed, it needs to be provided explicitly to
+ * the constructor as 2nd argument.
+ */
 template <typename T, class Compare = std::greater<>>
 class BinaryHeap {
     // keep the values in the heap

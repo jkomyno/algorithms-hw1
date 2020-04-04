@@ -4,7 +4,6 @@
 #include <vector>   // std::vector
 #include <type_traits>
 #include "AdjListGraph.h"
-#include "map_index.h"
 
 /**
  * Helper that reads a graph from a text file.
