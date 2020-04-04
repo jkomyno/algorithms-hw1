@@ -33,7 +33,7 @@ int main() {
     */
 
     // compute Minimum Spanning Tree with Kruskal algorithm using Disjoint-Set data structure
-    const auto& mst = kruskal_mst(std::move(adj_list_graph), disjoint_set_factory<Label>);
+    const auto& mst = kruskal_mst(std::move(adj_list_graph));
 
     // total weight of the mst found by Kruskal's algorithm
     const auto total_weight = sum_weights<Label, Weight>(mst.cbegin(), mst.cend());
