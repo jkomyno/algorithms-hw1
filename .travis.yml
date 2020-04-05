@@ -7,7 +7,7 @@ notifications:
 
 # Compiler selection
 compiler:
-- g++
+- g++-9
 
 # Build steps
 script:
