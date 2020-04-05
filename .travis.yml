@@ -6,6 +6,8 @@ notifications:
   email: false
 
 before_script:
+- sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+- sudo apt-get update
 - sudo apt-get -y install g++-9
 
 script:
