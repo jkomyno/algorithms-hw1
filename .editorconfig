@@ -15,3 +15,6 @@ indent_style = tab
 [*.{h,cpp}]
 indent_style = tab
 indent_size = 4
+
+[*.{sh,bash}]
+end_of_line = lf

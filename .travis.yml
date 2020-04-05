@@ -13,4 +13,5 @@ before_script:
 script:
 - cd ${TRAVIS_BUILD_DIR}
 - g++-9 --version
-- make
+- make all
+- make testall
