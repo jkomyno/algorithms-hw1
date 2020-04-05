@@ -8,11 +8,11 @@
 #include "../Shared/dfs.h"
 
 template <typename Label, typename Weight>
-auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {
+auto kruskal_simple_mst(const AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {
     // object representing a Minimum Spanning Tree
     std::vector<Edge<Label, Weight>> mst;
 
-    auto& edges = adj_list_graph.get_edges();
+    auto edges = adj_list_graph.get_edges();
     const size_t n = adj_list_graph.vertexes_size();
     const size_t n_stop = n - 1;
 

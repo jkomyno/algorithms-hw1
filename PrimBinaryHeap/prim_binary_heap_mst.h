@@ -11,7 +11,7 @@
 
 template <typename Label, typename Weight>
 auto prim_binary_heap_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {
-    auto& vertexes = adj_list_graph.get_vertexes();
+    auto vertexes = adj_list_graph.get_vertexes();
 
     const size_t n_stop = vertexes.size();
     std::vector<Edge<Label, Weight>> mst(n_stop);

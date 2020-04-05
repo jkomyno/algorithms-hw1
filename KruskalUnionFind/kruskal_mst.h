@@ -11,8 +11,8 @@ template <typename Label, typename Weight>
 auto kruskal_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {
     std::vector<Edge<Label, Weight>> mst;
 
-    auto& vertexes = adj_list_graph.get_vertexes();
-    auto& edges = adj_list_graph.get_edges();
+    auto vertexes = adj_list_graph.get_vertexes();
+    auto edges = adj_list_graph.get_edges();
     const size_t n = vertexes.size();
     const size_t n_stop = n - 1;
 
