@@ -5,11 +5,10 @@ sudo: required
 notifications:
   email: false
 
-# Compiler selection
-compiler:
-- g++-9
+before_script:
+- sudo apt-get -y install g++-9
 
-# Build steps
 script:
 - cd ${TRAVIS_BUILD_DIR}
+- g++-9 --version
 - make
