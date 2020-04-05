@@ -1,0 +1,15 @@
+language: cpp
+
+sudo: required
+
+notifications:
+  email: false
+
+# Compiler selection
+compiler:
+- g++
+
+# Build steps
+script:
+- cd ${TRAVIS_BUILD_DIR}
+- make
