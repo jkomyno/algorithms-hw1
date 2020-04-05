@@ -87,18 +87,13 @@ class AdjListGraph {
 	// vector of vectors that represents an adjacency list
 	std::unordered_map<Label, std::vector<WeightedEdgeLink>> adj_map_list;
 
-   public:
-	/**
-	 * edge_list: vector of edges to insert into the graph
-	 * n_vertex: total number of vertexes in the graph
-	 * init_value: initial label for the nodes
-	 */
-	explicit AdjListGraph(std::vector<Edge<Label, Weight>>&& edge_list, const size_t n_vertex) noexcept {
+	// function invoked by the constructors
+	void init(const std::vector<Edge<Label, Weight>>& edge_list, const size_t n_vertex) {
 		/**
-		 * Reserve exactly as many buckets as the number of keys in the map
-		 * to avoid multiple rehashes that the increases in container size
-		 * could have produced.
-		 */
+         * Reserve exactly as many buckets as the number of keys in the map
+         * to avoid multiple rehashes that the increases in container size
+         * could have produced.
+         */
 		adj_map_list.reserve(n_vertex);
 
 		/**
@@ -126,6 +121,20 @@ class AdjListGraph {
 		}
 
 		// TODO: remove duplicate arcs of non-minimum weight
+	}
+
+   public:
+	/**
+	 * edge_list: vector of edges to insert into the graph
+	 * n_vertex: total number of vertexes in the graph
+	 * init_value: initial label for the nodes
+	 */
+   explicit AdjListGraph(const std::vector<Edge<Label, Weight>>& edge_list, const size_t n_vertex) noexcept {
+	   init(edge_list, n_vertex);
+   }
+
+	explicit AdjListGraph(std::vector<Edge<Label, Weight>>&& edge_list, const size_t n_vertex) noexcept {
+		init(edge_list, n_vertex);
 	}
 
 	// disable copy constructor

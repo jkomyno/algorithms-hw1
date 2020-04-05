@@ -4,11 +4,11 @@
 #include <algorithm>  // std::sort, std::copy
 #include <vector>     // std::vector
 
-#include "../Shared/AdjListGraph.h"
-#include "../Shared/dfs.h"
+#include "AdjListGraph.h"
+#include "dfs.h"
 
 template <typename Label, typename Weight>
-auto kruskal_simple_mst(const AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {
+auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {
     // object representing a Minimum Spanning Tree
     std::vector<Edge<Label, Weight>> mst;
 
@@ -26,26 +26,23 @@ auto kruskal_simple_mst(const AdjListGraph<Label, Weight>&& adj_list_graph) noex
 
     for (const auto& edge : edges) {
         // a Minimum Spanning Tree can have (n - 1) edges at maximum.
-        if (mst.size() == n_stop) {
+		const size_t mst_size = mst.size();
+        if (mst_size == n_stop) {
             return mst;
         }
 
-        // mst_and_edge is a copy of mst + the current edge
-        std::vector<Edge<Label, Weight>> mst_and_edge(mst.size());
-        mst_and_edge.reserve(mst.size() + 1);
-        std::copy(mst.cbegin(), mst.cend(), mst_and_edge.begin());
-        mst_and_edge.emplace_back(edge);
-
-        // graph representation of mst_and_edge
-        AdjListGraph<Label, Weight> tmp_adj_list_graph(std::move(mst_and_edge), mst.size());
+    	// pushing a node to the mst vector and maybe pop it back is much more
+    	// performant and memory-efficient than constructing a whole new vector
+    	// any time, copying mst in it and adding the current edge to it.
+		mst.emplace_back(edge);
 
         // dfs is a utility object that uses Depth First Search to determine whether there is
         // any loop in the given graph.
-        DFS<Label, Weight> dfs(std::move(tmp_adj_list_graph));
+        DFS<Label, Weight> dfs(mst, mst_size);
 
-        if (dfs.is_acyclic()) {
-            // if there's no cycle in (mst + edge), add edge to the Minimum Spanning Tree
-            mst.emplace_back(edge);
+        if (!dfs.is_acyclic()) {
+            // if there's a cycle in (mst + edge), remove the last inserted edge from mst
+			mst.pop_back();
         }
     }
 
