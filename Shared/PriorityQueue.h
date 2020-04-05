@@ -31,11 +31,11 @@ class PriorityQueue : private BinaryHeap<T, is_heap_on_init> {
     index_map_type index_map;
 
     // initialize the key map
-    template <typename T, typename Key, typename T_Hash = std::hash<T>>
-    static std::unordered_map<size_t, Key, T_Hash> build_key_map(std::vector<Key>&& keys, std::vector<T>& node_list) {
+    template <typename U, typename U_Key, typename U_Hash = std::hash<U>>
+    static std::unordered_map<size_t, U_Key, U_Hash> build_key_map(std::vector<Key>&& keys, std::vector<U>& node_list) {
         assert(keys.size() == node_list.size());
 
-        std::unordered_map<T, Key, T_Hash> local_key_map(node_list.size());
+        std::unordered_map<U, U_Key, U_Hash> local_key_map(node_list.size());
 
         size_t index = 0;
         for (const auto& node : node_list) {
@@ -47,9 +47,9 @@ class PriorityQueue : private BinaryHeap<T, is_heap_on_init> {
     }
 
     // initialize index map
-    template <typename T, typename Key, typename T_Hash = std::hash<T>>
-    static std::unordered_map<T, size_t, T_Hash> build_index_map(std::vector<T>& node_list) {
-        std::unordered_map<T, size_t, T_Hash> local_index_map(node_list.size());
+    template <typename U, typename U_Key, typename U_Hash = std::hash<U>>
+    static std::unordered_map<U, size_t, U_Hash> build_index_map(std::vector<U>& node_list) {
+        std::unordered_map<U, size_t, U_Hash> local_index_map(node_list.size());
 
         size_t index = 0;
         for (const auto& node : node_list) {
