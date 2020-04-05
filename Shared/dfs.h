@@ -6,7 +6,6 @@
 #include <unordered_set>  // std::unordered_set
 #include <utility>        // std::pair
 #include <vector>         // std::vector
-#include <execution>
 #include <mutex>
 
 #include "AdjListGraph.h"
