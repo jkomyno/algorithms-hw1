@@ -1,17 +1,18 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
-#include <crtdbg.h>
+// #include <crtdbg.h>
 
 #include <iostream>
-#include "adj_list_graph_factory.h"
+
+#include "../Shared/adj_list_graph_factory.h"
+#include "../Shared/sum_weights.h"
 #include "kruskal_simple_mst.h"
-#include "sum_weights.h"
 
 int main() {
-    typedef size_t Label; // nodes are identified by size_t type
-    typedef long Weight; // weights are of type long
+    typedef size_t Label;  // nodes are identified by size_t type
+    typedef long Weight;   // weights are of type long
 
-    AdjListGraph<Label, Weight> adj_list_graph(adj_list_graph_factory<Label, Weight>());
+    const AdjListGraph<Label, Weight> adj_list_graph(adj_list_graph_factory<Label, Weight>());
 
     // compute Minimum Spanning Tree with Kruskal naive algorithm
     const auto& mst = kruskal_simple_mst(std::move(adj_list_graph));

@@ -1,8 +1,10 @@
-#pragma once
-#include <vector>
-#include <unordered_map>
+#ifndef ADJ_LIST_GRAPH_H
+#define ADJ_LIST_GRAPH_H
+
 #include <algorithm>
 #include <iostream>
+#include <unordered_map>
+#include <vector>
 
 /**
  * Edge is a class that represents a weighted edge from a node to another,
@@ -12,20 +14,18 @@ template <typename Label, typename Weight>
 class Edge {
 	Label from;
 	Label to;
-    Weight weight;
+	Weight weight;
 
-public:
-	Edge() noexcept :
-	    from(Label()),
-	    to(Label()),
-	    weight(Weight()) {}
+   public:
+	Edge() noexcept : from(Label()),
+					  to(Label()),
+					  weight(Weight()) {}
 
-	explicit Edge(const Label& from, const Label& to, const Weight& weight) noexcept :
-		from(from),
-	    to(to),
-		weight(weight) { }
+	explicit Edge(const Label& from, const Label& to, const Weight& weight) noexcept : from(from),
+																					   to(to),
+																					   weight(weight) {}
 
-	// default copy and move constructors
+	// // default copy and move constructors
 	Edge(const Edge<Label, Weight>& rhs) = default;
 	Edge(Edge<Label, Weight>&& rhs) = default;
 
@@ -38,15 +38,15 @@ public:
 	 */
 	Edge<Label, Weight>& operator=(const Edge<Label, Weight>& rhs) = default;
 
-    [[nodiscard]] Label get_from() const {
+	[[nodiscard]] Label get_from() const {
 		return from;
 	}
 
-    [[nodiscard]] Label get_to() const {
+	[[nodiscard]] Label get_to() const {
 		return to;
 	}
 
-    [[nodiscard]] Weight get_weight() const {
+	[[nodiscard]] Weight get_weight() const {
 		return weight;
 	}
 
@@ -70,25 +70,24 @@ std::ostream& operator<<(std::ostream& os, const Edge<Label, Weight>& edge) {
  */
 template <typename Label, typename Weight>
 class AdjListGraph {
-public:
+   public:
 	/**
-     * WeightedEdgeLink is a struct that represents the end of an edge and its weight from
-     * a source vertex. It's used for the implementation of AdjListGraph.
-     */
+	 * WeightedEdgeLink is a struct that represents the end of an edge and its weight from
+	 * a source vertex. It's used for the implementation of AdjListGraph.
+	 */
 	struct WeightedEdgeLink {
 		const Label vertex;
 		const Weight weight;
 
-		explicit WeightedEdgeLink(const Label vertex, const Weight weight) noexcept :
-			vertex(vertex),
-			weight(weight) { }
+		explicit WeightedEdgeLink(const Label vertex, const Weight weight) noexcept : vertex(vertex),
+																					  weight(weight) {}
 	};
 
-private:
+   private:
 	// vector of vectors that represents an adjacency list
 	std::unordered_map<Label, std::vector<WeightedEdgeLink>> adj_map_list;
 
-public:
+   public:
 	/**
 	 * edge_list: vector of edges to insert into the graph
 	 * n_vertex: total number of vertexes in the graph
@@ -107,12 +106,12 @@ public:
 		 */
 		for (Label x = 0; x < n_vertex; x++) {
 			/**
-             * using operator[](x) sets a new key if it doesn't exist yet.
-             * Vectors are automatically initialized to their 0-value,
-             * i.e. an empty (but valid) std::vector.
-             * If we don't initialize the map in this way, we risk to lose some vertex along
-             * the way (i.e. in the case where some vertexes don't point to any other vertexes.
-             */
+			 * using operator[](x) sets a new key if it doesn't exist yet.
+			 * Vectors are automatically initialized to their 0-value,
+			 * i.e. an empty (but valid) std::vector.
+			 * If we don't initialize the map in this way, we risk to lose some vertex along
+			 * the way (i.e. in the case where some vertexes don't point to any other vertexes.
+			 */
 			adj_map_list[x];
 		}
 
@@ -122,7 +121,7 @@ public:
 			const auto weight = edge.get_weight();
 
 			// we're dealing with undirected graphs, so the edges should go in both ways
-		    adj_map_list[from].emplace_back(to, weight);
+			adj_map_list[from].emplace_back(to, weight);
 			adj_map_list[to].emplace_back(from, weight);
 		}
 
@@ -151,7 +150,7 @@ public:
 	}
 
 	// return the list of vertexes in the Adjacency List. There's no ordering guarantee.
-    [[nodiscard]] std::vector<Label> get_vertexes() const {
+	[[nodiscard]] std::vector<Label> get_vertexes() const {
 		std::vector<Label> vertexes;
 		vertexes.reserve(adj_map_list.size());
 
@@ -162,7 +161,7 @@ public:
 	}
 
 	// return the list of edges in the Adjacency List. There's no ordering guarantee.
-    [[nodiscard]] std::vector<Edge<Label, Weight>> get_edges() const {
+	[[nodiscard]] std::vector<Edge<Label, Weight>> get_edges() const {
 		std::vector<Edge<Label, Weight>> edges;
 
 		for (const auto& map_entry : adj_map_list) {
@@ -201,3 +200,5 @@ std::ostream& operator<<(std::ostream& os, const AdjListGraph<Label, Weight>& ad
 	os << std::endl;
 	return os;
 }
+
+#endif  // ADJ_LIST_GRAPH_H

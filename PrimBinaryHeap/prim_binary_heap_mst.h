@@ -1,15 +1,17 @@
-#pragma once
+#ifndef PRIM_BINARY_HEAP_MST_H
+#define PRIM_BINARY_HEAP_MST_H
 
-#include <algorithm>     // std::transform
-#include <limits>        // std::numeric_limits
-#include <vector>        // std::vector
-#include <queue>         // std::priority_queue
-#include "AdjListGraph.h"
-#include "PriorityQueue.h"
+#include <algorithm>  // std::transform
+#include <limits>     // std::numeric_limits
+#include <queue>      // std::priority_queue
+#include <vector>     // std::vector
+
+#include "../Shared/AdjListGraph.h"
+#include "../Shared/PriorityQueue.h"
 
 template <typename Label, typename Weight>
 auto prim_binary_heap_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {
-    auto& vertexes = adj_list_graph.get_vertexes();
+    auto vertexes = adj_list_graph.get_vertexes();
 
     const size_t n_stop = vertexes.size();
     std::vector<Edge<Label, Weight>> mst(n_stop);
@@ -40,7 +42,7 @@ auto prim_binary_heap_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept
         // traverse all vertexes which are adjacent to u
         for (const auto vw : adj_list_graph.get_adjacent_vertexes(u)) {
             const auto v = vw.vertex;
-            const auto weight = vw.weight; // w(u, v)
+            const auto weight = vw.weight;  // w(u, v)
 
             // if v is not in MST and w(u, v) is smaller than the current key of v
             if (priority_queue.contains(v) && weight < priority_queue.key_at(v)) {
@@ -56,3 +58,5 @@ auto prim_binary_heap_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept
 
     return mst;
 }
+
+#endif  // PRIM_BINARY_HEAP_MST_H

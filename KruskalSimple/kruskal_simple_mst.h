@@ -1,16 +1,18 @@
-#pragma once
+#ifndef KRUSKAL_SIMPLE_MST_H
+#define KRUSKAL_SIMPLE_MST_H
 
-#include <vector>    // std::vector
-#include <algorithm> // std::sort, std::copy
-#include "AdjListGraph.h"
-#include "dfs.h"
+#include <algorithm>  // std::sort, std::copy
+#include <vector>     // std::vector
+
+#include "../Shared/AdjListGraph.h"
+#include "../Shared/dfs.h"
 
 template <typename Label, typename Weight>
-auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {
+auto kruskal_simple_mst(const AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {
     // object representing a Minimum Spanning Tree
     std::vector<Edge<Label, Weight>> mst;
 
-    auto& edges = adj_list_graph.get_edges();
+    auto edges = adj_list_graph.get_edges();
     const size_t n = adj_list_graph.vertexes_size();
     const size_t n_stop = n - 1;
 
@@ -49,3 +51,5 @@ auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -
 
     return mst;
 }
+
+#endif  // KRUSKAL_SIMPLE_MST_H
