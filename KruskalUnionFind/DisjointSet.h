@@ -1,27 +1,26 @@
-#pragma once
+#ifndef DISJOINT_SET_H
+#define DISJOINT_SET_H
 
-#include <vector>      // std::vector
-#include <algorithm>   // std::transform
-#include <functional>  // std::function
-#include <type_traits> // std::enable_if, std::is_unsigned
+#include <algorithm>    // std::transform
+#include <functional>   // std::function
+#include <type_traits>  // std::enable_if, std::is_unsigned
+#include <vector>       // std::vector
 
 /**
  * Union-by-size implementation of a Disjoint-Set.
- * DisjointSet accepts element of type T, which must be an unsigned integer type. 
+ * DisjointSet accepts element of type T, which must be an unsigned integer type.
  * TODO:
  * - path compression may be used to obtain even better performance
  */
 template <typename T, typename = typename std::enable_if<
-    std::is_unsigned<T>::value
->::type>
+    std::is_unsigned<T>::value>::type>
 class DisjointSet {
     std::vector<size_t> parents;
     std::vector<size_t> sizes;
 
-public:
+   public:
     // x_list must contain unsigned integers of distinct value in the range [0, x_list.size())
-    explicit DisjointSet(std::vector<T>&& x_list) :
-        sizes(x_list.size(), 1) // fill size with value 1
+    explicit DisjointSet(std::vector<T>&& x_list) : sizes(x_list.size(), 1)  // fill size with value 1
     {
         parents.reserve(x_list.size());
         std::transform(x_list.cbegin(), x_list.cend(), std::back_inserter(parents), [&x_list](const auto& x_elem) {
@@ -72,3 +71,5 @@ public:
         }
     }
 };
+
+#endif  // DISJOINT_SET_H

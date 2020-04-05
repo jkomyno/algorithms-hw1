@@ -1,8 +1,10 @@
-#pragma once
+#ifndef KRUSKAL_MST_H
+#define KRUSKAL_MST_H
 
-#include <vector>    // std::vector
-#include <algorithm> // std::sort
-#include "AdjListGraph.h"
+#include <algorithm>  // std::sort
+#include <vector>     // std::vector
+
+#include "../Shared/AdjListGraph.h"
 #include "DisjointSet.h"
 
 template <typename Label, typename Weight>
@@ -46,3 +48,5 @@ auto kruskal_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::
 
     return mst;
 }
+
+#endif  // KRUSKAL_MST_H

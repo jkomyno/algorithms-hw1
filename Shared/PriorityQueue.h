@@ -1,9 +1,11 @@
-#pragma once
+#ifndef PRIORITY_QUEUE_H
+#define PRIORITY_QUEUE_H
 
-#include <unordered_map> // std::unordered_map
-#include <algorithm>     // std::swap, std::find
-#include <functional>    // std::function
-#include <cassert>       // std::assert
+#include <algorithm>      // std::swap, std::find
+#include <cassert>        // std::assert
+#include <functional>     // std::function
+#include <unordered_map>  // std::unordered_map
+
 #include "BinaryHeap.h"
 
 /**
@@ -17,7 +19,6 @@
  */
 template <typename Key, typename T, bool is_heap_on_init = false, typename T_Hash = std::hash<T>>
 class PriorityQueue : private BinaryHeap<T, is_heap_on_init> {
-
     using super = BinaryHeap<T, is_heap_on_init>;
     using key_map_type = std::unordered_map<T, Key, T_Hash>;
     using index_map_type = std::unordered_map<T, size_t, T_Hash>;
@@ -60,7 +61,7 @@ class PriorityQueue : private BinaryHeap<T, is_heap_on_init> {
         return local_index_map;
     }
 
-protected:
+   protected:
     void swap_nodes(size_t i, size_t j) override {
         using std::swap;
 
@@ -72,13 +73,14 @@ protected:
         super::swap_nodes(i, j);
     }
 
-public:
+   public:
     PriorityQueue() = delete;
 
     explicit PriorityQueue(std::vector<Key>&& keys, std::vector<T>&& inputs, CompareFactory&& comp) :
-        super(std::move(inputs)),
-        key_map(build_key_map<T, Key, T_Hash>(std::move(keys), this->nodes)),
-        index_map(build_index_map<T, size_t, T_Hash>(this->nodes)) {
+		super(std::move(inputs)),
+		key_map(build_key_map<T, Key, T_Hash>(std::move(keys), this->nodes)),
+        index_map(build_index_map<T, size_t, T_Hash>(this->nodes))
+	{
         this->comp = comp(key_map);
         this->build_heap();
     }
@@ -110,7 +112,6 @@ public:
     // update the key of a node in the priority queue.
     // node must exist in the priority queue
     void update_key(const Key& key, const T& node) {
-
         const size_t index_to_fix = index_map[node];
         key_map[node] = key;
 
@@ -179,3 +180,5 @@ PriorityQueue<Key, Value, is_heap_on_init> make_max_priority_queue(std::vector<K
         };
     });
 }
+
+#endif  // PRIORITY_QUEUE_H

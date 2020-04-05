@@ -1,8 +1,10 @@
-#pragma once
+#ifndef ADJ_LIST_GRAPH_FACTORY_H
+#define ADJ_LIST_GRAPH_FACTORY_H
 
-#include <iostream> // std::cin
-#include <vector>   // std::vector
+#include <iostream>  // std::cin
 #include <type_traits>
+#include <vector>  // std::vector
+
 #include "AdjListGraph.h"
 
 /**
@@ -18,16 +20,13 @@
  * Weight is the type of an edge weight, which must be a signed integer.
  */
 template <typename Label, typename Weight,
-    typename = typename std::enable_if<
-        std::is_unsigned<Label>::value
-    >::type,
-    typename = typename std::enable_if<
-        std::is_signed<Weight>::value
-    >::type
->
+          typename = typename std::enable_if<
+              std::is_unsigned<Label>::value>::type,
+          typename = typename std::enable_if<
+              std::is_signed<Weight>::value>::type>
 AdjListGraph<Label, Weight> adj_list_graph_factory() {
-    size_t n; // number of vertexes
-    size_t m; // number of edges
+    size_t n;  // number of vertexes
+    size_t m;  // number of edges
     std::cin >> n >> m;
 
     std::vector<Edge<Label, Weight>> edge_list;
@@ -49,3 +48,5 @@ AdjListGraph<Label, Weight> adj_list_graph_factory() {
 
     return adj_list_graph;
 }
+
+#endif  // ADJ_LIST_GRAPH_FACTORY_H

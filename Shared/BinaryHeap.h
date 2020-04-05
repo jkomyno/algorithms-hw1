@@ -1,10 +1,11 @@
-#pragma once
+#ifndef BINARY_HEAP_H
+#define BINARY_HEAP_H
 
-#include <vector>     // std::vector
-#include <utility>    // std::forward
-#include <algorithm>  // std::swap
-#include <functional> // std::function
-#include <cassert>    // std::assert
+#include <algorithm>   // std::swap
+#include <cassert>     // std::assert
+#include <functional>  // std::function
+#include <utility>     // std::forward
+#include <vector>      // std::vector
 
 /**
  * Generic Binary Heap implementation. Depending on the given comparator function, it can
@@ -43,10 +44,9 @@ class BinaryHeap {
         return i >= bound;
     }
 
-protected:
+   protected:
     // protected constructor to let the subclass set the comparator
-    explicit BinaryHeap(std::vector<T>&& inputs) noexcept :
-        nodes(inputs) {
+    explicit BinaryHeap(std::vector<T>&& inputs) noexcept : nodes(inputs) {
         // spend O(n) to build the heap only if the given vector wasn't already a
         // valid heap from the beginning
         if constexpr (!is_heap_on_init) {
@@ -111,17 +111,15 @@ protected:
         }
     }
 
-public:
+   public:
     BinaryHeap() = delete;
 
     /**
      * Compare is the type of a comparison function.
      * Use std::greater<> to obtain a Min Heap, use std::less<> to obtain a Max Heap.
      */
-    explicit BinaryHeap(std::vector<T>&& inputs, Compare comp) noexcept :
-        nodes(inputs),
-        comp(comp) {
-
+    explicit BinaryHeap(std::vector<T>&& inputs, Compare comp) noexcept : nodes(inputs),
+                                                                          comp(comp) {
         // spend O(n) to build the heap only if the given vector wasn't already a
         // valid heap from the beginning
         if constexpr (!is_heap_on_init) {
@@ -191,7 +189,6 @@ public:
     }
 };
 
-
 // create a Min Heap
 template <typename T>
 BinaryHeap<T, false> make_min_heap(std::vector<T>&& inputs) {
@@ -203,3 +200,5 @@ template <typename T>
 BinaryHeap<T, false> make_max_heap(std::vector<T>&& inputs) {
     return BinaryHeap<T, false>(std::forward(inputs), std::less<>{});
 }
+
+#endif  // BINARY_HEAP_H

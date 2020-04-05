@@ -1,10 +1,12 @@
-#pragma once
+#ifndef DFS_H
+#define DFS_H
 
-#include <vector>        // std::vector
-#include <stack>         // std::stack
-#include <unordered_map> // std::unordered_map
-#include <utility>       // std::pair
-#include <limits>        // std::limits
+#include <limits>         // std::limits
+#include <stack>          // std::stack
+#include <unordered_map>  // std::unordered_map
+#include <utility>        // std::pair
+#include <vector>         // std::vector
+
 #include "AdjListGraph.h"
 
 // Depth First Search operations
@@ -12,7 +14,7 @@ template <typename Label, typename Weight>
 class DFS {
     // the discovered nodes are modeled as an unordered_map because this class may be used
     // only on a subset of the nodes (as it's the case in kruskal_simple_mst.h),
-    // thus creating a vector from 0 to n-1 might be too wasteful. 
+    // thus creating a vector from 0 to n-1 might be too wasteful.
     using discovered_map = std::unordered_map<Label, bool>;
 
     using Son = Label;
@@ -97,10 +99,10 @@ class DFS {
         return true;
     }
 
-public:
-    DFS(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept :
-        adj_list_graph(adj_list_graph),
-        vertexes(adj_list_graph.get_vertexes()) {}
+   public:
+    DFS(AdjListGraph<Label, Weight>&& adj_list_graph)
+    noexcept : adj_list_graph(adj_list_graph),
+               vertexes(adj_list_graph.get_vertexes()) {}
 
     // default destructor
     ~DFS() = default;
@@ -146,3 +148,5 @@ public:
         return true;
     }
 };
+
+#endif  // DFS_H
