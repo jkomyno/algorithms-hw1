@@ -1,7 +1,7 @@
 # Usage: ./benchmark.ps1
 
 $exe_folder = ".\x64\Release"
-$programs = "PrimBinaryHeap","KruskalUnionFind"#,"KruskalSimple"
+$programs = "PrimBinaryHeap","KruskalUnionFind","KruskalSimple"
 $output_folder = ".\benchmark"
 
 foreach ($program in $programs) {
