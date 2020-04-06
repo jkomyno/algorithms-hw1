@@ -77,7 +77,7 @@ class AdjListGraph {
 	 */
 	struct WeightedEdgeLink {
 		const Label vertex;
-		const Weight weight;
+		Weight weight;
 
 		explicit WeightedEdgeLink(const Label vertex, const Weight weight) noexcept : vertex(vertex),
 																					  weight(weight) {}
@@ -192,8 +192,34 @@ class AdjListGraph {
 	void add_edge(const Edge<Label, Weight>& edge) {
 		const auto from = edge.get_from();
 		const auto to = edge.get_to();
-		const auto weight = edge.get_weight();
+		const auto weight = edge.get_weight();	
 
+		// check if there is already a edge in the graph
+		std::vector<WeightedEdgeLink>& adj_from = adj_map_list.at(from);
+		for (int i = 0; i < adj_from.size(); i++) {
+			if (adj_from[i].vertex == to) {
+				if (adj_from[i].weight > weight) {
+					adj_from[i].weight = weight;
+
+					//also find and extract the duplicates in other vertex
+					std::vector<WeightedEdgeLink>& adj_to = adj_map_list.at(to);
+					for (int j = 0; j < adj_to.size(); j++) {
+						if (adj_to[j].vertex == from) {
+							adj_to[j].weight = weight;
+
+							//update completed
+							return;
+						}
+					}
+				}
+				else {
+					//skip the vertex if the weight is more than the actual
+					return;
+				}
+			}
+		}
+
+		//add if not already present
 		// we're dealing with undirected graphs, so the edges should go in both ways
 		adj_map_list[from].emplace_back(to, weight);
 		adj_map_list[to].emplace_back(from, weight);
