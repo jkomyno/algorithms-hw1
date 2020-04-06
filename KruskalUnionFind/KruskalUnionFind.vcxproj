@@ -23,7 +23,7 @@
     <ProjectGuid>{A46406D6-604F-4E55-B467-BDD50A84A592}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>KruskalUnionFind</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>KruskalUnionFind</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
