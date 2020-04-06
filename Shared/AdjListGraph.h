@@ -111,13 +111,7 @@ class AdjListGraph {
 		}
 
 		for (const auto& edge : edge_list) {
-			const auto from = edge.get_from();
-			const auto to = edge.get_to();
-			const auto weight = edge.get_weight();
-
-			// we're dealing with undirected graphs, so the edges should go in both ways
-			adj_map_list[from].emplace_back(to, weight);
-			adj_map_list[to].emplace_back(from, weight);
+			add_edge(edge);
 		}
 
 		// TODO: remove duplicate arcs of non-minimum weight
@@ -129,11 +123,11 @@ class AdjListGraph {
 	 * n_vertex: total number of vertexes in the graph
 	 * init_value: initial label for the nodes
 	 */
-   explicit AdjListGraph(const std::vector<Edge<Label, Weight>>& edge_list, const size_t n_vertex) noexcept {
+   explicit AdjListGraph(const std::vector<Edge<Label, Weight>>& edge_list, const size_t n_vertex = 0) noexcept {
 	   init(edge_list, n_vertex);
    }
 
-	explicit AdjListGraph(std::vector<Edge<Label, Weight>>&& edge_list, const size_t n_vertex) noexcept {
+	explicit AdjListGraph(std::vector<Edge<Label, Weight>>&& edge_list, const size_t n_vertex = 0) noexcept {
 		init(edge_list, n_vertex);
 	}
 
@@ -180,7 +174,7 @@ class AdjListGraph {
 			for (const auto& w_edge_link : w_edge_link_list) {
 				const auto& to = w_edge_link.vertex;
 				const auto& weight = w_edge_link.weight;
-				edges.push_back(Edge<Label, Weight>(from, to, weight));
+				edges.emplace_back(from, to, weight);
 			}
 		}
 
@@ -192,6 +186,23 @@ class AdjListGraph {
 	// to that node.
 	[[nodiscard]] std::vector<WeightedEdgeLink> get_adjacent_vertexes(const Label& vertex) const {
 		return adj_map_list.at(vertex);
+	}
+
+	// adds a new edge to the adjacency list
+	void add_edge(const Edge<Label, Weight>& edge) {
+		const auto from = edge.get_from();
+		const auto to = edge.get_to();
+		const auto weight = edge.get_weight();
+
+		// we're dealing with undirected graphs, so the edges should go in both ways
+		adj_map_list[from].emplace_back(to, weight);
+		adj_map_list[to].emplace_back(from, weight);
+	}
+
+	// removes the last WeightedEdgeLink from the vector relative to the given edge
+	void remove_last_from_edge(Edge<Label, Weight>& edge) {
+		adj_map_list[edge.get_from()].pop_back();
+		adj_map_list[edge.get_to()].pop_back();
 	}
 };
 

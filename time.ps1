@@ -23,7 +23,7 @@ Foreach-Object {
 
     $ms = Measure-Command {
       $output = (Get-Content $filename | & $program)
-    } | Select -ExpandProperty Milliseconds
+    } | Select -ExpandProperty TotalMilliseconds
 
     echo "$ms;$output;$n;$m;$basename"
 }
