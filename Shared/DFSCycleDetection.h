@@ -68,11 +68,17 @@ public:
 
 	// returns true iff the graph pointed by adj_list_graph_ptr has a loop
 	bool has_cycle() const {
+		const auto n = adj_list_graph_ptr->vertexes_size();
+		// if the graph has less than 3 vertexes, there can't possibly exist a cycle
+		if (n < 3) {
+			return false;
+		}
+		
 		const auto vertexes = adj_list_graph_ptr->get_vertexes();
 
 		// set that keeps track of the visited nodes
 		std::unordered_set<Label> visited;
-		visited.reserve(vertexes.size());
+		visited.reserve(n);
 
 		for (const auto v : vertexes) {
 			if (!visited.count(v) && has_cycle_helper(v, visited)) {
