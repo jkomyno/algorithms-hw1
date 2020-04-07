@@ -23,7 +23,7 @@
     <ProjectGuid>{458FA573-F056-48EF-81B3-570C76088607}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>PrimBinaryHeap</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

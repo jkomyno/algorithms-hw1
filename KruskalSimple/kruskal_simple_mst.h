@@ -9,9 +9,6 @@
 
 template <typename Label, typename Weight>
 auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {
-    // object representing a Minimum Spanning Tree
-    std::vector<Edge<Label, Weight>> mst;
-
     auto edges = adj_list_graph.get_edges();
     const size_t n = adj_list_graph.vertexes_size();
     const size_t n_stop = n - 1;
@@ -24,19 +21,22 @@ auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -
 	});
 
 	// adjacency list 
-	AdjListGraph<Label, Weight> mst_list_graph(mst);
+	AdjListGraph<Label, Weight> mst_list_graph;
 
 	// object that detects cycles in a graph using Depth First Search.
 	// It requires a constant pointer to mst_list_graph.
 	DFSCycleDetection<Label, Weight> dfs(&mst_list_graph);
 
+	size_t mst_size = 0;
+	
     for (auto& edge : edges) {
         // a Minimum Spanning Tree can have (n - 1) edges at maximum.
-		const size_t mst_size = mst.size();
+    	/*
         if (mst_size == n_stop) {
-            return mst;
+			break;
         }
-
+		*/
+    	
 		mst_list_graph.add_edge(edge);
 
     	if (dfs.has_cycle()) {
@@ -45,12 +45,12 @@ auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -
     		// AdjListGraph<> object every time we need to detect a cycle
 			mst_list_graph.remove_last_from_edge(edge);
     	} else {
-    		// there's no cycle, we can safely add edge to mst
-			mst.emplace_back(edge);
+			mst_size++;
     	}
     }
 
-    return mst;
+	// object representing a Minimum Spanning Tree
+	return mst_list_graph.get_edges(false);
 }
 
 #endif  // KRUSKAL_SIMPLE_MST_H
