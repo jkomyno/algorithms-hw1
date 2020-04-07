@@ -13,7 +13,7 @@ echo "ms;output;n;m;filename"
 $program = $args[0]
 $prefix = $args[1]
 
-Get-ChildItem "./" -Filter "$prefix*.txt" |
+Get-ChildItem "./test/" -Filter "$prefix*.txt" |
 Foreach-Object {
     $filename = $_.FullName
     $basename = $_.Basename
