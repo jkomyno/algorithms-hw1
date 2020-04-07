@@ -9,7 +9,8 @@
 
 template <typename Label, typename Weight>
 auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {
-    auto edges = adj_list_graph.get_edges();
+
+	auto edges = adj_list_graph.get_edges(false);
     const size_t n = adj_list_graph.vertexes_size();
     const size_t n_stop = n - 1;
 
@@ -31,19 +32,18 @@ auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -
 	
     for (auto& edge : edges) {
         // a Minimum Spanning Tree can have (n - 1) edges at maximum.
-    	/*
+    
         if (mst_size == n_stop) {
 			break;
         }
-		*/
-    	
+		
 		mst_list_graph.add_edge(edge);
 
     	if (dfs.has_cycle()) {
     		// remove the last inserted entry in the adjacency list of nodes
     		// edge.get_from() and edge.get_to(). This is cheaper than constructing a new
     		// AdjListGraph<> object every time we need to detect a cycle
-			mst_list_graph.remove_last_from_edge(edge);
+			mst_list_graph.remove_edge(edge);
     	} else {
 			mst_size++;
     	}

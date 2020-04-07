@@ -33,8 +33,8 @@ class DFSCycleDetection {
 			const auto [v, father_v] = stack.top();
 			stack.pop();
 
-			for (const auto& uw : adj_list_graph_ptr->get_adjacent_vertexes(v)) {
-				const auto& u = uw.vertex;
+			for (const auto& uw : adj_list_graph_ptr->get_adjacent_vertexes2(v)) {
+				const auto& u = uw.first;
 
 				// if we hadn't met the node u before, we mark that we discovered it "through" v,
 				// which we call its father

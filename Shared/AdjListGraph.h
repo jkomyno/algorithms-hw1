@@ -79,7 +79,7 @@ public:
 
 private:
 	// vector of vectors that represents an adjacency list
-	std::unordered_map<Label, std::vector<WeightedEdgeLink>> adj_map_list;
+	std::unordered_map<Label, std::unordered_map<Label, Weight>> adj_map_list;
 
 	// function invoked by the constructors
 	void init(const std::vector<Edge<Label, Weight>>& edge_list, const size_t n_vertex) {
@@ -162,6 +162,7 @@ public:
 
 	// return the list of edges in the Adjacency List. There's no ordering guarantee.
 	[[nodiscard]] std::vector<Edge<Label, Weight>> get_edges(bool directed = true) const {
+
 		std::vector<Edge<Label, Weight>> edges;
 
 		if (directed) {
@@ -170,8 +171,8 @@ public:
 				const auto& w_edge_link_list = map_entry.second;
 
 				for (const auto& w_edge_link : w_edge_link_list) {
-					const auto& to = w_edge_link.vertex;
-					const auto& weight = w_edge_link.weight;
+					const auto& to = w_edge_link.first;
+					const auto& weight = w_edge_link.second;
 					edges.emplace_back(from, to, weight);
 				}
 			}
@@ -182,8 +183,8 @@ public:
 				const auto& w_edge_link_list = map_entry.second;
 
 				for (const auto& w_edge_link : w_edge_link_list) {
-					const auto& to = w_edge_link.vertex;
-					const auto& weight = w_edge_link.weight;
+					const auto& to = w_edge_link.first;
+					const auto& weight = w_edge_link.second;
 
 					auto new_edge = std::make_pair(std::min(from, to), std::max(from, to));
 					edge_map[new_edge] = weight;
@@ -206,6 +207,25 @@ public:
 	// the Adjacency List. Each returned node also contains the weight cost from the given vertex
 	// to that node.
 	[[nodiscard]] std::vector<WeightedEdgeLink> get_adjacent_vertexes(const Label& vertex) const {
+
+		std::vector<WeightedEdgeLink> edges;
+
+		auto& adj_map_vertex = adj_map_list.at(vertex);
+
+		for (const auto& edge : adj_map_vertex) {
+			const auto from = vertex;
+			const auto to = edge.first;
+			const auto weight = edge.second;
+
+			WeightedEdgeLink edge_link(to, weight);
+			edges.emplace_back(edge_link);
+		}
+
+		return edges;
+
+	}
+
+	[[nodiscard]] std::unordered_map<Label, Weight>& get_adjacent_vertexes2(const Label& vertex) {
 		return adj_map_list.at(vertex);
 	}
 
@@ -214,6 +234,32 @@ public:
 		const auto from = edge.get_from();
 		const auto to = edge.get_to();
 		const auto weight = edge.get_weight();
+
+		adj_map_list[from];
+		adj_map_list[to];
+
+		auto& adj_map_from = adj_map_list.at(from);
+		auto& adj_map_to = adj_map_list.at(to);
+
+		if (adj_map_from.count(to))
+		{
+			//if the vertex is present check the weight
+			if (adj_map_from[to] > weight) {
+				adj_map_from[to] = weight;
+				adj_map_to[from] = weight;
+			}
+
+			return;
+		}
+		else {
+			//else add the edge
+			adj_map_from[to] = weight;
+			adj_map_to[from] = weight;
+		}
+
+
+
+		/*
 
 		// check if there is already a edge in the graph
 		auto& adj_from = adj_map_list[from];
@@ -243,12 +289,16 @@ public:
 		// we're dealing with undirected graphs, so the edges should go in both ways
 		adj_map_list[from].emplace_back(to, weight);
 		adj_map_list[to].emplace_back(from, weight);
+
+		*/
+
+		
 	}
 
 	// removes the last WeightedEdgeLink from the vector relative to the given edge
-	void remove_last_from_edge(Edge<Label, Weight>& edge) {
-		adj_map_list[edge.get_from()].pop_back();
-		adj_map_list[edge.get_to()].pop_back();
+	void remove_edge(Edge<Label, Weight>& edge) {
+		adj_map_list[edge.get_from()].erase(edge.get_to());
+		adj_map_list[edge.get_to()].erase(edge.get_from());
 	}
 };
 
