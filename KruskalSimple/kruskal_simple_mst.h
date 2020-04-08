@@ -39,7 +39,7 @@ auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -
 		
 		mst_list_graph.add_edge(edge);
 
-    	if (dfs.has_cycle()) {
+    	if (mst_list_graph.has_cycle()) {
     		// remove the last inserted entry in the adjacency list of nodes
     		// edge.get_from() and edge.get_to(). This is cheaper than constructing a new
     		// AdjListGraph<> object every time we need to detect a cycle

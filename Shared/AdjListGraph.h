@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iostream>
 #include <unordered_map>
+#include <unordered_set> // std::unordered_set
 #include <vector>
 
 /**
@@ -107,6 +108,46 @@ private:
 		for (const auto& edge : edge_list) { add_edge(edge); }
 
 		// TODO: remove duplicate arcs of non-minimum weight
+	}
+
+
+	// return true iff there is a cycle in the graph starting from the source node and exploring
+	// the graph using Depth First Search
+	bool has_cycle_helper(const Label& source, std::unordered_set<Label>& visited) const {
+		// pair of nodes organized as (Son, Father)
+		using son_father_pair = std::pair<Label, Label>;
+
+		// stack of (son, father) nodes
+		std::stack<son_father_pair> stack;
+
+		// set the father of the source node to a sentinel value, in this case infinity
+		stack.push(std::make_pair(source, std::numeric_limits<Label>::max()));
+
+		// mark the source node as discovered
+		visited.insert(source);
+
+		while (!stack.empty()) {
+			const auto [v, father_v] = stack.top();
+			stack.pop();
+
+			for (const auto& uw : adj_map_list.at(v)) {
+				const auto& u = uw.first;
+
+				// if we hadn't met the node u before, we mark that we discovered it "through" v,
+				// which we call its father
+				if (!visited.count(u)) {
+					stack.push(std::make_pair(u, v));
+					visited.insert(u);
+				}
+				// if we already met u but u isn't v's father, it means there's a cycle
+				else if (u != father_v) {
+					return true;
+				}
+			}
+		}
+
+		// no cycle loop found
+		return false;
 	}
 
 public:
@@ -231,6 +272,7 @@ public:
 
 	// adds a new edge to the adjacency list
 	void add_edge(const Edge<Label, Weight>& edge) {
+
 		const auto from = edge.get_from();
 		const auto to = edge.get_to();
 		const auto weight = edge.get_weight();
@@ -257,48 +299,37 @@ public:
 			adj_map_to[from] = weight;
 		}
 
-
-
-		/*
-
-		// check if there is already a edge in the graph
-		auto& adj_from = adj_map_list[from];
-		for (size_t i = 0; i < adj_from.size(); i++) {
-			if (adj_from[i].vertex == to) {
-				if (adj_from[i].weight > weight) {
-					adj_from[i].weight = weight;
-
-					//also find and extract the duplicates in other vertex
-					auto& adj_to = adj_map_list[to];
-					for (size_t j = 0; j < adj_to.size(); j++) {
-						if (adj_to[j].vertex == from) {
-							adj_to[j].weight = weight;
-
-							//update completed
-							return;
-						}
-					}
-				} else {
-					//skip the vertex if the weight is more than the actual
-					return;
-				}
-			}
-		}
-
-		//add if not already present
-		// we're dealing with undirected graphs, so the edges should go in both ways
-		adj_map_list[from].emplace_back(to, weight);
-		adj_map_list[to].emplace_back(from, weight);
-
-		*/
-
-		
+	
 	}
 
 	// removes the last WeightedEdgeLink from the vector relative to the given edge
 	void remove_edge(Edge<Label, Weight>& edge) {
 		adj_map_list[edge.get_from()].erase(edge.get_to());
 		adj_map_list[edge.get_to()].erase(edge.get_from());
+	}
+
+	// returns true iff the graph pointed by adj_list_graph_ptr has a loop
+	bool has_cycle() const {
+		const auto n = vertexes_size();
+		// if the graph has less than 3 vertexes, there can't possibly exist a cycle
+		if (n < 3) {
+			return false;
+		}
+
+		//const auto vertexes = adj_list_graph_ptr->get_vertexes();
+
+		// set that keeps track of the visited nodes
+		std::unordered_set<Label> visited;
+		visited.reserve(n);
+
+		for (const auto& v : adj_map_list) {
+			if (!visited.count(v.first) && has_cycle_helper(v.first, visited)) {
+				return true;
+			}
+		}
+
+		// no cycle loop found
+		return false;
 	}
 };
 
