@@ -9,7 +9,6 @@
 
 template <typename Label, typename Weight>
 auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {
-
 	auto edges = adj_list_graph.get_edges(false);
     const size_t n = adj_list_graph.vertexes_size();
     const size_t n_stop = n - 1;
@@ -23,10 +22,6 @@ auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -
 
 	// adjacency list 
 	AdjListGraph<Label, Weight> mst_list_graph;
-
-	// object that detects cycles in a graph using Depth First Search.
-	// It requires a constant pointer to mst_list_graph.
-	DFSCycleDetection<Label, Weight> dfs(&mst_list_graph);
 
 	size_t mst_size = 0;
 	
