@@ -23,29 +23,33 @@ auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -
 	// adjacency list 
 	AdjListGraph<Label, Weight> mst_list_graph;
 
+	// object that detects cycles in a graph using Depth First Search.
+	// It requires a constant pointer to mst_list_graph.
+	DFSCycleDetection<Label, Weight> dfs(&mst_list_graph);
+
 	size_t mst_size = 0;
 	
     for (auto& edge : edges) {
         // a Minimum Spanning Tree can have (n - 1) edges at maximum.
-    
         if (mst_size == n_stop) {
 			break;
         }
 		
 		mst_list_graph.add_edge(edge);
 
-    	if (mst_list_graph.has_cycle()) {
+    	if (dfs.has_cycle()) {
     		// remove the last inserted entry in the adjacency list of nodes
     		// edge.get_from() and edge.get_to(). This is cheaper than constructing a new
     		// AdjListGraph<> object every time we need to detect a cycle
 			mst_list_graph.remove_edge(edge);
     	} else {
+			// we added a new edge that didn't result in a cycle. Our mst is thus one node bigger.
 			mst_size++;
     	}
     }
 
 	// object representing a Minimum Spanning Tree
-	return mst_list_graph.get_edges(false);
+	return mst_list_graph.get_edges(true);
 }
 
 #endif  // KRUSKAL_SIMPLE_MST_H

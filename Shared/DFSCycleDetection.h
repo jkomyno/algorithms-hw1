@@ -33,7 +33,8 @@ class DFSCycleDetection {
 			const auto [v, father_v] = stack.top();
 			stack.pop();
 
-			for (const auto& uw : adj_list_graph_ptr->get_adjacent_vertexes2(v)) {
+			// visit the neighbours of the current node, except the current node itself
+			for (const auto& uw : adj_list_graph_ptr->adj_map_list.at(v)) {
 				const auto& u = uw.first;
 
 				// if we hadn't met the node u before, we mark that we discovered it "through" v,
@@ -50,6 +51,25 @@ class DFSCycleDetection {
 		}
 
 		// no cycle loop found
+		return false;
+	}
+
+	// recursive version of has_cycle_helper (to be benchmarked)
+	bool has_cycle_helper_rec(const Label& v, std::unordered_set<Label>& visited, const Label& parent = std::numeric_limits<Label>::max()) const {
+		// mark the current node as discovered
+		visited.insert(v);
+
+		// visit the neighbours of the current node, except the current node itself
+		for (const auto& uw : adj_list_graph_ptr->adj_map_list.at(v)) {
+			const auto& u = uw.first;
+
+			if (u != parent && (
+				visited.count(u) || has_cycle_helper_rec(u, visited, v)
+			)) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 
@@ -73,15 +93,15 @@ public:
 		if (n < 3) {
 			return false;
 		}
-		
-		const auto vertexes = adj_list_graph_ptr->get_vertexes();
+
+		//const auto vertexes = adj_list_graph_ptr->get_vertexes();
 
 		// set that keeps track of the visited nodes
 		std::unordered_set<Label> visited;
 		visited.reserve(n);
 
-		for (const auto v : vertexes) {
-			if (!visited.count(v) && has_cycle_helper(v, visited)) {
+		for (const auto& v : adj_list_graph_ptr->adj_map_list) {
+			if (!visited.count(v.first) && has_cycle_helper(v.first, visited)) {
 				return true;
 			}
 		}

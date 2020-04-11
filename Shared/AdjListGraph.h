@@ -3,9 +3,7 @@
 
 #include <algorithm>     // std::transform
 #include <iostream>      // std::ostream
-#include <stack>         // std::stack
 #include <unordered_map> // std::unordered_map
-#include <unordered_set> // std::unordered_set
 #include <vector>        // std::vector
 
 /**
@@ -56,6 +54,14 @@ std::ostream& operator<<(std::ostream& os, const Edge<Label, Weight>& edge) {
 	return os;
 }
 
+// hash functor for std::pair<T1, T2>
+struct pair_hash {
+	template <class T1, class T2>
+	std::size_t operator()(const std::pair<T1, T2>& pair) const {
+		return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
+	}
+};
+
 /**
  * Adjacent List class for undirected weighted graphs.
  * The given nodes must be labeled as unsigned numbers x, where 0 <= x <= n.
@@ -65,6 +71,10 @@ std::ostream& operator<<(std::ostream& os, const Edge<Label, Weight>& edge) {
  */
 template <typename Label, typename Weight>
 class AdjListGraph {
+	// set DFSCycleDetection friend for performance reasons, so it can directly access
+	// the inner adj_map_list object.
+	template<typename L, typename W> friend class DFSCycleDetection;
+
 public:
 	/**
 	 * WeightedEdgeLink is a struct that represents the end of an edge and its weight from
@@ -74,8 +84,9 @@ public:
 		const Label vertex;
 		Weight weight;
 
-		explicit WeightedEdgeLink(const Label vertex, const Weight weight) noexcept : vertex(vertex),
-		                                                                              weight(weight) {}
+		explicit WeightedEdgeLink(const Label vertex, const Weight weight) noexcept :
+			vertex(vertex),
+		    weight(weight) {}
 	};
 
 private:
@@ -94,7 +105,7 @@ private:
 		/**
 		 * Assume that the vertexes are identified by a value x where Label(1) <= x <= Label(n_vertex).
 		 */
-		for (Label x = 0; x < n_vertex; x++) {
+		for (auto x = 0; x < n_vertex; ++x) {
 			/**
 			 * using operator[](x) sets a new key if it doesn't exist yet.
 			 * Vectors are automatically initialized to their 0-value,
@@ -105,48 +116,9 @@ private:
 			adj_map_list[x];
 		}
 
-		for (const auto& edge : edge_list) { add_edge(edge); }
-
-		// TODO: remove duplicate arcs of non-minimum weight
-	}
-
-	// return true iff there is a cycle in the graph starting from the source node and exploring
-	// the graph using Depth First Search
-	bool has_cycle_helper(const Label& source, std::unordered_set<Label>& visited) const {
-		// pair of nodes organized as (Son, Father)
-		using son_father_pair = std::pair<Label, Label>;
-
-		// stack of (son, father) nodes
-		std::stack<son_father_pair> stack;
-
-		// set the father of the source node to a sentinel value, in this case infinity
-		stack.push(std::make_pair(source, std::numeric_limits<Label>::max()));
-
-		// mark the source node as discovered
-		visited.insert(source);
-
-		while (!stack.empty()) {
-			const auto [v, father_v] = stack.top();
-			stack.pop();
-
-			for (const auto& uw : adj_map_list.at(v)) {
-				const auto& u = uw.first;
-
-				// if we hadn't met the node u before, we mark that we discovered it "through" v,
-				// which we call its father
-				if (!visited.count(u)) {
-					stack.push(std::make_pair(u, v));
-					visited.insert(u);
-				}
-				// if we already met u but u isn't v's father, it means there's a cycle
-				else if (u != father_v) {
-					return true;
-				}
-			}
+		for (const auto& edge : edge_list) {
+			add_edge(edge);
 		}
-
-		// no cycle loop found
-		return false;
 	}
 
 public:
@@ -195,18 +167,11 @@ public:
 		return vertexes;
 	}
 
-	struct pair_hash {
-		template <class T1, class T2>
-		std::size_t operator()(const std::pair<T1, T2>& pair) const {
-			return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
-		}
-	};
-
-
 	// return the list of edges in the Adjacency List. There's no ordering guarantee.
 	[[nodiscard]] std::vector<Edge<Label, Weight>> get_edges(bool maintain_duplicates = true) const {
-
 		std::vector<Edge<Label, Weight>> edges;
+
+		// TODO: benchmark what happens if we delete duplicates ALWAYS
 
 		if (maintain_duplicates) {
 			for (const auto& map_entry : adj_map_list) {
@@ -296,30 +261,6 @@ public:
 	void remove_edge(Edge<Label, Weight>& edge) {
 		adj_map_list[edge.get_from()].erase(edge.get_to());
 		adj_map_list[edge.get_to()].erase(edge.get_from());
-	}
-
-	// returns true iff the graph pointed by adj_list_graph_ptr has a loop
-	bool has_cycle() const {
-		const auto n = vertexes_size();
-		// if the graph has less than 3 vertexes, there can't possibly exist a cycle
-		if (n < 3) {
-			return false;
-		}
-
-		//const auto vertexes = adj_list_graph_ptr->get_vertexes();
-
-		// set that keeps track of the visited nodes
-		std::unordered_set<Label> visited;
-		visited.reserve(n);
-
-		for (const auto& v : adj_map_list) {
-			if (!visited.count(v.first) && has_cycle_helper(v.first, visited)) {
-				return true;
-			}
-		}
-
-		// no cycle loop found
-		return false;
 	}
 };
 
