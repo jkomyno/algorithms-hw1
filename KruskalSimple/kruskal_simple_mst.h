@@ -32,7 +32,7 @@ auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -
     for (auto& edge : edges) {
         // a Minimum Spanning Tree can have (n - 1) edges at maximum.
         if (mst_size == n_stop) {
-			break;
+			// break;
         }
 		
 		mst_list_graph.add_edge(edge);
@@ -49,7 +49,7 @@ auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -
     }
 
 	// object representing a Minimum Spanning Tree
-	return mst_list_graph.get_edges(true);
+	return mst_list_graph.get_edges(false);
 }
 
 #endif  // KRUSKAL_SIMPLE_MST_H
