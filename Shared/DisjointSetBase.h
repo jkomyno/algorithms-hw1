@@ -51,7 +51,7 @@ public:
 	 * returns the index of the representative of the unique set containing the given item.
 	 * T must be castable to size_t.
 	 */
-	virtual size_t find(const T& element) = 0;
+	virtual size_t find(const T& element) noexcept = 0;
 
 	// unites the dynamic sets that contain x and y into a new
 	// set that is the union of these two sets.
@@ -62,7 +62,7 @@ public:
 	 * of these two sets.
 	 * The complexity of this method is the one of find + O(1)
 	 */
-	void unite(const T& x, const T& y) {
+	void unite(const T& x, const T& y) noexcept {
 		const size_t i = find(x);
 		const size_t j = find(y);
 

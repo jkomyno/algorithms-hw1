@@ -38,7 +38,7 @@ public:
 	 * T must be castable to size_t.
 	 * O(logn)
 	 */
-	size_t find(const T& element) override {
+	size_t find(const T& element) noexcept override {
 		auto x = element;
 		while (x != this->parents[x]) {
 			x = this->parents[x];
