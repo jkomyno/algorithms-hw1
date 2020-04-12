@@ -24,7 +24,7 @@ template <typename Label, typename Weight,
               std::is_unsigned<Label>::value>::type,
           typename = typename std::enable_if<
               std::is_signed<Weight>::value>::type>
-AdjListGraph<Label, Weight> adj_list_graph_factory() {
+AdjListGraph<Label, Weight> adj_list_graph_factory() noexcept {
     size_t n;  // number of vertexes
     size_t m;  // number of edges
     std::cin >> n >> m;

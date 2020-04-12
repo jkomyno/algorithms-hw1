@@ -6,8 +6,8 @@
 #include <queue>      // std::priority_queue
 #include <vector>     // std::vector
 
-#include "../Shared/AdjListGraph.h"
-#include "../Shared/PriorityQueue.h"
+#include "AdjListGraph.h"
+#include "PriorityQueue.h"
 
 template <typename Label, typename Weight>
 auto prim_binary_heap_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {

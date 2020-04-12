@@ -1,10 +1,10 @@
 #ifndef ADJ_LIST_GRAPH_H
 #define ADJ_LIST_GRAPH_H
 
-#include <algorithm>
-#include <iostream>
-#include <unordered_map>
-#include <vector>
+#include <algorithm>     // std::transform
+#include <iostream>      // std::ostream
+#include <unordered_map> // std::unordered_map
+#include <vector>        // std::vector
 
 /**
  * Edge is a class that represents a weighted edge from a node to another,
@@ -17,15 +17,14 @@ class Edge {
 	Weight weight;
 
 public:
-	Edge() noexcept : from(Label()),
-	                  to(Label()),
-	                  weight(Weight()) {}
+	Edge() noexcept = default;
 
-	explicit Edge(const Label& from, const Label& to, const Weight& weight) noexcept : from(from),
-	                                                                                   to(to),
-	                                                                                   weight(weight) {}
+	explicit Edge(const Label& from, const Label& to, const Weight& weight) noexcept :
+		from(from),
+	    to(to),
+	    weight(weight) {}
 
-	// // default copy and move constructors
+	// default copy and move constructors
 	Edge(const Edge<Label, Weight>& rhs) = default;
 	Edge(Edge<Label, Weight>&& rhs) = default;
 
@@ -55,6 +54,14 @@ std::ostream& operator<<(std::ostream& os, const Edge<Label, Weight>& edge) {
 	return os;
 }
 
+// hash functor for std::pair<T1, T2>
+struct pair_hash {
+	template <class T1, class T2>
+	std::size_t operator()(const std::pair<T1, T2>& pair) const {
+		return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
+	}
+};
+
 /**
  * Adjacent List class for undirected weighted graphs.
  * The given nodes must be labeled as unsigned numbers x, where 0 <= x <= n.
@@ -64,6 +71,10 @@ std::ostream& operator<<(std::ostream& os, const Edge<Label, Weight>& edge) {
  */
 template <typename Label, typename Weight>
 class AdjListGraph {
+	// set DFSCycleDetection friend for performance reasons, so it can directly access
+	// the inner adj_map_list object.
+	template<typename L, typename W> friend class DFSCycleDetection;
+
 public:
 	/**
 	 * WeightedEdgeLink is a struct that represents the end of an edge and its weight from
@@ -73,13 +84,14 @@ public:
 		const Label vertex;
 		Weight weight;
 
-		explicit WeightedEdgeLink(const Label vertex, const Weight weight) noexcept : vertex(vertex),
-		                                                                              weight(weight) {}
+		explicit WeightedEdgeLink(const Label vertex, const Weight weight) noexcept :
+			vertex(vertex),
+		    weight(weight) {}
 	};
 
 private:
 	// vector of vectors that represents an adjacency list
-	std::unordered_map<Label, std::vector<WeightedEdgeLink>> adj_map_list;
+	std::unordered_map<Label, std::unordered_map<Label, Weight>> adj_map_list;
 
 	// function invoked by the constructors
 	void init(const std::vector<Edge<Label, Weight>>& edge_list, const size_t n_vertex) {
@@ -93,7 +105,7 @@ private:
 		/**
 		 * Assume that the vertexes are identified by a value x where Label(1) <= x <= Label(n_vertex).
 		 */
-		for (Label x = 0; x < n_vertex; x++) {
+		for (auto x = 0; x < n_vertex; ++x) {
 			/**
 			 * using operator[](x) sets a new key if it doesn't exist yet.
 			 * Vectors are automatically initialized to their 0-value,
@@ -104,9 +116,9 @@ private:
 			adj_map_list[x];
 		}
 
-		for (const auto& edge : edge_list) { add_edge(edge); }
-
-		// TODO: remove duplicate arcs of non-minimum weight
+		for (const auto& edge : edge_list) {
+			add_edge(edge);
+		}
 	}
 
 public:
@@ -140,38 +152,35 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, const AdjListGraph<L, W>& adj_list_graph);
 
 	// return the number of vertexes in the Adjacency List
-	[[nodiscard]] size_t vertexes_size() const { return adj_map_list.size(); }
+	[[nodiscard]] size_t vertexes_size() const {
+		return adj_map_list.size();
+	}
 
 	// return the list of vertexes in the Adjacency List. There's no ordering guarantee.
 	[[nodiscard]] std::vector<Label> get_vertexes() const {
 		std::vector<Label> vertexes;
 		vertexes.reserve(adj_map_list.size());
 
-		std::transform(adj_map_list.cbegin(), adj_map_list.cend(), std::back_inserter(vertexes),
-		               [](const auto& map_entry) { return map_entry.first; });
+		std::transform(adj_map_list.cbegin(), adj_map_list.cend(), std::back_inserter(vertexes), [](const auto& map_entry) {
+			return map_entry.first;
+		});
 		return vertexes;
 	}
 
-	struct pair_hash {
-		template <class T1, class T2>
-		std::size_t operator()(const std::pair<T1, T2>& pair) const {
-			return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
-		}
-	};
-
-
 	// return the list of edges in the Adjacency List. There's no ordering guarantee.
-	[[nodiscard]] std::vector<Edge<Label, Weight>> get_edges(bool directed = true) const {
+	[[nodiscard]] std::vector<Edge<Label, Weight>> get_edges(bool maintain_duplicates = true) const {
 		std::vector<Edge<Label, Weight>> edges;
 
-		if (directed) {
+		// TODO: benchmark what happens if we delete duplicates ALWAYS
+
+		if (maintain_duplicates) {
 			for (const auto& map_entry : adj_map_list) {
 				const auto& from = map_entry.first;
 				const auto& w_edge_link_list = map_entry.second;
 
 				for (const auto& w_edge_link : w_edge_link_list) {
-					const auto& to = w_edge_link.vertex;
-					const auto& weight = w_edge_link.weight;
+					const auto& to = w_edge_link.first;
+					const auto& weight = w_edge_link.second;
 					edges.emplace_back(from, to, weight);
 				}
 			}
@@ -182,8 +191,8 @@ public:
 				const auto& w_edge_link_list = map_entry.second;
 
 				for (const auto& w_edge_link : w_edge_link_list) {
-					const auto& to = w_edge_link.vertex;
-					const auto& weight = w_edge_link.weight;
+					const auto& to = w_edge_link.first;
+					const auto& weight = w_edge_link.second;
 
 					auto new_edge = std::make_pair(std::min(from, to), std::max(from, to));
 					edge_map[new_edge] = weight;
@@ -206,49 +215,52 @@ public:
 	// the Adjacency List. Each returned node also contains the weight cost from the given vertex
 	// to that node.
 	[[nodiscard]] std::vector<WeightedEdgeLink> get_adjacent_vertexes(const Label& vertex) const {
-		return adj_map_list.at(vertex);
+		std::vector<WeightedEdgeLink> edges;
+
+		auto& adj_map_vertex = adj_map_list.at(vertex);
+
+		for (const auto& edge : adj_map_vertex) {
+			const auto from = vertex;
+			const auto to = edge.first;
+			const auto weight = edge.second;
+
+			WeightedEdgeLink edge_link(to, weight);
+			edges.emplace_back(edge_link);
+		}
+
+		return edges;
 	}
 
 	// adds a new edge to the adjacency list
 	void add_edge(const Edge<Label, Weight>& edge) {
+
 		const auto from = edge.get_from();
 		const auto to = edge.get_to();
 		const auto weight = edge.get_weight();
 
-		// check if there is already a edge in the graph
-		auto& adj_from = adj_map_list[from];
-		for (size_t i = 0; i < adj_from.size(); i++) {
-			if (adj_from[i].vertex == to) {
-				if (adj_from[i].weight > weight) {
-					adj_from[i].weight = weight;
+		adj_map_list[from];
+		adj_map_list[to];
 
-					//also find and extract the duplicates in other vertex
-					auto& adj_to = adj_map_list[to];
-					for (size_t j = 0; j < adj_to.size(); j++) {
-						if (adj_to[j].vertex == from) {
-							adj_to[j].weight = weight;
+		auto& adj_map_from = adj_map_list.at(from);
+		auto& adj_map_to = adj_map_list.at(to);
 
-							//update completed
-							return;
-						}
-					}
-				} else {
-					//skip the vertex if the weight is more than the actual
-					return;
-				}
+		if (adj_map_from.count(to)) {
+			// if the vertex is present check the weight
+			if (adj_map_from[to] > weight) {
+				adj_map_from[to] = weight;
+				adj_map_to[from] = weight;
 			}
+		} else {
+			// else add the edge
+			adj_map_from[to] = weight;
+			adj_map_to[from] = weight;
 		}
-
-		//add if not already present
-		// we're dealing with undirected graphs, so the edges should go in both ways
-		adj_map_list[from].emplace_back(to, weight);
-		adj_map_list[to].emplace_back(from, weight);
 	}
 
 	// removes the last WeightedEdgeLink from the vector relative to the given edge
-	void remove_last_from_edge(Edge<Label, Weight>& edge) {
-		adj_map_list[edge.get_from()].pop_back();
-		adj_map_list[edge.get_to()].pop_back();
+	void remove_edge(Edge<Label, Weight>& edge) {
+		adj_map_list[edge.get_from()].erase(edge.get_to());
+		adj_map_list[edge.get_to()].erase(edge.get_from());
 	}
 };
 

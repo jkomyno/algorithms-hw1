@@ -4,7 +4,7 @@
 #include <algorithm>  // std::sort
 #include <vector>     // std::vector
 
-#include "../Shared/AdjListGraph.h"
+#include "AdjListGraph.h"
 #include "DisjointSet.h"
 
 template <typename Label, typename Weight>
