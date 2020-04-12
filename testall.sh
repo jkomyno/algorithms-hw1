@@ -1,7 +1,7 @@
 # Usage: ./testall.sh
 
 test_script="test.sh"
-programs="KruskalUnionFind.out PrimBinaryHeap.out"
+programs="KruskalUnionFind.out KruskalUnionFindCompressed.out PrimBinaryHeap.out"
 
 # TODO: KruskalSimple.out is excluded from programs list due to its execution time.
 
