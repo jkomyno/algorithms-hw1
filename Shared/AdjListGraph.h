@@ -105,7 +105,7 @@ private:
 		/**
 		 * Assume that the vertexes are identified by a value x where Label(1) <= x <= Label(n_vertex).
 		 */
-		for (auto x = 0; x < n_vertex; ++x) {
+		for (size_t x = 0; x < n_vertex; ++x) {
 			/**
 			 * using operator[](x) sets a new key if it doesn't exist yet.
 			 * Vectors are automatically initialized to their 0-value,
@@ -220,7 +220,6 @@ public:
 		auto& adj_map_vertex = adj_map_list.at(vertex);
 
 		for (const auto& edge : adj_map_vertex) {
-			const auto from = vertex;
 			const auto to = edge.first;
 			const auto weight = edge.second;
 
