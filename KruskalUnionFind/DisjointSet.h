@@ -9,8 +9,6 @@
 /**
  * Union-by-size implementation of a Disjoint-Set.
  * DisjointSet accepts element of type T, which must be an unsigned integer type.
- * TODO:
- * - path compression may be used to obtain even better performance
  */
 template <typename T, typename = typename std::enable_if<
     std::is_unsigned<T>::value>::type>
@@ -45,7 +43,8 @@ class DisjointSet {
 
     // returns the index of the representative of the unique set containing the given item.
     // T must be castable to size_t.
-    size_t find(const T& item) {
+	// O(logn)
+    [[deprecated]] size_t find_simple(const T& item) {
         auto x = item;
         while (x != parents[x]) {
             x = parents[x];
@@ -53,8 +52,39 @@ class DisjointSet {
         return x;
     }
 
+	/**
+	 * Returns the index of the representative of the unique set containing the given item.
+	 * T must be castable to size_t.
+	 * find implements path compression via path halving: every time find is called on a node, it
+	 * makes every node in the path point to its grandparent, effectively making the trees
+	 * flat or almost flat.
+	 * O(n + lg*(n)) (basically linear, lg*(265536) == 5)
+	 */
+	size_t find(const T& item) {
+		auto u = parents[item];
+
+		while (parents[u] != u) {
+			parents[u] = parents[parents[u]];
+			u = parents[u];
+		}
+
+		return u;
+
+		/*
+		auto v = u;
+		while (v != u) {
+			parents[item] = u;
+			x = v;
+			v = parents[item];
+		}
+
+		return u;
+		*/
+	}
+
     // unites the dynamic sets that contain x and y into a new
     // set that is the union of these two sets.
+	// O(logn)
     void unionBySize(const T& x, const T& y) {
         const size_t i = find(x);
         const size_t j = find(y);
