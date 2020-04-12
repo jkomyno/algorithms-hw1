@@ -1,7 +1,7 @@
 # Usage: ./testall.ps1
 
 $exe_folder = ".\x64\Release"
-$programs = "PrimBinaryHeap","KruskalUnionFind"#,"KruskalSimple"
+$programs = "PrimBinaryHeap","KruskalUnionFind","KruskalUnionFindCompressed","KruskalSimple"
 
 foreach ($program in $programs) {
   echo "Testing $program"
