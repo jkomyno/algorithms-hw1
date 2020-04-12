@@ -42,7 +42,7 @@ auto kruskal_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::
 
         if (disjoint_set.find(v) != disjoint_set.find(w)) {
             mst.push_back(edge);
-            disjoint_set.unionBySize(v, w);
+            disjoint_set.unite(v, w);
         }
     }
 
