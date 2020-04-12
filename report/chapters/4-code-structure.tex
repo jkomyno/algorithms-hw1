@@ -1,0 +1,11 @@
+\section{Struttura del codice}
+\label{cap:code-structure}
+
+Abbiamo strutturato il codice come un'unica soluzione Visual Studio contenente molteplici progetti, uno per ogni algoritmo implementato.
+Una soluzione Visual Studio può essere vista come un macro-progetto che contiene più sottomoduli. \\
+
+\noindent Abbiamo creato una cartella \textit{Shared} per contenere le classi usate per rappresentare i grafi come liste di adiacenza (\textit{AdjListGraph.h}), le strutture dati create "from scratch" (\textit{BinaryHeap.h}, \textit{PriorityQueue.h} e \textit{DisjointSet.h}), la classe che individua cicli in un grafo usando Depth-First-Search (\textit{DFSCycleDetection.h}) e
+delle utilities usate in tutti i progetti. \\
+
+\noindent Abbiamo configurato Visual Studio per importare automaticamente i file di header salvati in \textit{Shared}
+durante la compilazione di ogni sottoprogetto. Analogamente, tale cartella è referenziata nell'opzione \textit{-i} di g++ nel \textit{Makefile}.

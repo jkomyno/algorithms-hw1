@@ -1,0 +1,21 @@
+\section{Linguaggio di programmazione scelto}
+\label{cap:language-choice}
+
+Abbiamo scelto di usare C++17 per implementare questo homework. Le ragioni sono principalmente dovute al fatto che:
+
+\begin{itemize}
+    \item è un linguaggio compilato e fortemente orientato ai tipi;
+    \item è privo di garbage collector, il che velocizza l'esecuzione del codice;
+    \item supporta i tipi generici (\textit{template});
+    \item permette di creare personalizzazioni a compile-time senza alcun impatto a runtime;
+    \item ha un'ampia libreria standard consolidata e ben mantenuta;
+    \item se opportunamente usato, permette di limitare al minimo il consumo di memoria;
+    \item la sua sintassi è intuitiva, leggibile e facile da seguire, anche se un po' più prolissa rispetto ad altri linguaggi;
+    \item supporta la \textit{move semantics} e altre ottimizzazioni che permettono al programmatore di evitare inutili copie di oggetti e overhead in memoria.
+\end{itemize}
+
+\subsection{IDE e compilatore}
+
+Poiché il nostro sistema operativo di sviluppo è Windows 10, abbiamo usato l'IDE Visual Studio 2019 Community e il suo compilatore \textit{MSVC v142 x64/x86}. \\
+
+\noindent Nell'archivio allegato a questa relazione abbiamo incluso un \textit{Makefile} per permettere la compilazione su altri sistemi operativi usando \textit{g++9.3}.

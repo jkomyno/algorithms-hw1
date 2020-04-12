@@ -1,0 +1,20 @@
+\section{Estensioni e originalità}
+\label{cap:extensions-and-originalities}
+
+Oltre alle 3 implementazioni richieste dalla consegna dell'homework, abbiamo deciso di esplorare qualche altra estensione degli algoritmi per il calcolo del Minimum Spanning Tree visti a lezione.
+
+\subsection{Prim con k-ary Heap}
+
+% ...
+
+Dal punto di vista teorico, le Fibonacci Heap hanno una complessità temporale migliore delle k-ary Heap.
+Tuttavia, dal punto di vista pratico, le k-ary Heap hanno una performance migliore perché la loro struttura permette loro di sfruttare la cache locality. Inoltre le Fibonaccy Heap hanno un coefficiente di complessità nascosto piuttosto elevato.
+Un altro motivo per cui abbiamo deciso di non implementare le Fibonacci Heap è che sono più complesse da implementare rispetto alle k-ary Heap. \\
+
+\noindent Quando le k-ary heap sono usate per implementare code di priorità, l'operazione di aggiornamento del valore della chiave è più veloce rispetto ad una Binary Heap (\complexityLogN{} per le Binary Heap contro \complexityLogkN{} per le k-ary Heap).
+L'operazione di rimozione dell'elemento con minore chiave, tuttavia, aumenta a \complexityKLogkN{} rispetto a \complexityLogkN{} delle Binary Heap. Ma visto che nell'algoritmo di Prim le operazioni di cambio valore delle chiavi sono più comuni delle operazioni di estrazioni del minimo elemento, le k-ary Heap sono comunque più efficienti delle Binary Heap per quell'algoritmo.
+% ...
+
+\subsection{Kruskal con Disjoint-Set e path-compression}
+
+% path-compression via path-halving + union by size
