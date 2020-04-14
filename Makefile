@@ -31,4 +31,7 @@ testall_explicit:
 # TODO: Test KruskalSimple excluded due to its runtime.
 # ./test.sh ${KRUSKAL_SIMPLE}.out
 
-.PHONY: all ${KRUSKAL_SIMPLE} ${KRUSKAL_UNION_FIND} ${KRUSKAL_UNION_FIND_COMPRESSED} ${PRIM_BINARY_HEAP}
+report:
+	cd report; make pdf2
+
+.PHONY: all ${KRUSKAL_SIMPLE} ${KRUSKAL_UNION_FIND} ${KRUSKAL_UNION_FIND_COMPRESSED} ${PRIM_BINARY_HEAP} report
