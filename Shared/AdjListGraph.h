@@ -4,6 +4,7 @@
 #include <algorithm>     // std::transform
 #include <iostream>      // std::ostream
 #include <unordered_map> // std::unordered_map
+#include <unordered_set> // std::unordered_set
 #include <vector>        // std::vector
 
 /**
@@ -46,6 +47,13 @@ public:
 	// friend function to print an instance of Node to the standard output.
 	template <typename L, typename W>
 	friend std::ostream& operator<<(std::ostream& os, const Edge<L, W>& edge);
+
+	// This function is used by unordered_set to compare 
+	// elements of Edge. 
+	bool operator==(const Edge& e) const
+	{
+		return ( (this->from == e.from && this->to == e.to) || (this->to == e.from && this->from == e.to) );
+	}
 };
 
 template <typename Label, typename Weight>
@@ -59,6 +67,15 @@ struct pair_hash {
 	template <class T1, class T2>
 	std::size_t operator()(const std::pair<T1, T2>& pair) const {
 		return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
+	}
+};
+
+// hash functor for std::Edge<Label, Weight>
+// this hash uses the * operator because (2,3) and (3,2) must have the same hash
+struct edge_hash {
+	template <class Label, class Weight>
+	std::size_t operator()(const Edge<Label, Weight>& edge) const {
+		return std::hash<Label>()(edge.get_from()) * std::hash<Label>()(edge.get_to());
 	}
 };
 
@@ -93,6 +110,9 @@ private:
 	// vector of vectors that represents an adjacency list
 	std::unordered_map<Label, std::unordered_map<Label, Weight>> adj_map_list;
 
+	// an unordered_set containing all the edge
+	std::unordered_set<Edge<Label, Weight>, edge_hash> set_edges;
+
 	// function invoked by the constructors
 	void init(const std::vector<Edge<Label, Weight>>& edge_list, const size_t n_vertex) {
 		/**
@@ -101,6 +121,9 @@ private:
 		 * could have produced.
 		 */
 		adj_map_list.reserve(n_vertex);
+
+		// reserve the amount of edges needed
+		set_edges.reserve(edge_list.size());
 
 		/**
 		 * Assume that the vertexes are identified by a value x where Label(1) <= x <= Label(n_vertex).
@@ -171,42 +194,9 @@ public:
 	[[nodiscard]] std::vector<Edge<Label, Weight>> get_edges(bool maintain_duplicates = true) const {
 		std::vector<Edge<Label, Weight>> edges;
 
-		// TODO: benchmark what happens if we delete duplicates ALWAYS
-
-		if (maintain_duplicates) {
-			for (const auto& map_entry : adj_map_list) {
-				const auto& from = map_entry.first;
-				const auto& w_edge_link_list = map_entry.second;
-
-				for (const auto& w_edge_link : w_edge_link_list) {
-					const auto& to = w_edge_link.first;
-					const auto& weight = w_edge_link.second;
-					edges.emplace_back(from, to, weight);
-				}
-			}
-		} else {
-			std::unordered_map<std::pair<Label, Label>, Weight, pair_hash> edge_map;
-			for (const auto& map_entry : adj_map_list) {
-				const auto& from = map_entry.first;
-				const auto& w_edge_link_list = map_entry.second;
-
-				for (const auto& w_edge_link : w_edge_link_list) {
-					const auto& to = w_edge_link.first;
-					const auto& weight = w_edge_link.second;
-
-					auto new_edge = std::make_pair(std::min(from, to), std::max(from, to));
-					edge_map[new_edge] = weight;
-				}
-			}
-
-			for (const auto& edge : edge_map) {
-				const auto from = edge.first.first;
-				const auto to = edge.first.second;
-				const auto weight = edge.second;
-				edges.emplace_back(from, to, weight);
-			}
+		for (const auto& element : set_edges) {
+			edges.push_back(element);
 		}
-
 
 		return edges;
 	}
@@ -248,11 +238,17 @@ public:
 			if (adj_map_from[to] > weight) {
 				adj_map_from[to] = weight;
 				adj_map_to[from] = weight;
+
+				// removes the old edge by keys from and to and
+				// re-add the new edge with the new weight
+				set_edges.erase(edge);
+				set_edges.insert(edge);
 			}
 		} else {
 			// else add the edge
 			adj_map_from[to] = weight;
 			adj_map_to[from] = weight;
+			set_edges.insert(edge);
 		}
 	}
 
@@ -260,6 +256,8 @@ public:
 	void remove_edge(Edge<Label, Weight>& edge) {
 		adj_map_list[edge.get_from()].erase(edge.get_to());
 		adj_map_list[edge.get_to()].erase(edge.get_from());
+
+		set_edges.erase(edge);
 	}
 };
 
