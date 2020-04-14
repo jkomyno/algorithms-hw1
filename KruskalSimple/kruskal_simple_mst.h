@@ -1,7 +1,7 @@
 #ifndef KRUSKAL_SIMPLE_MST_H
 #define KRUSKAL_SIMPLE_MST_H
 
-#include <algorithm>  // std::sort
+#include <functional> // std::less
 #include <vector>     // std::vector
 
 #include "AdjListGraph.h"
@@ -9,16 +9,11 @@
 
 template <typename Label, typename Weight>
 auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {
-	auto edges = adj_list_graph.get_edges(false);
+	// sort edges in non-decreasing order of weight
+	auto edges = adj_list_graph.get_sorted_edges(std::less<>{});
+	
     const size_t n = adj_list_graph.vertexes_size();
     const size_t n_stop = n - 1;
-
-    /**
-     * Sort edges in non-decreasing order of weight. edges is modified after the process.
-     */
-    std::sort(edges.begin(), edges.end(), [](const auto& l, const auto& r) {
-		return l.get_weight() < r.get_weight();
-	});
 
 	// adjacency list 
 	AdjListGraph<Label, Weight> mst_list_graph;
@@ -32,7 +27,7 @@ auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -
     for (auto& edge : edges) {
         // a Minimum Spanning Tree can have (n - 1) edges at maximum.
         if (mst_size == n_stop) {
-			// break;
+			break;
         }
 		
 		mst_list_graph.add_edge(edge);
@@ -49,7 +44,7 @@ auto kruskal_simple_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -
     }
 
 	// object representing a Minimum Spanning Tree
-	return mst_list_graph.get_edges(false);
+	return mst_list_graph.get_edges();
 }
 
 #endif  // KRUSKAL_SIMPLE_MST_H
