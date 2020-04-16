@@ -19,6 +19,8 @@ auto kruskal_mst_compressed(AdjListGraph<Label, Weight>&& adj_list_graph) noexce
 	const size_t n = vertexes.size();
 	const size_t n_stop = n - 1;
 
+	mst.reserve(n_stop);
+
 	/**
 	 * Create a new Disjoint-Set data structure to store the vertexes.
 	 * Initially, every vertex is in a separate set.
@@ -26,16 +28,14 @@ auto kruskal_mst_compressed(AdjListGraph<Label, Weight>&& adj_list_graph) noexce
 	 */
 	DisjointSetCompressed<Label> disjoint_set(std::move(vertexes));
 
-	for (const auto& edge : edges) {
-		// a Minimum Spanning Tree can have (n - 1) edges at maximum.
-		if (mst.size() == n_stop) {
-			return mst;
-		}
+	// a Minimum Spanning Tree can have (n - 1) edges at maximum.
+	for (auto it = edges.cbegin(); !(it == edges.cend() || mst.size() == n_stop); ++it) {
+		const auto& edge = *it;
 
 		const auto& v = edge.get_from();
 		const auto& w = edge.get_to();
 
-		if (disjoint_set.find(v) != disjoint_set.find(w)) {
+		if (!disjoint_set.are_connected(v, w)) {
 			mst.push_back(edge);
 			disjoint_set.unite(v, w);
 		}
