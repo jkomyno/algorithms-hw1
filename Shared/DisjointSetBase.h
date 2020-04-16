@@ -2,7 +2,6 @@
 #define DISJOINT_SET_BASE_H
 
 #include <algorithm>   // std::transform
-#include <functional>  // std::function
 #include <type_traits> // std::enable_if, std::is_unsigned
 #include <vector>      // std::vector
 
@@ -53,29 +52,32 @@ public:
 	 */
 	virtual size_t find(const T& element) noexcept = 0;
 
-	// unites the dynamic sets that contain x and y into a new
-	// set that is the union of these two sets.
-	// The complexity of this method is the complexity of find + O(1)
+	/**
+	 * returns true iff elements x and y are connected in the same set.
+	 */
+	bool are_connected(const T& x, const T& y) noexcept {
+		return find(x) == find(y);
+	}
 
 	/**
 	 * unites the dynamic sets that contain x and y into a new set that is the union
 	 * of these two sets.
+	 * x should be different than y.
 	 * The complexity of this method is the one of find + O(1)
 	 */
 	void unite(const T& x, const T& y) noexcept {
 		const size_t i = find(x);
 		const size_t j = find(y);
 
-		if (i != j) {
-			const size_t sum_of_sizes = sizes[i] + sizes[j];
-
-			if (sizes[i] >= sizes[j]) {
-				parents[j] = i;
-				sizes[i] = sum_of_sizes;
-			} else {
-				parents[i] = j;
-				sizes[j] = sum_of_sizes;
-			}
+		// Union by size: Make the node whose set size is smaller point to the node whose set size is bigger.
+		// Break ties arbitrarily
+		
+		if (sizes[i] < sizes[j]) {
+			parents[i] = parents[j];
+			sizes[j] += sizes[i];
+		} else {
+			parents[j] = parents[i];
+			sizes[i] += sizes[j];
 		}
 	}
 };

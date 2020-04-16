@@ -41,15 +41,19 @@ public:
 	 * flat or almost flat.
 	 * O(n + lg*(n)) (basically linear, lg*(265536) == 5)
 	 */
-	size_t find(const T& item) noexcept override {
-		auto u = this->parents[item];
+	size_t find(const T& element) noexcept override {
+		auto x = element;
+		auto& parents = this->parents;
 
-		while (this->parents[u] != u) {
-			this->parents[u] = this->parents[this->parents[u]];
-			u = this->parents[u];
+		while (x != parents[x]) {
+			// skip parent
+			parents[x] = parents[parents[x]];
+
+			// move to grandparent
+			x = parents[x];
 		}
 
-		return u;
+		return x;
 	}
 };
 
