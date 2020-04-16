@@ -4,6 +4,7 @@
 #include <algorithm>     // std::transform
 #include <iostream>      // std::ostream
 #include <unordered_map> // std::unordered_map
+#include <unordered_set> // std::unordered_set
 #include <vector>        // std::vector
 
 /**
@@ -37,15 +38,28 @@ public:
 	 */
 	Edge<Label, Weight>& operator=(const Edge<Label, Weight>& rhs) = default;
 
-	[[nodiscard]] Label get_from() const { return from; }
+	/**
+	 * Equality operator, used by std::unordered_set.
+	 * (from, to, w1) and (to, from, w2) are considered the same edge.
+	 */
+	bool operator==(const Edge& e) const {
+		return (from == e.from && to == e.to) || (to == e.from && from == e.to);
+	}
+	
+	[[nodiscard]] Label get_from() const {
+		return from;
+	}
 
-	[[nodiscard]] Label get_to() const { return to; }
+	[[nodiscard]] Label get_to() const {
+		return to;
+	}
 
-	[[nodiscard]] Weight get_weight() const { return weight; }
+	[[nodiscard]] Weight get_weight() const {
+		return weight;
+	}
 
 	// friend function to print an instance of Node to the standard output.
-	template <typename L, typename W>
-	friend std::ostream& operator<<(std::ostream& os, const Edge<L, W>& edge);
+	friend std::ostream& operator<<(std::ostream& os, const Edge<Label, Weight>& edge);
 };
 
 template <typename Label, typename Weight>
@@ -54,11 +68,14 @@ std::ostream& operator<<(std::ostream& os, const Edge<Label, Weight>& edge) {
 	return os;
 }
 
-// hash functor for std::pair<T1, T2>
-struct pair_hash {
-	template <class T1, class T2>
-	std::size_t operator()(const std::pair<T1, T2>& pair) const {
-		return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
+// commutative hash functor for std::Edge<Label, Weight>
+struct edge_hash {
+	template <class Label, class Weight>
+	std::size_t operator()(const Edge<Label, Weight>& edge) const {
+		constexpr auto hash_max = std::numeric_limits<Label>::max();
+		auto i = edge.get_from();
+		auto j = edge.get_to();
+		return (i * j + (i * i) * (j * j) + (i * i * i) * (j * j * j)) % hash_max;
 	}
 };
 
@@ -93,6 +110,9 @@ private:
 	// vector of vectors that represents an adjacency list
 	std::unordered_map<Label, std::unordered_map<Label, Weight>> adj_map_list;
 
+	// an unordered_set containing all the edge
+	std::unordered_set<Edge<Label, Weight>, edge_hash> edges_set;
+
 	// function invoked by the constructors
 	void init(const std::vector<Edge<Label, Weight>>& edge_list, const size_t n_vertex) {
 		/**
@@ -101,6 +121,9 @@ private:
 		 * could have produced.
 		 */
 		adj_map_list.reserve(n_vertex);
+
+		// reserve the amount of edges needed
+		edges_set.reserve(edge_list.size());
 
 		/**
 		 * Assume that the vertexes are identified by a value x where Label(1) <= x <= Label(n_vertex).
@@ -148,8 +171,7 @@ public:
 	~AdjListGraph() = default;
 
 	// friend function to print an instance of AdjListGraph to the standard output.
-	template <typename L, typename W>
-	friend std::ostream& operator<<(std::ostream& os, const AdjListGraph<L, W>& adj_list_graph);
+	friend std::ostream& operator<<(std::ostream& os, const AdjListGraph<Label, Weight>& adj_list_graph);
 
 	// return the number of vertexes in the Adjacency List
 	[[nodiscard]] size_t vertexes_size() const {
@@ -168,45 +190,28 @@ public:
 	}
 
 	// return the list of edges in the Adjacency List. There's no ordering guarantee.
-	[[nodiscard]] std::vector<Edge<Label, Weight>> get_edges(bool maintain_duplicates = true) const {
+	[[nodiscard]] std::vector<Edge<Label, Weight>> get_edges() const {
 		std::vector<Edge<Label, Weight>> edges;
 
-		// TODO: benchmark what happens if we delete duplicates ALWAYS
-
-		if (maintain_duplicates) {
-			for (const auto& map_entry : adj_map_list) {
-				const auto& from = map_entry.first;
-				const auto& w_edge_link_list = map_entry.second;
-
-				for (const auto& w_edge_link : w_edge_link_list) {
-					const auto& to = w_edge_link.first;
-					const auto& weight = w_edge_link.second;
-					edges.emplace_back(from, to, weight);
-				}
-			}
-		} else {
-			std::unordered_map<std::pair<Label, Label>, Weight, pair_hash> edge_map;
-			for (const auto& map_entry : adj_map_list) {
-				const auto& from = map_entry.first;
-				const auto& w_edge_link_list = map_entry.second;
-
-				for (const auto& w_edge_link : w_edge_link_list) {
-					const auto& to = w_edge_link.first;
-					const auto& weight = w_edge_link.second;
-
-					auto new_edge = std::make_pair(std::min(from, to), std::max(from, to));
-					edge_map[new_edge] = weight;
-				}
-			}
-
-			for (const auto& edge : edge_map) {
-				const auto from = edge.first.first;
-				const auto to = edge.first.second;
-				const auto weight = edge.second;
-				edges.emplace_back(from, to, weight);
-			}
+		for (const auto& element : edges_set) {
+			edges.push_back(element);
 		}
 
+		return edges;
+	}
+
+	// return the list of edges in the Adjacency List. The given comparator mandates the ordering guarantee
+	// according to the edges' weight.
+	template <class Comparator>
+	[[nodiscard]] std::vector<Edge<Label, Weight>> get_sorted_edges(Comparator&& comp) const {
+		auto edges = get_edges();
+
+		/**
+		 * Sort edges applying comparator on edge's weight.
+		 */
+		std::sort(edges.begin(), edges.end(), [comp{ std::move(comp) }](const Edge<Label, Weight>& l, const Edge<Label, Weight>& r) {
+			return comp(l.get_weight(), r.get_weight());
+		});
 
 		return edges;
 	}
@@ -248,11 +253,17 @@ public:
 			if (adj_map_from[to] > weight) {
 				adj_map_from[to] = weight;
 				adj_map_to[from] = weight;
+
+				// removes the old edge by keys from and to and
+				// re-add the new edge with the new weight
+				edges_set.erase(edge);
+				edges_set.insert(edge);
 			}
 		} else {
 			// else add the edge
 			adj_map_from[to] = weight;
 			adj_map_to[from] = weight;
+			edges_set.insert(edge);
 		}
 	}
 
@@ -260,6 +271,8 @@ public:
 	void remove_edge(Edge<Label, Weight>& edge) {
 		adj_map_list[edge.get_from()].erase(edge.get_to());
 		adj_map_list[edge.get_to()].erase(edge.get_from());
+
+		edges_set.erase(edge);
 	}
 };
 
