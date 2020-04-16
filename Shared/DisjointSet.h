@@ -1,7 +1,6 @@
 #ifndef DISJOINT_SET_H
 #define DISJOINT_SET_H
 
-#include <functional>  // std::function
 #include <type_traits> // std::enable_if, std::is_unsigned
 #include <vector>      // std::vector
 
@@ -40,7 +39,9 @@ public:
 	 */
 	size_t find(const T& element) noexcept override {
 		auto x = element;
+		
 		while (x != this->parents[x]) {
+			// move to parent
 			x = this->parents[x];
 		}
 		return x;
