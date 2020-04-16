@@ -242,6 +242,8 @@ public:
 		const auto to = edge.get_to();
 		const auto weight = edge.get_weight();
 
+		// sets the neccesary keys for "from" and "to" vertexes
+		// if they not already exists
 		adj_map_list[from];
 		adj_map_list[to];
 
@@ -254,7 +256,7 @@ public:
 				adj_map_from[to] = weight;
 				adj_map_to[from] = weight;
 
-				// removes the old edge by keys from and to and
+				// removes the old edge by keys (from, to)
 				// re-add the new edge with the new weight
 				edges_set.erase(edge);
 				edges_set.insert(edge);
@@ -267,7 +269,7 @@ public:
 		}
 	}
 
-	// removes the last WeightedEdgeLink from the vector relative to the given edge
+	// removes the specified edge from the graph
 	void remove_edge(Edge<Label, Weight>& edge) {
 		adj_map_list[edge.get_from()].erase(edge.get_to());
 		adj_map_list[edge.get_to()].erase(edge.get_from());
