@@ -1,14 +1,142 @@
 \section{Analisi delle performance}
 \label{cap:performance-analysis}
 
+\subsection{Confronto di runtime tra programmi}
+
+\begin{table}[h!]
+\centering
+    \begin{tabular}{|l|rrrrrr|}
+    \hline
+    &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
+    \hline
+     KruskalNaive     & 7431.57  & 11939.8   & 59257     & 366313    &    1.99612e+06 &    3.12073e+06 \\
+     KruskalUnionFind &  204.429 &   254.504 &   599.704 &   1249.7  & 3010.99        & 4050.49        \\ \hline 
+     Differenza       & 7227.15  & 11685.3   & 58657.3   & 365064    &    1.99311e+06 &    3.11668e+06 \\
+     Miglioramento \%    &   97.25  &    97.87  &    98.99  &     99.66 &   99.85        &   99.87        \\
+    \hline
+    \end{tabular}
+    \caption{Confronto tra KruskalNaive e KruskalUnionFind.}
+    \label{table:kruskal-naive-vs-kruskal-union-find}
+\end{table}
+
+
+\begin{table}[h!]
+\centering
+    \hspace*{-1cm}
+    \begin{tabular}{|l|rrrrrr|}
+    \hline
+    &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
+    \hline
+     KruskalNaive               & 7431.57  & 11939.8   & 59257     & 366313    &    1.99612e+06 &    3.12073e+06 \\
+     KruskalUnionFindCompressed &  204.429 &   256.287 &   599.704 &   1271.32 & 3062.76        & 4050.49        \\ \hline 
+     Differenza                 & 7227.15  & 11683.5   & 58657.3   & 365042    &    1.99306e+06 &    3.11668e+06 \\
+     Miglioramento \%              &   97.25  &    97.85  &    98.99  &     99.65 &   99.85        &   99.87        \\
+    \hline
+    \end{tabular}
+    \caption{Confronto tra KruskalNaive e KruskalUnionFindCompressed.}
+    \label{table:kruskal-naive-vs-kruskal-union-find-compressed}
+\end{table}
+   
+\begin{table}[h!]
+\centering 
+    \begin{tabular}{|l|rrrrrr|}
+    \hline
+    &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
+    \hline
+     KruskalNaive   & 7431.57 & 11939.8   & 59257     & 366313    &    1.99612e+06 &    3.12073e+06 \\
+     PrimBinaryHeap &  227.5  &   273.581 &   646.039 &   1365.97 & 3197.83        & 4372.45        \\ \hline 
+     Differenza     & 7204.07 & 11666.2   & 58610.9   & 364947    &    1.99293e+06 &    3.11636e+06 \\
+     Miglioramento \%  &   96.94 &    97.71  &    98.91  &     99.63 &   99.84        &   99.86        \\
+    \hline
+    \end{tabular}
+    \caption{Confronto tra KruskalNaive e PrimBinaryHeap.}
+    \label{table:kruskal-naive-vs-prim-binary-heap}
+\end{table}
+
+\begin{table}[h!]
+\centering 
+    \hspace*{-0.25cm}
+    \begin{tabular}{|l|rrrrrr|}
+    \hline
+    &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
+    \hline
+     KruskalUnionFind           & 204.429 & 254.504 & 599.704 & 1249.7   & 3010.99  & 4050.49 \\
+     KruskalUnionFindCompressed & 204.429 & 256.287 & 599.704 & 1271.32  & 3062.76  & 4050.49 \\ \hline 
+     Differenza                 &   0     &  -1.783 &   0     &  -21.615 &  -51.773 &    0    \\
+     Miglioramento \%              &   0     &  -0.7   &   0     &   -1.73  &   -1.72  &    0    \\
+    \hline
+    \end{tabular}
+    \caption{Confronto tra KruskalUnionFind e KruskalUnionFindCompressed.}
+    \label{table:kruskal-union-find-vs-kruskal-union-find-compressed}
+\end{table}
+
+\begin{table}[ht]
+\centering 
+    \begin{tabular}{|l|rrrrrr|}
+    \hline
+    &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
+    \hline
+     PrimBinaryHeap   & 227.5   & 273.581 & 646.039 & 1365.97  & 3197.83  & 4372.45  \\
+     KruskalUnionFind & 204.429 & 254.504 & 599.704 & 1249.7   & 3010.99  & 4050.49 \\ \hline 
+     Differenza       &  23.071 &  19.077 &  46.335 &  116.265 &  186.843 &  321.954 \\
+     Miglioramento \%    &  10.14  &   6.97  &   7.17  &    8.51  &    5.84  &    7.36  \\
+    \hline
+    \end{tabular}
+    \caption{Confronto tra PrimBinaryHeap e KruskalUnionFind.}
+    \label{table:prim-binary-heap-vs-kruskal-union-find}
+\end{table}
+
+\begin{table}[ht]
+\centering 
+    \begin{tabular}{|l|rrrrrr|}
+    \hline
+    &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
+    \hline
+ PrimBinaryHeap             & 227.5   & 273.581 & 646.039 & 1365.97 & 3197.83 & 4372.45  \\
+ KruskalUnionFindCompressed & 204.429 & 256.287 & 599.704 & 1271.32 & 3062.76 & 4050.49 \\ \hline 
+     Differenza                 &  23.071 &  17.294 &  46.335 &   94.65 &  135.07 &  321.954 \\
+     Miglioramento \%              &  10.14  &   6.32  &   7.17  &    6.93 &    4.22 &    7.36  \\
+    \hline
+    \end{tabular}
+    \caption{Confronto tra PrimBinaryHeap e KruskalUnionFindCompressed.}
+    \label{table:prim-binary-heap-vs-kruskal-union-find-compressed}
+\end{table}
+
 \subsection{Domanda \#1}
 
 \begin{displayquote}
 Eseguite i tre algoritmi che avete implementato (Prim, Kruskal naive e Kruskal efficiente) sui grafi del dataset. Misurate i tempi di calcolo dei tre algoritmi e create un grafico che mostri la variazione dei tempi di calcolo al variare del numero di vertici nel grafo. Per ognuna delle istanze del problema, riportate il peso del minimum spanning tree ottenuto dagli algoritmi. 
 \end{displayquote}
 
+\noindent Il risultato del minimum spanning tree ottenuto dagli algoritmi è illustrato nelle tabelle \ref{table:KruskalNaive-results}, \ref{table:KruskalUnionFind-results}, \ref{table:KruskalUnionFindCompressed-results} e \ref{table:PrimBinaryHeap-results}.
+
+\begin{center}
+    \input{tables/KruskalNaive.min}
+\end{center}
+
+\begin{center}
+    \input{tables/KruskalUnionFind.min}
+\end{center}
+
+\begin{center}
+    \input{tables/KruskalUnionFindCompressed.min}
+\end{center}
+
+\begin{center}
+    \input{tables/PrimBinaryHeap.min}
+\end{center}
+
 \subsection{Domanda \#2}
 
 \begin{displayquote}
 Commentate i risultati che avete ottenuto: come si comportano gli algoritmi rispetti alle varie istanze? C'è un algoritmo che riesce sempre a fare meglio degli altri? Quale dei tre algoritmi che avete implementato è più efficiente? 
 \end{displayquote}
+
+\noindent Dalle tabelle di confronto \ref{table:kruskal-naive-vs-kruskal-union-find} e \ref{table:prim-binary-heap-vs-kruskal-union-find} è evidente che \textbf{KruskalUnionFind} è il più efficiente tra gli algoritmi di cui era richiesta l'implementazione. Inoltre, osservando la tabella di confronto \ref{table:kruskal-union-find-vs-kruskal-union-find-compressed}, è possibile notare che l'utilizzo della tecnica \textit{path-compression} nella struttura dati \textbf{Disjoint-Set} in realtà non abbia portato benefici, e anzi abbia peggiorato leggermenete le performance (che sono comunque migliori di \textit{PrimBinaryHeap}, vedasi la tabella di confronto \ref{table:prim-binary-heap-vs-kruskal-union-find-compressed}). \\
+
+\noindent In teoria, KruskalUnionFindCompressed avrebbe dovuto essere l'algoritmo più efficiente di tutti (complessità temporale: \textbf{TODO}).
+\noindent PrimBinaryHeap e KruskalUnionFind hanno la stessa complessità temporale teorica, ma in realtà la complessità delle operazioni del BinaryHeap ha un coefficiente più elevato rispetto a quelle della struttura dati Disjoint-Set. \\
+
+\noindent Infine, la complessità teorica di KruskalNaive (\textbf{TODO}) c'avevano già fatto immaginare che i tempi di calcolo nella pratica sarebbero esplosi a partire da grafi con poche centinaia di nodi e archi, e così è stato. \\
+
+\noindent Non abbiamo un'idea certa del perché Kruskal implementato con \textit{DisjointSetCompressed} sia poco meno performante di \textit{DisjointSet}. La nostra ipotesi è che, per gli input forniti ai programmi, il \textit{cache behaviour} di KruskalUnionFind sia molto migliore di quello di KruskalUnionFindCompressed.
