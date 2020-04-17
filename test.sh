@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu
+
 # Usage: ./test.sh [program-name] > output.csv
 # Execute [program-name] against all the input files in test/ and compares the result
 # of the program with the corresponding output file

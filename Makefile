@@ -2,7 +2,7 @@ CXX=g++-9
 CXXFLAGS=-O3 -Wall -Wextra -std=c++17 -I Shared
 MAINFILE=main.cpp
 
-KRUSKAL_NAIVE=KruskalSimple
+KRUSKAL_NAIVE=KruskalNaive
 KRUSKAL_UNION_FIND=KruskalUnionFind
 KRUSKAL_UNION_FIND_COMPRESSED=KruskalUnionFindCompressed
 PRIM_BINARY_HEAP=PrimBinaryHeap
@@ -28,7 +28,7 @@ testall_explicit:
 	./test.sh ${KRUSKAL_UNION_FIND}.out
 	./test.sh ${KRUSKAL_UNION_FIND_COMPRESSED}.out
 	./test.sh ${PRIM_BINARY_HEAP}.out
-# TODO: Test KruskalSimple excluded due to its runtime.
+# TODO: Test KruskalNaive excluded due to its runtime.
 # ./test.sh ${KRUSKAL_NAIVE}.out
 
 report:
