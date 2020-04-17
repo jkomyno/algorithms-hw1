@@ -38,19 +38,25 @@ KRUSKAL_NAIVE = 'KruskalNaive'
 KRUSKAL_UNION_FIND = 'KruskalUnionFind'
 KRUSKAL_UNION_FIND_COMPRESSED = 'KruskalUnionFindCompressed'
 PRIM_BINARY_HEAP = 'PrimBinaryHeap'
+PRIM_K_HEAP = 'PrimKHeap'
+PRIM_8_HEAP = 'Prim8Heap'
 
 programs = [
     KRUSKAL_NAIVE,
     KRUSKAL_UNION_FIND,
     KRUSKAL_UNION_FIND_COMPRESSED,
-    PRIM_BINARY_HEAP
+    PRIM_BINARY_HEAP,
+    PRIM_K_HEAP,
+    PRIM_8_HEAP
 ]
 
 ms_programs = [
     'ms_kruskal_naive',
     'ms_kruskal_union_find',
     'ms_kruskal_union_find_compressed',
-    'ms_prim_binary_heap'
+    'ms_prim_binary_heap',
+    'ms_prim_k_heap',
+    'ms_prim_8_heap'
 ]
 
 
@@ -373,10 +379,15 @@ if __name__ == '__main__':
     print_comparison(dataframes_min, KRUSKAL_UNION_FIND, KRUSKAL_UNION_FIND_COMPRESSED)
     print_comparison(dataframes_min, PRIM_BINARY_HEAP, KRUSKAL_UNION_FIND)
     print_comparison(dataframes_min, PRIM_BINARY_HEAP, KRUSKAL_UNION_FIND_COMPRESSED)
+    print_comparison(dataframes_min, PRIM_BINARY_HEAP, PRIM_K_HEAP)
+    print_comparison(dataframes_min, PRIM_K_HEAP, KRUSKAL_UNION_FIND)
+    print_comparison(dataframes_min, PRIM_K_HEAP, KRUSKAL_UNION_FIND_COMPRESSED)
+    print_comparison(dataframes_min, PRIM_BINARY_HEAP, PRIM_8_HEAP)
+    print_comparison(dataframes_min, PRIM_K_HEAP, PRIM_8_HEAP)
 
     # export minimized in-memory CSV files to LaTeX tables (they will still require some manual work tho)
     # export_dataframes_min_to_latex(dataframes_min)
 
-    plot_simple_bar(dataframes_min[KRUSKAL_NAIVE], x='ms', y='n', title='Kruskal Simple')
-    plot_interesting_nodes_bar(dataframes_min[KRUSKAL_NAIVE].round(1), title='Kruskal Simple')
-    plot_multiple_nodes_line(dataframes_min, title='Plot multiple', max_nodes=1000)
+    # plot_simple_bar(dataframes_min[KRUSKAL_NAIVE], x='ms', y='n', title='Kruskal Simple')
+    # plot_interesting_nodes_bar(dataframes_min[KRUSKAL_NAIVE].round(1), title='Kruskal Simple')
+    # plot_multiple_nodes_line(dataframes_min, title='Plot multiple', max_nodes=1000)
