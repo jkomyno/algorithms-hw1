@@ -1,4 +1,7 @@
 """"
+Usage:
+> python3 analysis.py [latex]
+
 The following script analyzes benchmarks for KruskalSimple, KruskalUnionFind (and variants) and
 PrimBinaryHeap algorithms.
 
@@ -9,7 +12,7 @@ the benchmarks, in particular
   implemented algorithms.
 """
 from functools import reduce
-
+import sys
 import pandas as pd
 import numpy as np
 import glob
@@ -24,20 +27,23 @@ N_DECIMALS = 3
 # number of floating point decimals displayed in output for values that represent percentages
 N_DECIMALS_PERCENTAGE = 2
 
-KRUSKAL_SIMPLE = 'KruskalSimple'
+# if the script is given the argument 'latex', turn on LaTeX table generation
+FOR_LATEX = len(sys.argv) == 2 and sys.argv[1] == 'latex'
+
+KRUSKAL_NAIVE = 'KruskalNaive'
 KRUSKAL_UNION_FIND = 'KruskalUnionFind'
 KRUSKAL_UNION_FIND_COMPRESSED = 'KruskalUnionFindCompressed'
 PRIM_BINARY_HEAP = 'PrimBinaryHeap'
 
 programs = [
-    KRUSKAL_SIMPLE,
+    KRUSKAL_NAIVE,
     KRUSKAL_UNION_FIND,
     KRUSKAL_UNION_FIND_COMPRESSED,
     PRIM_BINARY_HEAP
 ]
 
 ms_programs = [
-    'ms_kruskal_simple',
+    'ms_kruskal_naive',
     'ms_kruskal_union_find',
     'ms_kruskal_union_find_compressed',
     'ms_prim_binary_heap'
@@ -207,15 +213,12 @@ def compare_2_programs(dfs_dict: Dict[str, pd.DataFrame], program_1: str, progra
 
 
 def print_comparison(dfs_dict: Dict[str, pd.DataFrame], program_1: str, program_2: str):
-    print(f'Comparison between {program_1} and {program_2}')
+    print(f'Comparison between {program_1} and {program_2}.')
 
     df_comparison = compare_2_programs(dfs_dict, program_1, program_2)
 
-    # tablefmt='latex' to print out \tabular{} LaTeX tables
-    tablefmt = 'pretty'
-
     # pretty-print comparison DataFrame
-    pretty_print_pandas(df_comparison, tablefmt)
+    pretty_print_pandas(df_comparison)
 
 
 def pretty_print_pandas(df: pd.DataFrame, tablefmt='pretty'):
@@ -224,6 +227,8 @@ def pretty_print_pandas(df: pd.DataFrame, tablefmt='pretty'):
     :param df: DataFrame to pretty-print
     :param tablefmt: 'pretty' | 'psql' | 'latex'
     """
+    if FOR_LATEX:
+        tablefmt = 'latex'  # print out \tabular{} LaTeX tables
     print(tabulate(df.round(N_DECIMALS), headers='keys', tablefmt=tablefmt, showindex=False))
     print('\n')
 
@@ -320,13 +325,13 @@ if __name__ == '__main__':
     dataframes_min = minimize_ms_dataframes(dataframes)
 
     # compare multiple programs to show potential improvements
-    print_comparison(dataframes_min, KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND)
-    print_comparison(dataframes_min, KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND_COMPRESSED)
-    print_comparison(dataframes_min, KRUSKAL_SIMPLE, PRIM_BINARY_HEAP)
+    print_comparison(dataframes_min, KRUSKAL_NAIVE, KRUSKAL_UNION_FIND)
+    print_comparison(dataframes_min, KRUSKAL_NAIVE, KRUSKAL_UNION_FIND_COMPRESSED)
+    print_comparison(dataframes_min, KRUSKAL_NAIVE, PRIM_BINARY_HEAP)
     print_comparison(dataframes_min, KRUSKAL_UNION_FIND, KRUSKAL_UNION_FIND_COMPRESSED)
     print_comparison(dataframes_min, PRIM_BINARY_HEAP, KRUSKAL_UNION_FIND)
     print_comparison(dataframes_min, PRIM_BINARY_HEAP, KRUSKAL_UNION_FIND_COMPRESSED)
 
-    plot_simple_bar(dataframes_min[KRUSKAL_SIMPLE], x='ms', y='n', title='Kruskal Simple')
-    plot_interesting_nodes_bar(dataframes_min[KRUSKAL_SIMPLE].round(1), title='Kruskal Simple')
-    plot_multiple_nodes_line(dataframes_min, title='Plot multiple', max_nodes=1000)
+    # plot_simple_bar(dataframes_min[KRUSKAL_NAIVE], x='ms', y='n', title='Kruskal Simple')
+    # plot_interesting_nodes_bar(dataframes_min[KRUSKAL_NAIVE].round(1), title='Kruskal Simple')
+    # plot_multiple_nodes_line(dataframes_min, title='Plot multiple', max_nodes=1000)
