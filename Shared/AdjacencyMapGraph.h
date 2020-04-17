@@ -65,7 +65,7 @@ struct VertexWeightLink {
  * Hash functors for custom types
  */
 namespace custom_hash {
-	// commutative hash functor for Edge<Label, Weight
+	// commutative hash functor for Edge<Label, Weight>
 	struct edge_hash {
 		template <class Label, class Weight>
 		std::size_t operator()(const Edge<Label, Weight>& edge) const {
@@ -87,7 +87,7 @@ namespace custom_hash {
 
 /**
  * Adjacency Map class for undirected weighted graphs.
- * The given nodes must be labeled as unsigned numbers x, where 0 <= x <= n.
+ * The given nodes must be labeled as unsigned numbers x.
  *
  * Label is the type of a node label, which must be an unsigned integer.
  * Weight is the type of an edge weight, which must be a signed integer.
@@ -253,7 +253,7 @@ void AdjacencyMapGraph<Label, Weight>::add_edge(const Edge<Label, Weight>& edge)
 	vertex_weight_map_t& adj_map_from = adj_map[from];
 	vertex_weight_map_t& adj_map_to = adj_map[to];
 
-	// If the to vertex is already present, check the weight.
+	// If the edge is already present, check the weight.
 	if (adj_map_from.count(to)) {
 		if (adj_map_from[to] > weight) {
 			adj_map_from[to] = weight;
