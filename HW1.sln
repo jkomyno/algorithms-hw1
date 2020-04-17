@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{365F6B
 		Shared\DisjointSet.h = Shared\DisjointSet.h
 		Shared\DisjointSetBase.h = Shared\DisjointSetBase.h
 		Shared\DisjointSetCompressed.h = Shared\DisjointSetCompressed.h
+		Shared\KHeap.h = Shared\KHeap.h
+		Shared\PriorityKQueue.h = Shared\PriorityKQueue.h
 		Shared\PriorityQueue.h = Shared\PriorityQueue.h
 		Shared\sum_weights.h = Shared\sum_weights.h
 	EndProjectSection
@@ -23,6 +25,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KruskalUnionFindCompressed", "KruskalUnionFindCompressed\KruskalUnionFindCompressed.vcxproj", "{C39E1457-08BB-455C-9818-0E9720680132}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KruskalNaive", "KruskalNaive\KruskalSimple.vcxproj", "{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PrimKHeap", "PrimKHeap\PrimKHeap.vcxproj", "{2CE28367-21AD-4B0B-BDD1-1C6E80EB3A5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,6 +68,14 @@ Global
 		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Release|x64.Build.0 = Release|x64
 		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Release|x86.ActiveCfg = Release|Win32
 		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Release|x86.Build.0 = Release|Win32
+		{2CE28367-21AD-4B0B-BDD1-1C6E80EB3A5F}.Debug|x64.ActiveCfg = Debug|x64
+		{2CE28367-21AD-4B0B-BDD1-1C6E80EB3A5F}.Debug|x64.Build.0 = Debug|x64
+		{2CE28367-21AD-4B0B-BDD1-1C6E80EB3A5F}.Debug|x86.ActiveCfg = Debug|Win32
+		{2CE28367-21AD-4B0B-BDD1-1C6E80EB3A5F}.Debug|x86.Build.0 = Debug|Win32
+		{2CE28367-21AD-4B0B-BDD1-1C6E80EB3A5F}.Release|x64.ActiveCfg = Release|x64
+		{2CE28367-21AD-4B0B-BDD1-1C6E80EB3A5F}.Release|x64.Build.0 = Release|x64
+		{2CE28367-21AD-4B0B-BDD1-1C6E80EB3A5F}.Release|x86.ActiveCfg = Release|Win32
+		{2CE28367-21AD-4B0B-BDD1-1C6E80EB3A5F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
