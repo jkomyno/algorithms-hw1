@@ -93,12 +93,12 @@ class PriorityQueue : private BinaryHeap<T, is_heap_on_init> {
     ~PriorityQueue() = default;
 
     // return the number of elements in the heap
-    [[nodiscard]] size_t size() const {
+    [[nodiscard]] size_t size() const noexcept {
         return super::size();
     }
 
     // return true iff the heap is empty
-    [[nodiscard]] bool empty() const {
+    [[nodiscard]] bool empty() const noexcept {
         return super::empty();
     }
 
@@ -127,7 +127,7 @@ class PriorityQueue : private BinaryHeap<T, is_heap_on_init> {
     }
 
     // returns true iff the given node is in the priority queue
-    [[nodiscard]] bool contains(const T& node) const {
+    [[nodiscard]] bool contains(const T& node) const noexcept {
         const auto search = index_map.find(node);
         return search != index_map.end();
     }
