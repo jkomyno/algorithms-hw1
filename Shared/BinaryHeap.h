@@ -4,7 +4,6 @@
 #include <algorithm>   // std::swap
 #include <cassert>     // std::assert
 #include <functional>  // std::function
-#include <utility>     // std::forward
 #include <vector>      // std::vector
 
 /**
@@ -194,13 +193,13 @@ class BinaryHeap {
 // create a Min Heap
 template <typename T>
 BinaryHeap<T, false> make_min_heap(std::vector<T>&& inputs) {
-    return BinaryHeap<T, false>(std::forward(inputs), std::greater<>{});
+    return BinaryHeap<T, false>(std::move(inputs), std::greater<>{});
 }
 
 // create a Max Heap
 template <typename T>
 BinaryHeap<T, false> make_max_heap(std::vector<T>&& inputs) {
-    return BinaryHeap<T, false>(std::forward(inputs), std::less<>{});
+    return BinaryHeap<T, false>(std::move(inputs), std::less<>{});
 }
 
 #endif  // BINARY_HEAP_H
