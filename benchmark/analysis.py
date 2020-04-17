@@ -13,6 +13,8 @@ the benchmarks, in particular
 """
 from functools import reduce
 import sys
+from io import StringIO
+
 import pandas as pd
 import numpy as np
 import glob
@@ -20,6 +22,8 @@ from itertools import chain
 from tabulate import tabulate
 from typing import List, Dict
 import matplotlib.pyplot as plt
+from types import SimpleNamespace
+from tably import Tably
 
 # number of floating point decimals displayed in output
 N_DECIMALS = 3
@@ -312,6 +316,44 @@ def plot_multiple_nodes_line(dfs: Dict[str, pd.DataFrame], title: str, max_nodes
     plt.show()
 
 
+def dataframe_to_stringio(df: pd.DataFrame) -> StringIO:
+    csv_buffer = StringIO()
+
+    # removes the number of vertexes/edges
+    df.drop(columns=['n', 'm']) \
+        .rename(columns={'output': 'MST', 'filename': 'File'}) \
+        .to_csv(csv_buffer, index=None, sep=';')
+
+    csv_buffer.seek(0)
+    return csv_buffer
+
+
+def export_dataframes_min_to_latex(dfs: Dict[str, pd.DataFrame]):
+    dfs_list = dfs.values()
+    csv_list = list(map(dataframe_to_stringio, dfs_list))
+
+    for i, program in enumerate(dfs.keys()):
+        tably_instance = Tably(SimpleNamespace(
+            files=[csv_list[i]],
+            align=['l', 'l', 'c'],
+            caption=f'Risultati di {program}',
+            no_indent=False,
+            skip=0,
+            label=f'table:{program}-results',
+            no_header=False,
+            outfile=f'../report/{program}.min.tex',
+            separate_outfiles=None,
+            preamble=False,
+            sep='semi',
+            units='-',
+            no_escape=False,
+            fragment=False,
+            fragment_skip_header=False,
+            replace=True,
+        ))
+        tably_instance.run()
+
+
 if __name__ == '__main__':
     # benchmark CSVs stored in DataFrames and grouped by program name
     generator = zip(programs, [read_csvs_of_program(program) for program in programs])
@@ -332,6 +374,9 @@ if __name__ == '__main__':
     print_comparison(dataframes_min, PRIM_BINARY_HEAP, KRUSKAL_UNION_FIND)
     print_comparison(dataframes_min, PRIM_BINARY_HEAP, KRUSKAL_UNION_FIND_COMPRESSED)
 
-    # plot_simple_bar(dataframes_min[KRUSKAL_NAIVE], x='ms', y='n', title='Kruskal Simple')
-    # plot_interesting_nodes_bar(dataframes_min[KRUSKAL_NAIVE].round(1), title='Kruskal Simple')
-    # plot_multiple_nodes_line(dataframes_min, title='Plot multiple', max_nodes=1000)
+    # export minimized in-memory CSV files to LaTeX tables (they will still require some manual work tho)
+    # export_dataframes_min_to_latex(dataframes_min)
+
+    plot_simple_bar(dataframes_min[KRUSKAL_NAIVE], x='ms', y='n', title='Kruskal Simple')
+    plot_interesting_nodes_bar(dataframes_min[KRUSKAL_NAIVE].round(1), title='Kruskal Simple')
+    plot_multiple_nodes_line(dataframes_min, title='Plot multiple', max_nodes=1000)
