@@ -3,7 +3,7 @@
 test_script="test.sh"
 programs="KruskalUnionFind.out KruskalUnionFindCompressed.out PrimBinaryHeap.out"
 
-# TODO: KruskalSimple.out is excluded from programs list due to its execution time.
+# TODO: KruskalNaive.out is excluded from programs list due to its execution time.
 
 failed_no=0
 

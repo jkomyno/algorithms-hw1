@@ -20,7 +20,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="kruskal_simple_mst.h">
+    <ClInclude Include="kruskal_naive_mst.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

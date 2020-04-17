@@ -7,8 +7,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KruskalUnionFind", "Kruskal
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PrimBinaryHeap", "PrimBinaryHeap\PrimBinaryHeap.vcxproj", "{458FA573-F056-48EF-81B3-570C76088607}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KruskalSimple", "KruskalSimple\KruskalSimple.vcxproj", "{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{365F6B21-5EAD-46D0-A4DF-E2511054388A}"
 	ProjectSection(SolutionItems) = preProject
 		Shared\adjacency_map_graph_factory.h = Shared\adjacency_map_graph_factory.h
@@ -23,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{365F6B
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KruskalUnionFindCompressed", "KruskalUnionFindCompressed\KruskalUnionFindCompressed.vcxproj", "{C39E1457-08BB-455C-9818-0E9720680132}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KruskalNaive", "KruskalNaive\KruskalSimple.vcxproj", "{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,14 +48,6 @@ Global
 		{458FA573-F056-48EF-81B3-570C76088607}.Release|x64.Build.0 = Release|x64
 		{458FA573-F056-48EF-81B3-570C76088607}.Release|x86.ActiveCfg = Release|Win32
 		{458FA573-F056-48EF-81B3-570C76088607}.Release|x86.Build.0 = Release|Win32
-		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Debug|x64.ActiveCfg = Debug|x64
-		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Debug|x64.Build.0 = Debug|x64
-		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Debug|x86.ActiveCfg = Debug|Win32
-		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Debug|x86.Build.0 = Debug|Win32
-		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Release|x64.ActiveCfg = Release|x64
-		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Release|x64.Build.0 = Release|x64
-		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Release|x86.ActiveCfg = Release|Win32
-		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Release|x86.Build.0 = Release|Win32
 		{C39E1457-08BB-455C-9818-0E9720680132}.Debug|x64.ActiveCfg = Debug|x64
 		{C39E1457-08BB-455C-9818-0E9720680132}.Debug|x64.Build.0 = Debug|x64
 		{C39E1457-08BB-455C-9818-0E9720680132}.Debug|x86.ActiveCfg = Debug|Win32
@@ -64,6 +56,14 @@ Global
 		{C39E1457-08BB-455C-9818-0E9720680132}.Release|x64.Build.0 = Release|x64
 		{C39E1457-08BB-455C-9818-0E9720680132}.Release|x86.ActiveCfg = Release|Win32
 		{C39E1457-08BB-455C-9818-0E9720680132}.Release|x86.Build.0 = Release|Win32
+		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Debug|x64.ActiveCfg = Debug|x64
+		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Debug|x64.Build.0 = Debug|x64
+		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Debug|x86.ActiveCfg = Debug|Win32
+		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Debug|x86.Build.0 = Debug|Win32
+		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Release|x64.ActiveCfg = Release|x64
+		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Release|x64.Build.0 = Release|x64
+		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Release|x86.ActiveCfg = Release|Win32
+		{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
