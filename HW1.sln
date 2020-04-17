@@ -11,8 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KruskalSimple", "KruskalSim
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{365F6B21-5EAD-46D0-A4DF-E2511054388A}"
 	ProjectSection(SolutionItems) = preProject
-		Shared\adj_list_graph_factory.h = Shared\adj_list_graph_factory.h
-		Shared\AdjListGraph.h = Shared\AdjListGraph.h
+		Shared\adjacency_map_graph_factory.h = Shared\adjacency_map_graph_factory.h
+		Shared\AdjacencyMapGraph.h = Shared\AdjacencyMapGraph.h
 		Shared\BinaryHeap.h = Shared\BinaryHeap.h
 		Shared\DFSCycleDetection.h = Shared\DFSCycleDetection.h
 		Shared\DisjointSet.h = Shared\DisjointSet.h
