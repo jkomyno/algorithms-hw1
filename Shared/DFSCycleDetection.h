@@ -4,15 +4,16 @@
 #include <limits>        // std::numeric_limits
 #include <stack>         // std::stack
 #include <utility>       // std::pair
-#include "AdjListGraph.h"
+
+#include "AdjacencyMapGraph.h"
 
 /**
  * Utility class to detect cycles in a graph using Depth First Search
  */
 template <typename Label, typename Weight>
 class DFSCycleDetection {
-	// constant pointer to a non constant graph represented as an Adjacent List
-	AdjListGraph<Label, Weight>* const adj_list_graph_ptr;
+	// constant pointer to a non constant graph represented as an Adjacency Map
+	AdjacencyMapGraph<Label, Weight>* const adj_map_graph_ptr;
 
 	// return true iff there is a cycle in the graph starting from the source node and exploring
 	// the graph using Depth First Search.
@@ -23,7 +24,7 @@ class DFSCycleDetection {
 		visited.insert(v);
 
 		// visit the neighbours of the current node, except the current node itself
-		for (const auto& uw : adj_list_graph_ptr->adj_map_list.at(v)) {
+		for (const auto& uw : adj_map_graph_ptr->adj_map.at(v)) {
 			const auto& u = uw.first;
 
 			// if the current node is different than its parent, we need to check for either
@@ -59,9 +60,7 @@ class DFSCycleDetection {
 			stack.pop();
 
 			// visit the neighbours of the current node, except the current node itself
-			for (const auto& uw : adj_list_graph_ptr->adj_map_list.at(v)) {
-				const auto& u = uw.first;
-
+			for (const auto& [u, _] : adj_map_graph_ptr->adj_map.at(v)) {
 				// if we hadn't met the node u before, we mark that we discovered it "through" v,
 				// which we call its father
 				if (!visited.count(u)) {
@@ -85,16 +84,22 @@ public:
 	 * The AdjListGraph object can be freely updated outside this class, but all updates
 	 * on that object will be reflected in this class. This avoids expensive copies and
 	 * limits memory usage.
+	 * Time: O(1)
+	 * Space: O(1)
 	 */
-	DFSCycleDetection(AdjListGraph<Label, Weight>* const adj_list_graph_ptr) :
-		adj_list_graph_ptr(adj_list_graph_ptr) {}
+	DFSCycleDetection(AdjacencyMapGraph<Label, Weight>* const adj_map_graph_ptr) :
+		adj_map_graph_ptr(adj_map_graph_ptr) { }
 
 	// we should not deallocate adj_list_graph_ptr, as it resides on the stack, not the heap
-	~DFSCycleDetection() {}
-
-	// returns true iff the graph pointed by adj_list_graph_ptr has a loop
+	~DFSCycleDetection() { }
+	
+	/**
+	 * Returns true iff the graph pointed by adj_map_graph_ptr has a loop.
+	 * Time: O(n + m)
+	 * Space: O(n)
+	 */
 	bool has_cycle() const {
-		const auto n = adj_list_graph_ptr->vertexes_size();
+		const auto n = adj_map_graph_ptr->vertexes_size();
 		// if the graph has less than 3 vertexes, there can't possibly exist a cycle
 		if (n < 3) {
 			return false;
@@ -104,7 +109,7 @@ public:
 		std::unordered_set<Label> visited;
 		visited.reserve(n);
 
-		for (const auto& v : adj_list_graph_ptr->adj_map_list) {
+		for (const auto& v : adj_map_graph_ptr->adj_map) {
 			if (!visited.count(v.first) && has_cycle_helper_rec(v.first, visited)) {
 				return true;
 			}

@@ -9,7 +9,9 @@
 #include "BinaryHeap.h"
 
 /**
- * Priority Queue based on a Binary Heap.
+ * Priority Queue based on a Binary Heap. Whether it is based on a MinHeap or a MaxHeap
+ * depends on CompareFactory object used for initialization. This class shouldn't be invoked directly.
+ * Instead, the factories make_min_priority_queue and make_max_priority_queue should be used.
  *
  * Key: type of the keys used to mantain the elements in a valid heap
  * T: type of the elements stored in the priority queue

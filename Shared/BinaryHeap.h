@@ -10,6 +10,8 @@
 /**
  * Generic Binary Heap implementation. Depending on the given comparator function, it can
  * either be a Min Heap or a Max Heap.
+ * This class shouldn't be invoked directly.
+ * Instead, the factories make_min_heap and make_max_heap should be used.
  *
  * T: the type of the objects stored in the heap.
  * is_heap_on_init: constexpr flag. If true, build_heap() won't be called after the class is constructed.

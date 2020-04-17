@@ -3,15 +3,14 @@
 
 #include <algorithm>  // std::transform
 #include <limits>     // std::numeric_limits
-#include <queue>      // std::priority_queue
 #include <vector>     // std::vector
 
-#include "AdjListGraph.h"
+#include "AdjacencyMapGraph.h"
 #include "PriorityQueue.h"
 
 template <typename Label, typename Weight>
-auto prim_binary_heap_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept -> std::vector<Edge<Label, Weight>> {
-    auto vertexes = adj_list_graph.get_vertexes();
+std::vector<Edge<Label, Weight>> prim_binary_heap_mst(AdjacencyMapGraph<Label, Weight>&& adj_map_graph) noexcept {
+    auto vertexes = adj_map_graph.get_vertexes();
 
     const size_t n_stop = vertexes.size();
     std::vector<Edge<Label, Weight>> mst(n_stop);
@@ -29,8 +28,8 @@ auto prim_binary_heap_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept
     keys.at(0) = Weight(0);
 
     // Priority Queue based on a Min Heap ordered by keys, from smaller to larger.
-    // We don't need the O(N) to reorder the vertexes as a heap, since keys is already
-    // a valid heap.
+    // We don't need the O(N) first to reorder the vertexes as a heap, since keys is already
+    // a valid heap. The priority queue creation thus takes O(1) time
     constexpr bool is_heap_on_init = true;
     auto priority_queue(make_min_priority_queue<Weight, Label, is_heap_on_init>(std::move(keys), std::move(vertexes)));
 
@@ -40,10 +39,7 @@ auto prim_binary_heap_mst(AdjListGraph<Label, Weight>&& adj_list_graph) noexcept
         priority_queue.pop();
 
         // traverse all vertexes which are adjacent to u
-        for (const auto vw : adj_list_graph.get_adjacent_vertexes(u)) {
-            const auto v = vw.vertex;
-            const auto weight = vw.weight;  // w(u, v)
-
+        for (const auto [v, weight] : adj_map_graph.adjacent_vertexes(u)) {
             // if v is not in MST and w(u, v) is smaller than the current key of v
             if (priority_queue.contains(v) && weight < priority_queue.key_at(v)) {
                 // update the key associated with node v in O(logN), where N is the number

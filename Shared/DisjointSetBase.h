@@ -30,7 +30,7 @@ public:
 		// initially every item is the parent of itself
 		std::transform(x_list.cbegin(), x_list.cend(), std::back_inserter(parents), [&x_list](const auto& x_elem) {
 			// pointer arithmetic to obtain the index of the current element in x_list
-			const size_t index = &x_elem - &(x_list[0]);
+			const size_t index = static_cast<size_t>(&x_elem - &(x_list[0]));
 			return index;
 		});
 	}
