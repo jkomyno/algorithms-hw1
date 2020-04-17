@@ -28,20 +28,20 @@
   \usepackage{hyperref}
   \usepackage{caption}
   \usepackage{longtable}
-  
+
   \captionsetup[table]{position=bottom}
-    
+
   % Setup siunitx:
   \sisetup{
     round-mode          = places, % Rounds numbers
     round-precision     = 2, % to 2 places
   }
-  
+
   % Setup hyperref
   \hypersetup{
     colorlinks=true,
     linkcolor=NavyBlue,
-    filecolor=magenta,      
+    filecolor=magenta,
     urlcolor=cyan,
     pdftitle={Algoritmi Avanzati - Laboratorio 1},
     bookmarks=true,
@@ -51,7 +51,7 @@
   % \usepackage{amsmath}
   \DefineShortVerb{\|}
   \fontfamily{arial}
-  
+
    % C++ code setting
   \lstset{
     language=C++,
@@ -64,11 +64,23 @@
     frame=leftline,
     tabsize=4,
     breakatwhitespace=false,
-    showspaces=false,               
+    showspaces=false,
     showstringspaces=false,
     showtabs=false,
     morekeywords={Label, Weight},
   }
+
+  \newcommand{\tablepath}{tables}
+
+  \makeatletter
+  \newcommand{\includetable}[1]{%
+    \@ifundefined{tablepath}{%
+      \InputIfFileExists{#1}{}{}%
+    }{%
+      \InputIfFileExists{\tablepath/#1}{}{\InputIfFileExists{#1}{}{}}%
+    }
+  }
+  \makeatother
 
   \definecolor{diagcolor}{RGB}{146, 151, 192}
   \newcommand\diagid[0]{\textcolor{diagcolor}{$ (\Delta) $}}
@@ -94,10 +106,10 @@
     \input{chapters/2-language-choice}
     \input{chapters/3-benchmark-process}
     \newpage
-    
+
     \input{chapters/4-code-structure}
     \input{chapters/5-implementation-choices}
-    
+
     \newpage
     \input{chapters/6-performance-analysis}
     \input{chapters/7-tests}
@@ -105,5 +117,5 @@
     \input{chapters/9-conclusions}
     % TODO: appendix with results read from CSV
   \end{document}
-  
+
 % https://www.latex-tutorial.com/tutorials/pgfplotstable/
