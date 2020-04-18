@@ -76,6 +76,7 @@ In questa parte si va a leggere il file di input per poi darlo in pasto alla fun
 
 \subsubsection{Prim con Binary Heap}
 
+
 \subsubsection{Kruskal Naive}
 L'algoritmo Kruskal Naive è stato implementato a partire dallo pseudo codice visto in classe. A partire da questo ci si è subito accorti che una delle peculiarità di tale algoritmo e la necessità di verificare ad ogni inserimento di un arco di peso minimo la presenza di un ciclo nell'MST calcolato. Per ottenere tale funzionalità abbiamo deciso di modificare DFS in maniera da rilevare la presenza di un ciclo in un grafo. Per fare questo è stato creata la classe DFSCycleDetection, che è possibile ritrovare nella cartella "Shared", che data la rappresentazione del grafo e richiamando l'apposito metodo has\_cycle() è in grado di rilevare la presenza di un ciclo all'interno di esso usando per l'appunto una visita in profondità.\\
 
@@ -93,7 +94,25 @@ Un ulteriore piccola ottimizzazione aggiunta è la verifica della presenza di so
 
 Un altra ulteriore ottimizzazione di tale algoritmo è la verifica ad ogni aggiunta di un nuovo arco che non crea un ciclo nel grafo, della soglia massima di archi che un MST può avere, che come visto in classe è pari al numero di nodi totali del grafo - 1. Pertanto non appena l'MST che si sta calcolando raggiunge la soglia prestabilità e possibile ritornare immediatamente l'MST.
 
-Tale algoritmo risulta avere complessita dunque complessità O(mn) come visto in classe.
+Tale algoritmo risulta avere complessità dunque complessità O(mn) come visto in classe.
 
 
 \subsubsection{Kruskal con Disjoint Set}
+L'algoritmo di Kruskal con Disjoint Set implementato risulta essere in buona parte fedele a quello già visto in classe, con al differenze che è stato anche ottimizzata la condizione di terminazione, che prevede che al raggiungimento di n-1 archi all'interno dell'mst costruito, l'algoritmo termina restituendo l'mst calcolato fino a quel momento. Per implementare completamente questo algoritmo efficiente di Kruskal è necessario anche la creazione di un Disjoint Set: per fare ciò si e definita una classe astratta di base chiamata "DisjointSetBase" per poi implementarla con la classe "DisjointSet" che non fa altro che implementare il metodo astratto find. Per implementare il Disjoint Set si è scelto di implementare quest'ultimo con l'union by size come visto in classe. L'implementazione è stata fatta tramite 2 vettori:
+\begin{itemize}
+    \item \textbf{sizes}: che contiene la dimensione del set etichettato con l'indice corrispondente alla posizione nel vettore. Tale vettore dopo l'iniziallizazione conterrà tanti 1 quanti sono i vertici del grafo, in quanto ci sarà un set diverso per ogni grafo di dimensione 1. 
+    \item \textbf{parents}: che contiene il padre del set eticchettato con l'indice corrispondente alla posizione nel vettore. Tale vettore dopo l'inizializzazione conterrà in ogni entry il puntatore al vertice stesso, in quanto ogni set nuovo ha come padre se stesso.
+\end{itemize}
+
+Successivamente sono state definite le operazioni di find e di unione di 2 set, come visto in classe. Per dare una panoramica di tale implementazione riportiamo il relativo diagramma di classe, raffigurato in figura ~\ref{fig:DisjointSet Class}.
+
+\begin{figure}[h]
+	\caption{Class Diagram di DisjointSet}
+	\centering
+	\includegraphics[width=0.7\textwidth]{./images/DisjointSetClass.png}
+	\label{fig:DisjointSet Class}
+\end{figure}
+
+Come possiamo notare dal diagramma abbiamo una classe astratta DisjointSetBase che viene implementata dalle classi DisjointSet che implementano il metodo astratto find. Infatti la differenza tra le due classi concrete è le operazioni che vengono fatte nell'operazione di find. Nella DisjointSet viene semplicemente ritornato la radice del set senza apportare nessuna modifica, mentre la seconda classe Disjoint Compressed ad una operazione di find corrisponde anche una compressione del percorso via "path halving": ogni volta che un'operazione di find viene chiamata, ogni nodo incontrato nel percorso di ricerca fino alla radice, viene fatto puntare a suo nonno, rendendo così gli alberi via via sempre meno profondi.
+
+
