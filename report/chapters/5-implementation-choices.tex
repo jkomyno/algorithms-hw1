@@ -11,21 +11,30 @@ Le due possibilità standard per rappresentare un grafo sono
 	\item \textbf{Liste di adiacenza}
 \end{itemize}
 
-In questa implementazione abbiamo scelto di utilizzare una lista di adiacenza affiancata da una struttura dati aggiuntiva unordered\_set per migliorare i tempi di alcune operazioni fondamentali. Il relativo diagramma di classe è possibile ri-trovarlo nella figura~\ref{fig:AdjListGraph Class} dove vengono riportati gli attributi e i metodi offerti dalla classe.
+Tuttavia in questa implementazione abbiamo scelto di utilizzare una \textbf{"mappa di adiacenza"} affiancata con un set non ordinato per migliorare le complessità temporali di alcune operazioni fondamentali sul grafo, a scapito di un aumento della complessità spaziale. Una prima panoramica della classe è possibile osservarla con il diagramma di classe in figura~\ref{fig:AdjMapGraph Class} dove vengono riportati gli attributi e i metodi offerti dalla classe.
 
 \begin{figure}[h]
 	\caption{Diagramma di classe per AdjListGraph}
 	\centering
-	\includegraphics[width=0.7\textwidth]{./images/AdjListGrapClassDiagram.png}
-	\label{fig:AdjListGraph Class}
+	\includegraphics[width=0.7\textwidth]{./images/AdjancencyMapGrapClass.png}
+	\label{fig:AdjMapGraph Class}
 \end{figure}
 
-Nonostante la lista di adiacenza sarebbe già sufficiente per salvare tutte le informazioni necessarie alla rappresentazione di un grafo, in alcune operazioni risulta essere lenta. L'esempio di operazione che ci ha spinto ad inserire una nuova struttura dati (unordered\_set in questo caso) è il metodo per ritornare tutti gli archi di un grafo in quanto tale metodo se implementato avendo a disposizione la sola lista di adiacenza prevederebbe in maniera semplice la scansione dell'intera lista di adiacenza, con l'inserimento degli archi che si ritrovano in ogni vertice. Tale semplice implementazione porterebbe alla creazione di un vettore in cui se sussiste un arco tra un vertice 2 e un vertice 3, il vettore conterebbe sia l'arco 2 $\rightarrow$ 3 e 3 $\rightarrow$ 2 per costruzione della lista di adiacenza. \\
+Nella figura~\ref{fig:AdjMapGraph Abstract} è riportata la trasformazione di un grafo di esempio nella relativa mappa di adiacenza che abbiamo pensato. Come è possibile notare questa mappa di adiacenza è composta da una prima mappa che elenca tutti i vertici del grafo (adj\_map\_t) e a seguire nel valore di ogni entry viene inserita una nuova mappa (vertex\_weight\_map\_t) che rappresenta gli archi del grafo: vengono elencati dunque tutti i nodi adiacenti al vertice dato con il relativo peso dell'arco. In questo modo è possibile avere tutte le operazioni di inserimento, ricerca, cancellazione e update in tempo costante, a discapito di una complessità spaziale più elevata. 
 
-Le cose si complicano maggiormente se si restringe la richiesta di non restituire gli archi doppi come abbiamo già osservato. A tale proposito si potrebbe ricercare l'eventuale presenza di tali archi doppi ed eliminarli di conseguenza, ma il tutto richiederebbe maggiori operazioni e dunque un maggior tempo di esecuzione.\\
+\begin{figure}[h]
+	\caption{Rappresentazione della mappa di adiacenza}
+	\centering
+	\includegraphics[width=0.7\textwidth]{./images/AdjMapGraphAbstract.png}
+	\label{fig:AdjMapGraph Abstract}
+\end{figure}
 
-Per tali ragioni è stato deciso di affiancare alla lista di adiacenza, un'apposita struttura dati che permettesse di tenere traccia degli archi e di avere tempi di esecuzione costanti per le operazioni di aggiunta, rimozione e ricerca. Così facendo è possibile garantire che l'operazione di restituzione degli archi singoli di un grafo abbia tempo O(m) se si richiede di restituire un vettore, o addirittura O(1) se si richiede la restituzione di un puntatore a tale struttura.
-E' stato scelto dunque di utilizzare come struttura dati da affiancare unordered\_set perchè oltre ad avere le caratteristiche richieste, se appositamente configurata permette di garantire l'assenza di archi doppi, compresi quelli visti nell'esempio precedente (ossia 2 $\rightarrow$ 3 e 3 $\rightarrow$ 2). Per fare ciò è stato dunque opportunamente configurato l'operatore di uguaglianza e la funzione di hash, in  modo che archi equivalenti abbiamo la stessa funzione di hash e siano riconosciuti come uguali, evitando così l'inserimento di un arco doppio visto che che unordered\_set non prevede elementi doppi al suo interno.\\
+Nonostante la mappa di adiacenza sarebbe già stata sufficiente per salvare tutte le informazioni necessarie alla rappresentazione di un grafo, in alcune operazioni risulta essere lenta. L'esempio di operazione che ci ha spinto ad inserire una nuova struttura dati (unordered\_set in questo caso) è il metodo per ritornare tutti gli archi di un grafo in quanto tale metodo se implementato avendo a disposizione la sola mappa di adiacenza prevederebbe in maniera semplice la scansione dell'intera mappa di adiacenza, con l'inserimento degli archi via via che si incontra un nuovo vertice. Tale semplice implementazione però porterebbe alla creazione di un vettore in cui se sussiste un arco tra un vertice 2 e un vertice 3 (come nell'esempio in figura~\ref{fig:AdjMapGraph Abstract}), al vettore verrebbe aggiunto sia l'arco 2 $\rightarrow$ 3 che 3 $\rightarrow$ 2. \\
+
+Le cose si complicano maggiormente infatti se si restringe la richiesta di non restituire gli archi doppi come abbiamo già osservato. A tale proposito si potrebbe ricercare l'eventuale presenza di tali archi doppi ed eliminarli di conseguenza, ma il tutto richiederebbe maggiori operazioni e dunque un maggior complessità temporale.\\
+
+Per tali ragioni è stato deciso di affiancare alla mappa di adiacenza, un'apposita struttura dati che permettesse di tenere traccia degli archi e di avere tempi di esecuzione costanti per le operazioni di aggiunta, rimozione e ricerca. Così facendo è possibile garantire che l'operazione di restituzione degli archi singoli di un grafo abbia tempo O(m) se si richiede di restituire un vettore, o addirittura O(1) se si richiede la restituzione di un puntatore a tale struttura.
+E' stato scelto dunque di utilizzare come struttura dati da affiancare unordered\_set perché oltre ad avere le caratteristiche richieste, se appositamente configurata permette di garantire l'assenza di archi doppi, compresi quelli visti nell'esempio precedente (ossia 2 $\rightarrow$ 3 e 3 $\rightarrow$ 2). Per fare ciò è stato dunque opportunamente configurato l'operatore di uguaglianza e la funzione di hash, in  modo che archi equivalenti abbiamo la stessa funzione di hash e siano riconosciuti come uguali, evitando così l'inserimento di un arco doppio visto che  unordered\_set non prevede elementi doppi al suo interno.\\
 
 Una rappresentazione astratta di tale struttura è possibile visualizzarla nella figura~\ref{fig:edges_set}, dove è possibile notare che se viene richiesto l'inserimento di un arco 3 $\rightarrow$ 2 ove già presente un arco 2 $\rightarrow$ 3 questo non viene inserito da unordered\_set.\\
 
@@ -36,9 +45,9 @@ Una rappresentazione astratta di tale struttura è possibile visualizzarla nella
 	\label{fig:edges_set}
 \end{figure}
 
-L'ultimo problema non ancora affrontato rigurda la possibilità di inserire un arco doppio tra due nodi uguali (come richiesto da problema), con la differenza che questi 2 archi hanno un peso diverso. Siccome la nostra implementazione non prevede la presenza di tali archi doppi, la funzione add\_eddge() si occupa di verificare l'eventuale presenza di un arco già inserito e di conseguenza i relativi pesi, per andare a modificare il peso qualora il peso del nuovo arco sia inferiore al peso dell'arco precedentemente già inserito. Per fare questo ad ogni aggiunta di un nuovo arco si va a verificare nella lista di adiacenza l'esistenza di un arco per quei due vertici:
+L'ultimo problema non ancora affrontato riguarda la possibilità di inserire un arco doppio tra due nodi uguali (come richiesto da problema), con la differenza che questi 2 archi hanno un peso diverso. Siccome la nostra implementazione non prevede la presenza di tali archi doppi, la funzione add\_eddge() si occupa di verificare l'eventuale presenza di un arco già inserito e di conseguenza i relativi pesi, per andare a modificare il peso qualora il peso del nuovo arco sia inferiore al peso dell'arco precedentemente già inserito. Per fare questo ad ogni aggiunta di un nuovo arco si va a verificare nella lista di adiacenza l'esistenza di un arco per quei due vertici:
 \begin{itemize}
-	\item \textbf{se l'arco era già stato aggiunto:} si confrontano i due pesi e si aggiorna il peso dell'arco solo nell'eventualità in cui il nuovo peso sia inferiore a quello già presente nella lista di adiacenza. Dopodichè se c'è stato un aggiornamento si aggiorna anche il relativo unordered\_set, eliminando l'arco precendente e si riaggiunge l'arco con il nuovo peso. 
+	\item \textbf{se l'arco era già stato aggiunto:} si confrontano i due pesi e si aggiorna il peso dell'arco solo nell'eventualità in cui il nuovo peso sia inferiore a quello già presente nella lista di adiacenza. Dopodiché se c'è stato un aggiornamento si aggiorna anche il relativo unordered\_set, eliminando l'arco precedente e si ri-aggiunge l'arco con il nuovo peso. 
 	\item \textbf{se l'arco non era già stato inserito:} si inserisce l'arco sia nella lista di adiacenza che nell'unordered\_set.
 \end{itemize}
 
