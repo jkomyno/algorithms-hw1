@@ -101,18 +101,47 @@ Tale algoritmo risulta avere complessità dunque complessità O(mn) come visto i
 L'algoritmo di Kruskal con Disjoint Set implementato risulta essere in buona parte fedele a quello già visto in classe, con al differenze che è stato anche ottimizzata la condizione di terminazione, che prevede che al raggiungimento di n-1 archi all'interno dell'mst costruito, l'algoritmo termina restituendo l'mst calcolato fino a quel momento. Per implementare completamente questo algoritmo efficiente di Kruskal è necessario anche la creazione di un Disjoint Set: per fare ciò si e definita una classe astratta di base chiamata "DisjointSetBase" per poi implementarla con la classe "DisjointSet" che non fa altro che implementare il metodo astratto find. Per implementare il Disjoint Set si è scelto di implementare quest'ultimo con l'union by size come visto in classe. L'implementazione è stata fatta tramite 2 vettori:
 \begin{itemize}
     \item \textbf{sizes}: che contiene la dimensione del set etichettato con l'indice corrispondente alla posizione nel vettore. Tale vettore dopo l'iniziallizazione conterrà tanti 1 quanti sono i vertici del grafo, in quanto ci sarà un set diverso per ogni grafo di dimensione 1. 
+    \begin{figure}[h]
+    	\caption{Inizializzazione di sizes}
+    	\centering
+        \includegraphics[width=0.7\textwidth]{./images/DisjointSetSizesVector.png}
+    	\label{fig:sizes}
+    \end{figure}
+    
     \item \textbf{parents}: che contiene il padre del set eticchettato con l'indice corrispondente alla posizione nel vettore. Tale vettore dopo l'inizializzazione conterrà in ogni entry il puntatore al vertice stesso, in quanto ogni set nuovo ha come padre se stesso.
+    \begin{figure}[h]
+    	\caption{Inizializzazione di parents}
+    	\centering
+    	\includegraphics[width=0.7\textwidth]{./images/DisjointSetParentsVector.png}
+    	\label{fig:parents}
+    \end{figure}
 \end{itemize}
 
-Successivamente sono state definite le operazioni di find e di unione di 2 set, come visto in classe. Per dare una panoramica di tale implementazione riportiamo il relativo diagramma di classe, raffigurato in figura ~\ref{fig:DisjointSet Class}.
+Successivamente sono state definite le operazioni di find e di unione (prendendo spunto dall'idea vista in classe) implementando un prima versione normale con Union by size e una secondo versione sempre con Union by size ma in aggiunta con la path compression tramite "path halving": ogni volta che un'operazione di find viene chiamata, ogni nodo incontrato nel percorso di ricerca fino alla radice, viene fatto puntare a suo nonno, rendendo così gli alberi via via sempre meno profondi. Per avere un'idea di come tale struttura dati è stata implementata con l'uso di questi 2 vettori (sizes e parents) ne riportiamo un esempio in versione normale nella figura~\ref{fig:disjointset example} e un esempio in versione path compression nella figura~\ref{fig:disjointset path c example}.
 
 \begin{figure}[h]
-	\caption{Class Diagram di DisjointSet}
+	\caption{Esempio di unione con DisjointSet}
+	\centering
+	\includegraphics[width=0.7\textwidth]{./images/DisjointSetExample.png}
+	\label{fig:disjointset example}
+\end{figure}
+
+\begin{figure}[h]
+	\caption{Esempio di unione con DisjointSet e path compression}
+	\centering
+	\includegraphics[width=0.7\textwidth]{./images/DisjointSetCompressedExample.png}
+	\label{fig:disjointset path c example}
+\end{figure}
+
+Infine, per dare una panoramica delle classi che implementano tali strutture dati riportiamo il relativo diagramma di classe, raffigurato in figura ~\ref{fig:DisjointSet Class}.
+
+\begin{figure}[h]
+	\caption{Diagramma di classe di DisjointSet}
 	\centering
 	\includegraphics[width=0.7\textwidth]{./images/DisjointSetClass.png}
 	\label{fig:DisjointSet Class}
 \end{figure}
 
-Come possiamo notare dal diagramma abbiamo una classe astratta DisjointSetBase che viene implementata dalle classi DisjointSet che implementano il metodo astratto find. Infatti la differenza tra le due classi concrete è le operazioni che vengono fatte nell'operazione di find. Nella DisjointSet viene semplicemente ritornato la radice del set senza apportare nessuna modifica, mentre la seconda classe Disjoint Compressed ad una operazione di find corrisponde anche una compressione del percorso via "path halving": ogni volta che un'operazione di find viene chiamata, ogni nodo incontrato nel percorso di ricerca fino alla radice, viene fatto puntare a suo nonno, rendendo così gli alberi via via sempre meno profondi.
+Come possiamo notare dal diagramma di classe, abbiamo una classe astratta DisjointSetBase che viene implementata dalle classi DisjointSet e DisjointCompressed che implementano il metodo astratto find. Infatti la differenza tra le due classi concrete sono le operazioni che vengono fatte nell'operazione di find. Nella DisjointSet viene semplicemente ritornato la radice del set senza apportare nessuna modifica alla struttura interna della classe, mentre nella seconda classe DisjointCompressed ad una operazione di find corrisponde anche una compressione del percorso tramite "path halving".
 
 
