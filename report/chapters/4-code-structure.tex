@@ -1,11 +1,25 @@
 \section{Struttura del codice}
 \label{cap:code-structure}
 
-Abbiamo strutturato il codice come un'unica soluzione Visual Studio contenente molteplici progetti, uno per ogni algoritmo implementato.
-Una soluzione Visual Studio può essere vista come un macro-progetto che contiene più sottomoduli. \\
+Il progetto è strutturato in un'unica soluzione Visual Studio contenente molteplici progetti, uno per ogni algoritmo implementato.
+Una soluzione Visual Studio può essere vista come un macro-progetto che contiene più sottomoduli.
+Il codice di ogni progetto è contenuto in una cartella omonima.
+Questi progetti sono:
 
-\noindent Abbiamo creato una cartella \textit{Shared} per contenere le classi usate per rappresentare i grafi come liste di adiacenza (\textit{AdjListGraph.h}), le strutture dati create "from scratch" (\textit{BinaryHeap.h}, \textit{PriorityQueue.h} e \textit{DisjointSet.h}), la classe che individua cicli in un grafo usando Depth-First-Search (\textit{DFSCycleDetection.h}) e
-delle utilities usate in tutti i progetti. \\
+\begin{itemize}
+    \item \textbf{KruskalNaive}:
+    \item \textbf{KruskalUnionFind}:
+    \item $(*)$ \textbf{KruskalUnionFindCompressed}:
+    \item \textbf{PrimBinaryHeap}:
+    \item $(*)$ \textbf{PrimKHeap}:
+\end{itemize}
 
-\noindent Abbiamo configurato Visual Studio per importare automaticamente i file di header salvati in \textit{Shared}
-durante la compilazione di ogni sottoprogetto. Analogamente, tale cartella è referenziata nell'opzione \textit{-i} di g++ nel \textit{Makefile}.
+\noindent I progetti decorati con $(*)$ sono delle estensioni originali degli algoritmi richiesti.
+\\
+
+\noindent La cartella \textit{Shared} contiene le strutture dati custom e alcune classi e metodi di utilità usati
+condivisi tra progetti.
+
+\noindent Abbiamo configurato Visual Studio per importare automaticamente i file di header salvati nella cartella \textit{Shared}
+durante la compilazione di ogni sottoprogetto. Analogamente, tale cartella è inclusa nella compilazione del \textit{Makefile}, grazie all'opzione \textit{-i} del compilator \textit{g++}.
+

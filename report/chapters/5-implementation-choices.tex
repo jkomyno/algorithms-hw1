@@ -3,13 +3,17 @@
 
 \subsection{Codice templatizzato}
 
-\subsection{Rappresentazione del grafo}
+Al fine di rendere il codice quanto più generico ed estendibile, molte delle classi e dei metodi scritti
+usano i template C++, corrispondenti ai generics in Java.
+I nomi ricorrenti dei tipi generici impiegati sono \textit{Label} e \textit{Weight}.
+\textit{Label} denota il tipo del nome di un nodo del grafo. È istanziato come \textit{size\_t}, corrispondente a "unsigned long long", occupa almeno 64bit può rappresentare solo valori $\geq 0$.
+\textit{Weight} denota il tipo del peso di un arco del grafo. È istanziato come \textit{long}, corrispondente a "signed long int",
+occupa almeno 32bit.
 
-Le due possibilità standard per rappresentare un grafo sono 
-\begin{itemize}
-	\item \textbf{Matrici di adiacenza}
-	\item \textbf{Liste di adiacenza}
-\end{itemize}
+\subsection{Rappresentazione del grafo}
+\label{sub:graph-representation}
+
+Le due rappresentazioni più comuni per rappresentare un grafo sono \textbf{Matrici di Adiacenza} o \textbf{Liste di Adiacenza}.
 
 Tuttavia in questa implementazione abbiamo scelto di utilizzare una \textbf{"mappa di adiacenza"} affiancata con un set non ordinato per migliorare le complessità temporali di alcune operazioni fondamentali sul grafo, a scapito di un aumento della complessità spaziale. Una prima panoramica della classe è possibile osservarla con il diagramma di classe in figura~\ref{fig:AdjMapGraph Class} dove vengono riportati gli attributi e i metodi offerti dalla classe.
 
@@ -53,26 +57,70 @@ L'ultimo problema non ancora affrontato riguarda la possibilità di inserire un 
 
 Tutte le operazioni di aggiunta, per come sono implementati unordered\_set e unordered\_map in C++ hanno tempo costante e dunque l'operazione di aggiunta richiede tempo costante.
 
+\subsubsection {Costruzione del Grafo}
 
-\subsubsection{Strutture Dati}
+\textit{Shared/adjacency\_map\_graph\_factory.h} definisce una funzione di utilità che scorre tutte le righe del file in ingresso, salva gli archi in un vettore temporaneo, e lo trasferisce tramite \textit{move semantics} ad un nuovo oggetto di tipo \textit{AdjacencyMapGraph}. La mappa di adiacenza interpreta il grafo come spiegato nella sezione \ref{sub:graph-representation}.
+
+\subsection{Strutture Dati}
+
+Tutte le strutture dati elencate di seguito sono definite nella cartella \textit{Shared}.
+Ove possibile, per la nomenclatura dei metodi abbiamo cercato di seguire lo stesso standard dei container STL di C++.
+Inoltre, le strutture dati usate sono sempre preallocate in memoria quando possibile, evitando rehashing e riallocazioni dispendiose. Questo significa che la maggiorparte delle operazioni indicate con \complexity1{} ammortizzato siano in realtà totalmente costanti nella pratica.
+
+\subsubsection{Heap}
+
+\textit{Heap.h} contiene la definizione astratta di una generica Heap.
+Gli elementi della Heap sono salvati in un \textit{std::vector}.
+Per generalizzare il concetto di MinHeap/MaxHeap, la classe usa un comparatore binario booleano. Se il funtore dato in input alla classe è
+\textit{std::greater<>}, la struttura dati avrà la semantica di una Min Heap; viceversa, col comparatore \textit{std::less<>} si avrà la semantica di una Max Heap.
+
+\paragraph{Ottimizzazioni}\mbox{} \\
+
+\noindent Il parametro template \textit{IsAlreadyHeap} è usato per evitare di costruire la Heap se l'utente specifica il container dato in input alla struttura dati rispetta già la proprietà di essere una Heap. Il controllo su questo flag booleano avviene a compile-time. Questa ottimizzazione garantisce un risparmio di tempo pari a \complexityN{}, ed è usata nell'implementazione dell'algoritmo di \textbf{Prim}. \\
+
+\noindent I metodi che ripristinano la prioprietà di Heap (\textit{heapify\_up} e \textit{heapify\_down}) sono definiti in maniera iterative invece che ricorsiva, ottenendo performance migliori a parità di input.
 
 \subsubsection{Binary Heap}
 
-\iffalse
-The class that implements a Binary Heap data structure
-can be instantiated as a MinHeap or a MaxHeap at compile-time. \\
+\textit{BinaryHeap.h} contiene una classe concreta che eredita \textit{Heap.h} e ne implementa i metodi virtuali. Definisce una Binary Heap, ovvero è possibile rappresentare gli elementi salvati come un albero binario completo (tranne eventualmente l'ultimo livello, che potrebbe non essere completo) che rispetta la proprietà di ordinamento delle Heap.
 
-We spared the \complexityN{} time required to build the heap at the beginning of Prim's algorithm because the \textit{std::vector} we use to initialize the list already respects the MinHeap property: the key related to the first element is 0, and every other key is $+\infty$. \\
-\fi
+\paragraph{Ottimizzazioni}\mbox{} \\
+
+L'operazione di divisione per 2, necessaria per determinare ad esempio i figli sinistro e destro di un nodo nella Heap, è stata sostituita con l'operazione di shift binario.
+
+\subsubsection{K-ary Heap}
+
+\textit{KHeap.h} contiene una classe concreta che eredita \textit{Heap.h} e ne implementa i metodi virtuali. Definisce una K-ary Heap, ovvero è possibile rappresentare gli elementi salvati come un albero k-ario completo (tranne eventualmente l'ultimo livello, che potrebbe non essere completo) che rispetta la proprietà di ordinamento delle Heap.
+\textit{K} è un parametro template che deve essere strettamente maggiore di 2.
 
 \subsubsection{Priority Queue}
 
+\textit{PriorityQueue.h} è una classe concreta che eredita privatamente \textit{BinaryHeap.h} o \textit{KHeap.h}, a seconda del parametro template \textit{Heap}.
+La semantica di PriorityQueue dipende dal comparatore passato al costruttore, che indica se si vuole usare una coda di priorità basata su Min Heap o su Max Heap. \\
+
+\noindent PriorityQueue ha accesso diretto ai nodi salvati nella Heap, e usa due container associativi di tipo \textit{std::unordered\_map} per tenere traccia
+delle chiavi e degli indici posizionali di ogni elemento della Heap, e permetterne la consultazione e l'aggiornamento in tempo costante ammortizzato. \\
+
+\noindent Rispetto ai costruttori delle varie classi Heap, PriorityQueue richiede non un comparatore, bensì una factory di comparatori. A tale factory è data in input una mappa che associa i valori degli elementi della Heap alle rispettive chiavi. Poiché tale input è passato per reference, il comparatore generato userà sempre la versione più aggiornata della mappa.
+
+\noindent L'operazione di aggiornamento di una chiave richiede chiavi strettamente discendenti nel caso di una MinHeap, e chiavi strettamente crescenti nel caso di una MaxHeap. Abbiamo imposto questo vincolo per mantenere la complessità di \textit{update\_key} logaritmica anziché lineare (come sarebbe se avessimo usato il metodo \textit{build\_heap} indistintamente).
+
+\paragraph{Ottimizzazioni}\mbox{} \\
+
+Poichè istanziare una PriorityQueue così generica e flessibile è un'operazione non triviale, abbiamo creato una serie di funzioni di utilità espressive e facili da usare. Ad esempio, per creare una coda di priorità basa su un Min Heap binario, esiste il metodo \textit{make\_min\_priority\_queue} (analogamente esiste \textit{make\_min\_k\_priority\_queue} per Min Heap K-ari).
+L'utente finale della classe non deve preoccuparsi di inserire manualmente tutti i parametri template di tali funzioni, grazie alla \textit{type deduction} di C++17.
+
 \subsubsection{Disjoint Set}
 
-\subsection{Algoritmi}
+La classe base astratta in \textit{DisjointSetBase.h} definisce il contratto dei metodi \textit{find} e \textit{unite} (il nome comunemente usato per questa operazione, \textit{union}, è una parola chiave riservata in C++).
+Gli elementi sono salvati in un container \textit{std::vector}, sotto l'assunzione che gli elementi siano solo numeri interi positivi.
+Avremmo potuto rilassare questo vincolo usando una struttura dati \textit{std::unordered\_map}, ma abbiamo preferito evitare perché i vettori sono molto più performanti nella pratica.
 
-\subsubsection {Costruzione del Grafo}
-In questa parte si va a leggere il file di input per poi darlo in pasto alla funzione di costruzione della rappresentazione del grafo come spiegato nella sezione precedente.......
+Abbiamo realizzato 2 implementazioni diverse di Disjoint Set.
+\textit{DisjointSet} adotta la policy \textit{union-by-size} vista a lezione, senza particolari ottimizzazioni. Definisce un membro \textit{std::vector} per salvare le dimensioni dei sottoalberi radicati nei vari nodi salvati, inizializzandolo a 1.
+\textit{DisjointSetCompressed}, invece, adotta la policy \textit{union-by-rank} con \textit{path-compression} tramite la tecnica \textit{path-splitting}. Definisce un membro \textit{std::vector} per salvare i rank dei dei vari nodi salvati, inizializzandolo a 0.
+
+\subsection{Algoritmi}
 
 \subsubsection{Prim con Binary Heap}
 

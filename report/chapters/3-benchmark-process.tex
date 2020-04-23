@@ -5,8 +5,8 @@ Abbiamo deciso di rendere il processo di misurazione del tempo di esecuzione dei
 Il nostro benchmark tiene quindi conto di tutto, ovvero:
 
 \begin{itemize}
-    \item Tempo necessario a leggere il file di input in un vettore temporaneo;
-    \item Tempo per trasformare il vettore temporaneo in una lista di adiacenza;
+    \item Tempo necessario a leggere il file di input in un container \textit{std::vector} temporaneo;
+    \item Tempo per trasformare il container temporaneo in una lista di adiacenza;
     \item Tempo per eseguire l'algoritmo vero e proprio per il calcolo dell'\textbf{MST};
     \item Tempo per scorrere l'\textbf{MST} ritornato dall'algoritmo per calcolarne il peso totale.
 \end{itemize}
@@ -28,6 +28,8 @@ Il nostro benchmark tiene quindi conto di tutto, ovvero:
 \begin{itemize}
     \item Abbiamo usato sempre lo stesso computer per misurare il tempo di esecuzione dei programmi implementati;
     \item Abbiamo chiuso tutti i programmi in foreground e disabilitato quanti più servizi possibile in background;
-    \item Abbiamo disabilitato la connessione Internet del computer scelto
+    \item Abbiamo disabilitato la connessione Internet del computer scelto;
     \item Abbiamo fatto più misurazioni, e abbiamo tenuto la media delle misurazioni effettuate.
 \end{itemize}
+
+\noindent Abbiamo definito lo script Python \textit{benchmark/analysis.py} per automatizzare il processo di confronto degli algoritmi e la creazione di tabelle e grafici inseriti in questa relazione. Esso legge i file CSV generati dallo script di benchmark \textit{benchmark.ps1}.
