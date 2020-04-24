@@ -2,14 +2,13 @@
 #define KRUSKAL_NAIVE_MST_H
 
 #include <functional>    // std::less
-#include <vector>        // std::vector
 #include <unordered_set> // std::unordered_set
 
 #include "AdjacencyMapGraph.h"
 #include "DFSCycleDetection.h"
 
 template <typename Label, typename Weight>
-auto kruskal_naive_mst(AdjacencyMapGraph<Label, Weight>&& adj_map_graph) noexcept -> std::unordered_set<Edge<Label, Weight>, custom_hash::edge_hash> {
+auto kruskal_simple_mst(AdjacencyMapGraph<Label, Weight>&& adj_map_graph) noexcept -> std::unordered_set<Edge<Label, Weight>, custom_hash::edge_hash> {
 	const size_t n_stop = adj_map_graph.vertexes_size() - 1;
 
 	// sort edges in non-decreasing order of weight in O(mlogm) time
