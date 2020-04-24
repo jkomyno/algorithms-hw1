@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{365F6B
 		Shared\DisjointSetCompressed.h = Shared\DisjointSetCompressed.h
 		Shared\Heap.h = Shared\Heap.h
 		Shared\KHeap.h = Shared\KHeap.h
-		PriorityQueue.h = PriorityQueue.h
+		Shared\PriorityQueue.h = Shared\PriorityQueue.h
 		Shared\sum_weights.h = Shared\sum_weights.h
 	EndProjectSection
 EndProject
