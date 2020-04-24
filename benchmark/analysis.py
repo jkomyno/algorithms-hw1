@@ -1,6 +1,6 @@
 """
 Usage:
-> python3 analysis.py [latex] [plot-table-comparison]
+> python3 analysis.py [latex] [plot]
 
 The following script analyzes benchmarks for KruskalSimple, KruskalUnionFind (and variants) and
 PrimBinaryHeap algorithms.
@@ -13,7 +13,7 @@ the benchmarks, in particular
 
 Options:
 - [latex]: export comparison tables in latex format
-- [plot-table-comparison]: plot comparisons listed in comparison tables
+- [plot]: plot comparisons listed in comparison tables
 """
 
 from functools import reduce
@@ -39,7 +39,7 @@ N_DECIMALS_PERCENTAGE = 2
 
 # if the script is given the argument 'latex', turn on LaTeX table generation
 FOR_LATEX = 'latex' in sys.argv
-PLOT_TABLE_COMPARISON = 'plot-table-comparison' in sys.argv
+PLOT_TABLE_COMPARISON = 'plot' in sys.argv
 
 KRUSKAL_SIMPLE = 'KruskalSimple'
 KRUSKAL_UNION_FIND = 'KruskalUnionFind'
@@ -450,15 +450,15 @@ if __name__ == '__main__':
         names_to_plot_logy(programs, dataframes_min)
 
     def plot_all_but_naive():
-        l = [p for p in programs if p != KRUSKAL_NAIVE]
+        l = [p for p in programs if p != KRUSKAL_SIMPLE]
         names_to_plot(l, dataframes_min)
 
     def plot_the_three():
-        l = [KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP]
+        l = [KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP]
         names_to_plot(l, dataframes_min)
 
     def plot_the_three_logy():
-        l = [KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP]
+        l = [KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP]
         names_to_plot_logy(l, dataframes_min)
 
     def plot_the_two():
@@ -470,7 +470,7 @@ if __name__ == '__main__':
         names_to_plot(l, dataframes_min)
 
     def plot_prim_versions():
-        l = [PRIM_BINARY_HEAP, PRIM_8_HEAP, PRIM_K_HEAP]
+        l = [PRIM_BINARY_HEAP, KRUSKAL_SIMPLE, PRIM_K_HEAP]
         names_to_plot(l, dataframes_min)
 
     def plot_prim2_primK():
@@ -478,44 +478,40 @@ if __name__ == '__main__':
         names_to_plot(l, dataframes_min)
 
     def plot_prim2_prim8():
-        l = [PRIM_BINARY_HEAP, PRIM_8_HEAP]
+        l = [PRIM_BINARY_HEAP, KRUSKAL_SIMPLE]
         names_to_plot(l, dataframes_min)
 
     def plot_prim8_primK():
-        l = [PRIM_8_HEAP, PRIM_K_HEAP]
+        l = [KRUSKAL_SIMPLE, PRIM_K_HEAP]
         names_to_plot(l, dataframes_min)
 
     # Main plots.
-    plot_all()
-    plot_all_logy()
-    plot_all_but_naive()
-
-    plot_the_three()
-    plot_the_three_logy()
-
-    plot_the_two()
-
-    plot_kruskal_versions()
-
-    plot_prim_versions()
-    plot_prim2_prim8()
-    plot_prim2_primK()
-    plot_prim8_primK()
+    # plot_all()
+    # plot_all_logy()
+    # plot_all_but_naive()
+#
+    # plot_the_three()
+    # plot_the_three_logy()
+#
+    # plot_the_two()
+#
+    # plot_kruskal_versions()
+#
+    # plot_prim_versions()
+    # plot_prim2_primK()
 
     if PLOT_TABLE_COMPARISON:
-        names_to_plot_logy([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND], dataframes_min)
-        names_to_plot_logy([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
-        names_to_plot_logy([KRUSKAL_NAIVE, PRIM_BINARY_HEAP], dataframes_min)
+        names_to_plot_logy([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND], dataframes_min)
+        names_to_plot_logy([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
+        names_to_plot_logy([KRUSKAL_SIMPLE, PRIM_BINARY_HEAP], dataframes_min)
         names_to_plot([KRUSKAL_UNION_FIND, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
-        names_to_plot_logy([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND], dataframes_min)
-        names_to_plot_logy([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
+        names_to_plot_logy([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND], dataframes_min)
+        names_to_plot_logy([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
         names_to_plot([PRIM_BINARY_HEAP, KRUSKAL_UNION_FIND], dataframes_min)
         names_to_plot([PRIM_BINARY_HEAP, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
         names_to_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min)
         names_to_plot([PRIM_K_HEAP, KRUSKAL_UNION_FIND], dataframes_min)
         names_to_plot([PRIM_K_HEAP, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
-        names_to_plot([PRIM_BINARY_HEAP, PRIM_8_HEAP], dataframes_min)
-        names_to_plot([PRIM_K_HEAP, PRIM_8_HEAP], dataframes_min)
 
     # plot_simple_bar(dataframes_min[KRUSKAL_NAIVE], x='ms', y='n', title='Kruskal Simple')
     # plot_interesting_nodes_bar(dataframes_min[KRUSKAL_NAIVE].round(1), title='Kruskal Simple')
