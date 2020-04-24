@@ -34,29 +34,26 @@ N_DECIMALS_PERCENTAGE = 2
 # if the script is given the argument 'latex', turn on LaTeX table generation
 FOR_LATEX = len(sys.argv) == 2 and sys.argv[1] == 'latex'
 
-KRUSKAL_NAIVE = 'KruskalNaive'
+KRUSKAL_SIMPLE = 'KruskalSimple'
 KRUSKAL_UNION_FIND = 'KruskalUnionFind'
 KRUSKAL_UNION_FIND_COMPRESSED = 'KruskalUnionFindCompressed'
 PRIM_BINARY_HEAP = 'PrimBinaryHeap'
 PRIM_K_HEAP = 'PrimKHeap'
-PRIM_8_HEAP = 'Prim8Heap'
 
 programs = [
-    KRUSKAL_NAIVE,
+    KRUSKAL_SIMPLE,
     KRUSKAL_UNION_FIND,
     KRUSKAL_UNION_FIND_COMPRESSED,
     PRIM_BINARY_HEAP,
-    PRIM_K_HEAP,
-    PRIM_8_HEAP
+    PRIM_K_HEAP
 ]
 
 ms_programs = [
-    'ms_kruskal_naive',
+    'ms_kruskal_simple',
     'ms_kruskal_union_find',
     'ms_kruskal_union_find_compressed',
     'ms_prim_binary_heap',
-    'ms_prim_k_heap',
-    'ms_prim_8_heap'
+    'ms_prim_k_heap'
 ]
 
 
@@ -373,17 +370,15 @@ if __name__ == '__main__':
     dataframes_min = minimize_ms_dataframes(dataframes)
 
     # compare multiple programs to show potential improvements
-    print_comparison(dataframes_min, KRUSKAL_NAIVE, KRUSKAL_UNION_FIND)
-    print_comparison(dataframes_min, KRUSKAL_NAIVE, KRUSKAL_UNION_FIND_COMPRESSED)
-    print_comparison(dataframes_min, KRUSKAL_NAIVE, PRIM_BINARY_HEAP)
+    print_comparison(dataframes_min, KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND)
+    print_comparison(dataframes_min, KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND_COMPRESSED)
+    print_comparison(dataframes_min, KRUSKAL_SIMPLE, PRIM_BINARY_HEAP)
     print_comparison(dataframes_min, KRUSKAL_UNION_FIND, KRUSKAL_UNION_FIND_COMPRESSED)
     print_comparison(dataframes_min, PRIM_BINARY_HEAP, KRUSKAL_UNION_FIND)
     print_comparison(dataframes_min, PRIM_BINARY_HEAP, KRUSKAL_UNION_FIND_COMPRESSED)
     print_comparison(dataframes_min, PRIM_BINARY_HEAP, PRIM_K_HEAP)
     print_comparison(dataframes_min, PRIM_K_HEAP, KRUSKAL_UNION_FIND)
     print_comparison(dataframes_min, PRIM_K_HEAP, KRUSKAL_UNION_FIND_COMPRESSED)
-    print_comparison(dataframes_min, PRIM_BINARY_HEAP, PRIM_8_HEAP)
-    print_comparison(dataframes_min, PRIM_K_HEAP, PRIM_8_HEAP)
 
     # export minimized in-memory CSV files to LaTeX tables (they will still require some manual work tho)
     # export_dataframes_min_to_latex(dataframes_min)
