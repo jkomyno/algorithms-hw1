@@ -25,7 +25,7 @@ auto kruskal_mst_compressed(AdjacencyMapGraph<Label, Weight>&& adj_map_graph) no
 	 * Initially, every vertex is in a separate set.
 	 * vertexes is no longer accessible after the process.
 	 */
-	DisjointSetCompressed<Label> disjoint_set(std::move(vertexes));
+	disjoint_set::DisjointSetCompressed<Label> disjoint_set(std::move(vertexes));
 
 	// a Minimum Spanning Tree can have (n - 1) edges at maximum.
 	// The mst is populated in O(mlog*(n)) time
