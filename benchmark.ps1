@@ -1,8 +1,8 @@
 # Usage: ./benchmark.ps1 {dataset-folder}
 
 $exe_folder = ".\x64\Release"
-$programs = "PrimBinaryHeap","PrimKHeap","KruskalUnionFind","KruskalUnionFindCompressed","KruskalNaive"
-$output_folder = ".\benchmark"
+$programs = "PrimBinaryHeap","PrimKHeap","KruskalUnionFind","KruskalUnionFindCompressed","KruskalSimple"
+$output_folder = ".\new_benchmark"
 
 $datasets = "datasets"
 if($args[0] -ne $null) {
