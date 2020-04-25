@@ -1,6 +1,6 @@
-""""
+"""
 Usage:
-> python3 analysis.py [latex]
+> python3 analysis.py [latex] [plot]
 
 The following script analyzes benchmarks for KruskalSimple, KruskalUnionFind (and variants) and
 PrimBinaryHeap algorithms.
@@ -10,7 +10,12 @@ the benchmarks, in particular
 - for each algorithm show how it scales with the size of the input
 - for some (maybe fixed) input sizes show the compared performance of the
   implemented algorithms.
+
+Options:
+- [latex]: export comparison tables in latex format
+- [plot]: plot comparisons listed in comparison tables
 """
+
 from functools import reduce
 import sys
 from io import StringIO
@@ -24,6 +29,7 @@ from typing import List, Dict
 import matplotlib.pyplot as plt
 from types import SimpleNamespace
 from tably import Tably
+import seaborn as sns
 
 # number of floating point decimals displayed in output
 N_DECIMALS = 3
@@ -32,7 +38,8 @@ N_DECIMALS = 3
 N_DECIMALS_PERCENTAGE = 2
 
 # if the script is given the argument 'latex', turn on LaTeX table generation
-FOR_LATEX = len(sys.argv) == 2 and sys.argv[1] == 'latex'
+FOR_LATEX = 'latex' in sys.argv
+PLOT_TABLE_COMPARISON = 'plot' in sys.argv
 
 KRUSKAL_SIMPLE = 'KruskalSimple'
 KRUSKAL_UNION_FIND = 'KruskalUnionFind'
@@ -296,7 +303,7 @@ def plot_interesting_nodes_bar(df: pd.DataFrame, title: str):
     plot_simple_bar(new_df, *columns, title=title)
 
 
-def plot_multiple_nodes_line(dfs: Dict[str, pd.DataFrame], title: str, max_nodes = 1000):
+def plot_multiple_nodes_line(dfs: Dict[str, pd.DataFrame], title: str, max_nodes=1000):
     ms_dict = dict(zip(programs, ms_programs))
     dfs_renamed = [
         dfs[program].drop(columns=['output', 'filename', 'm']).rename(columns={'ms': ms_dict[program]}, inplace=False)
@@ -357,6 +364,59 @@ def export_dataframes_min_to_latex(dfs: Dict[str, pd.DataFrame]):
         tably_instance.run()
 
 
+def plot_line(dfs: Dict[str, pd.DataFrame], x: str, y: str, title: str, options_f=[]):
+    """
+    Plots `dfs` data.
+    :dfs: a dictionary with the benchmark dataframe to plot.
+    :x: the x axis name.
+    :y: the y axis name.
+    :title: a string representing the plot title.
+    :options_f: a list of functions to apply to the result of sns.lineplot (matplotlib.axis).
+    """
+    plt.figure(figsize=(14, 7))
+    for k, v in dfs.items():
+        g = sns.lineplot(v[x], v[y], label=k)
+        for fo in options_f:
+            fo(g)
+    plt.title(title)
+    plt.show()
+
+
+def names_to_vs(names: List[str]) -> str:
+    """
+    Return a string made by names joined by "vs".
+    """
+    return reduce(lambda x, y: x + ' vs ' + y, names)
+
+
+def names_to_dfs(names: List[str], dfs) -> Dict[str, List[pd.DataFrame]]:
+    """
+    Return a dict where for each name the key is one of the name given and the
+    value is the corresponding benchmark dataframe. 
+    """
+    return reduce(lambda x, y: {**x, **y}, map(lambda n: {n: dfs[n]}, names))
+
+
+def names_to_plot(names: List[str], dfs: pd.DataFrame):
+    """
+    Plot given programs.
+    """
+    benchmark_subset = names_to_dfs(names, dfs)
+    title = names_to_vs(names)
+    plot_line(benchmark_subset, x='n', y='ms', title=title)
+
+
+def names_to_plot_logy(names: List[str], dfs: pd.DataFrame):
+    """
+    Plot given programs with log scaled y axis.
+    """
+    benchmark_subset = names_to_dfs(names, dfs)
+    title = names_to_vs(names) + ' (log y scaled)'
+    def log_scale(g): return g.set_yscale('log')
+    plot_line(benchmark_subset, x='n', y='ms',
+              title=title, options_f=[log_scale])
+
+
 if __name__ == '__main__':
     # benchmark CSVs stored in DataFrames and grouped by program name
     generator = zip(programs, [read_csvs_of_program(program) for program in programs])
@@ -382,6 +442,76 @@ if __name__ == '__main__':
 
     # export minimized in-memory CSV files to LaTeX tables (they will still require some manual work tho)
     # export_dataframes_min_to_latex(dataframes_min)
+
+    def plot_all():
+        names_to_plot(programs, dataframes_min)
+
+    def plot_all_logy():
+        names_to_plot_logy(programs, dataframes_min)
+
+    def plot_all_but_naive():
+        l = [p for p in programs if p != KRUSKAL_SIMPLE]
+        names_to_plot(l, dataframes_min)
+
+    def plot_the_three():
+        l = [KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP]
+        names_to_plot(l, dataframes_min)
+
+    def plot_the_three_logy():
+        l = [KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP]
+        names_to_plot_logy(l, dataframes_min)
+
+    def plot_the_two():
+        l = [KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP]
+        names_to_plot(l, dataframes_min)
+
+    def plot_kruskal_versions():
+        l = [KRUSKAL_UNION_FIND, KRUSKAL_UNION_FIND_COMPRESSED]
+        names_to_plot(l, dataframes_min)
+
+    def plot_prim_versions():
+        l = [PRIM_BINARY_HEAP, KRUSKAL_SIMPLE, PRIM_K_HEAP]
+        names_to_plot(l, dataframes_min)
+
+    def plot_prim2_primK():
+        l = [PRIM_BINARY_HEAP, PRIM_K_HEAP]
+        names_to_plot(l, dataframes_min)
+
+    def plot_prim2_prim8():
+        l = [PRIM_BINARY_HEAP, KRUSKAL_SIMPLE]
+        names_to_plot(l, dataframes_min)
+
+    def plot_prim8_primK():
+        l = [KRUSKAL_SIMPLE, PRIM_K_HEAP]
+        names_to_plot(l, dataframes_min)
+
+    # Main plots.
+    # plot_all()
+    # plot_all_logy()
+    # plot_all_but_naive()
+#
+    # plot_the_three()
+    # plot_the_three_logy()
+#
+    # plot_the_two()
+#
+    # plot_kruskal_versions()
+#
+    # plot_prim_versions()
+    # plot_prim2_primK()
+
+    if PLOT_TABLE_COMPARISON:
+        names_to_plot_logy([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND], dataframes_min)
+        names_to_plot_logy([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
+        names_to_plot_logy([KRUSKAL_SIMPLE, PRIM_BINARY_HEAP], dataframes_min)
+        names_to_plot([KRUSKAL_UNION_FIND, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
+        names_to_plot_logy([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND], dataframes_min)
+        names_to_plot_logy([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
+        names_to_plot([PRIM_BINARY_HEAP, KRUSKAL_UNION_FIND], dataframes_min)
+        names_to_plot([PRIM_BINARY_HEAP, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
+        names_to_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min)
+        names_to_plot([PRIM_K_HEAP, KRUSKAL_UNION_FIND], dataframes_min)
+        names_to_plot([PRIM_K_HEAP, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
 
     # plot_simple_bar(dataframes_min[KRUSKAL_NAIVE], x='ms', y='n', title='Kruskal Simple')
     # plot_interesting_nodes_bar(dataframes_min[KRUSKAL_NAIVE].round(1), title='Kruskal Simple')

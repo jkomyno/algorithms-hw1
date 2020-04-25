@@ -2,7 +2,7 @@
 
 $exe_folder = ".\x64\Release"
 $programs = "PrimBinaryHeap","PrimKHeap","KruskalUnionFind","KruskalUnionFindCompressed","KruskalSimple"
-$output_folder = ".\new_benchmark"
+$output_folder = ".\benchmark"
 
 $datasets = "datasets"
 if($args[0] -ne $null) {
