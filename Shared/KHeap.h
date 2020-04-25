@@ -48,7 +48,7 @@ namespace heap {
 
 			// return the parent of nodes[i]
 			[[nodiscard]] std::size_t parent(const std::size_t i) const noexcept final override {
-				return (i - 1) >> K;
+				return (i - 1) / K;
 			}
 
 			// starting from a Heap with a misplaced node at the given index,
