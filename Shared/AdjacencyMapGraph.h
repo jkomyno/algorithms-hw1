@@ -100,7 +100,8 @@ class AdjacencyMapGraph {
 
 	/**
 	 * Make DFSCycleDetection a friend class for performance reasons, so it can iterate over the vertexes
-	 * accessing the private member adj_map directly, instead of calling the expensive get_vertexes() method. 
+	 * accessing the private member adj_map directly, instead of calling the get_vertexes() method
+	 * (O(1) vs O(n)). 
 	 */
 	template<typename L, typename W> friend class DFSCycleDetection;
 
@@ -132,9 +133,6 @@ public:
 	explicit AdjacencyMapGraph(std::vector<Edge<Label, Weight>>&& edge_list, const size_t n_vertex = 0) noexcept {
 		init(edge_list, n_vertex);
 	}
-
-	// disable copy constructor
-	AdjacencyMapGraph& operator==(const AdjacencyMapGraph<Label, Weight>& rhs) = delete;
 
 	/**
 	 * Return the number of vertexes stored.
