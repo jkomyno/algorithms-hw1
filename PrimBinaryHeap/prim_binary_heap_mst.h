@@ -17,11 +17,8 @@ std::vector<Edge<Label, Weight>> prim_binary_heap_mst(AdjacencyMapGraph<Label, W
 
 	// Keys are used to pick the lightest edge in cut.
 	// Initially, keys of all vertexes are set to infinity.
-	std::vector<Weight> keys;
-	keys.reserve(vertexes.size());
-	std::transform(vertexes.cbegin(), vertexes.cend(), std::back_inserter(keys), [](const auto&) {
-		return std::numeric_limits<Weight>::max();
-		});
+    constexpr Weight Infinity = std::numeric_limits<Weight>::max();
+    std::vector<Weight> keys(vertexes.size(), Infinity);
 
 	// the source vertex can be randomly chosen. For simplicity, we choose the first vertex available.
 	// the first vertex is distant 0 from itself
@@ -33,7 +30,9 @@ std::vector<Edge<Label, Weight>> prim_binary_heap_mst(AdjacencyMapGraph<Label, W
 	constexpr bool IsAlreadyHeap = true;
 	auto min_pq(priority_queue::make_min_priority_queue<IsAlreadyHeap>(std::move(keys), std::move(vertexes)));
 
-	while (!min_pq.empty()) {
+    // Loop until the the priority queue is empty or mst reached its maximum
+    // size (n - 1 edges)
+	while (!(min_pq.empty() && n_stop == mst.size())) {
 		// u is the vertex with minimum key that belongs to the lightest edge of the cut
 		auto u = min_pq.top();
 		min_pq.pop();

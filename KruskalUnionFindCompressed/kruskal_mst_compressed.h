@@ -29,7 +29,7 @@ auto kruskal_mst_compressed(AdjacencyMapGraph<Label, Weight>&& adj_map_graph) no
 
 	// a Minimum Spanning Tree can have (n - 1) edges at maximum.
 	// The mst is populated in O(mlog*(n)) time
-	for (auto it = edges.cbegin(); !(it == edges.cend() || mst.size() == n_stop); ++it) {
+    for (auto it = edges.cbegin(); !(it == edges.cend() && n_stop == mst.size()); ++it) {
 		const auto& edge = *it;
 		const auto& [v, w, _] = edge;
 
