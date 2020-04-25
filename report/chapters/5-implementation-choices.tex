@@ -13,18 +13,54 @@ occupa almeno 32bit.
 \subsection{Rappresentazione del grafo}
 \label{sub:graph-representation}
 
-Le due rappresentazioni più comuni per rappresentare un grafo sono \textbf{Matrici di Adiacenza} o \textbf{Liste di Adiacenza}.
+Le operazioni sui grafi di cui abbiamo bisogno sono:
 
-Tuttavia in questa implementazione abbiamo scelto di utilizzare una \textbf{"mappa di adiacenza"} affiancata con un set non ordinato per migliorare le complessità temporali di alcune operazioni fondamentali sul grafo, a scapito di un aumento della complessità spaziale. Una prima panoramica della classe è possibile osservarla con il diagramma di classe in figura~\ref{fig:AdjMapGraph Class} dove vengono riportati gli attributi e i metodi offerti dalla classe.
+\begin{itemize}
+    \item Creazione di un grafo a partire da una lista di archi in input, con numero di vertici ($n$) e archi ($m$) noto a priori, e con nodi etichettati in $ 0 \leq n < n $;
+    \item Enumerazione degli archi del grafo;
+    \item Enumerazione dei vertici del grafo;
+    \item Ottenere dei vertici adiacenti ad un nodo;
+    \item Enumerazione dei vertici adiacenti ad un nodo;
+    \item Aggiunta di un arco (escludendo archi duplicati di peso non minimo);
+    \item Rimozione di un arco.
+\end{itemize}
+
+\noindent Le due rappresentazioni più comuni per rappresentare un grafo sono \textbf{Matrici di Adiacenza} (\textit{Adj. Matrix}) o \textbf{Liste di Adiacenza} (\textit{Adj. List}). \\
+Noi abbiamo deciso invece di utilizzare una \textbf{Mappa di Adiacenza} (\textit{Adj. Map}), la quale ci permette complessità temporali migliori per le operazioni richieste a scapito di un moderato aumento della complessità spaziale, che rimane comunque \complexityNPlusM{}, lo stesso delle Matrici di Adiacenza. Nella tabella \ref{table:graph-representation-comparison} è possibile vedere un confronto tra le 3 diverse rappresentazioni di grafi possibili citate sopra. \\
+
+L'occupazione di spazio aggiuntiva è dovuta all'utilizzo di una \textit{std::unordered\_map} e un \textit{std::unordered\_set} ausiliario. Quest'ultimo tiene traccia degli archi inseriti per permettere una rapida estrazione, modifica e cancellazione degli archi del grafo. La mappa è invece usata per mappare ogni nodo ad un'altra mappa (nodo $\rightarrow{}$ peso), usata per eliminare efficacemente i nodi duplicati di peso non minimo al momento della creazione del grafo (scelta necessaria, vista la presenza di archi duplicati nei dataset dati). L'uso di mappe ci permette inoltre di individuare ed eliminare archi in tempo \complexityConstant{} ammortizzato.
+
+\begin{table}[ht]
+\centering
+    \begin{tabular}{|l|ccc|}
+    \hline
+    &  \multicolumn{1}{c}{Adj. Matrix} & \multicolumn{1}{c}{Adj. List} & \multicolumn{1}{c|}{Adj. Map} \\
+    \hline
+     Complessità spaziale   & \complexityNSquared{}  & \complexityNPlusM{} & \complexityNPlusM{} \\ \hline
+     
+     Creazione grafo & \complexityNSquared{}  & \complexityNPlusM{} & \complexityNPlusM{} \\
+     Enumerazione archi & \complexityNSquared{} & \complexityM{} & \complexityM{} \\
+     Enumerazione vertici & \complexityN{} & \complexityN{} & \complexityN{} \\
+     Ottenere vertici adiacenti ad un nodo & \complexityN{} & \complexityNDegree{} & \complexityConstant{} \\
+     Enumerazione vertici adiacenti ad un nodo & \complexityN{} & \complexityNDegree{} &  \complexityNDegree{} \\
+     Aggiunta arco & \complexityConstant{} & \complexityConstant{} & \complexityConstant{} \\
+     Rimozione arco & \complexityConstant{} & \complexityM{} & \complexityConstant{} \\
+    \hline
+    \end{tabular}
+    \caption{Confronto di complessità spaziali (prima riga) e complessità temporali di alcune operazioni su grafi rappresentati da diverse strutture dati. "Adj. Matrix" indica "Matrice di adiacenza", "Adj. List" indica "Lista di adiacenza", e "Adj. Map" indica "Mappa di adiacenza".}
+    \label{table:graph-representation-comparison}
+\end{table}
+
+Il diagramma di classe in figura \ref{fig:AdjMapGraph Class} riporta gli attributi e i metodi offerti dalla classe AdjacentMapGraph.
 
 \begin{figure}[h]
-	\caption{Diagramma di classe per AdjListGraph}
+	\caption{Diagramma di classe per AdjacentMapGraph, definita in \textit{Shared/AdjacentMapGraph.h}}
 	\centering
 	\includegraphics[width=0.7\textwidth]{./images/AdjancencyMapGrapClass.png}
 	\label{fig:AdjMapGraph Class}
 \end{figure}
 
-Nella figura~\ref{fig:AdjMapGraph Abstract} è riportata la trasformazione di un grafo di esempio nella relativa mappa di adiacenza che abbiamo pensato. Come è possibile notare questa mappa di adiacenza è composta da una prima mappa che elenca tutti i vertici del grafo (adj\_map\_t) e a seguire nel valore di ogni entry viene inserita una nuova mappa (vertex\_weight\_map\_t) che rappresenta gli archi del grafo: vengono elencati dunque tutti i nodi adiacenti al vertice dato con il relativo peso dell'arco. In questo modo è possibile avere tutte le operazioni di inserimento, ricerca, cancellazione e update in tempo costante, a discapito di una complessità spaziale più elevata. 
+Nella figura \ref{fig:AdjMapGraph Abstract} è riportata la trasformazione di un grafo di esempio nella relativa mappa di adiacenza che abbiamo pensato. Come è possibile notare questa mappa di adiacenza è composta da una prima mappa che elenca tutti i vertici del grafo (adj\_map\_t) e a seguire nel valore di ogni entry viene inserita una nuova mappa (vertex\_weight\_map\_t) che rappresenta gli archi del grafo: vengono elencati dunque tutti i nodi adiacenti al vertice dato con il relativo peso dell'arco. In questo modo è possibile avere tutte le operazioni di inserimento, ricerca, cancellazione e update in tempo costante, a discapito di una complessità spaziale più elevata. 
 
 \begin{figure}[h]
 	\caption{Rappresentazione della mappa di adiacenza}
@@ -35,9 +71,10 @@ Nella figura~\ref{fig:AdjMapGraph Abstract} è riportata la trasformazione di un
 
 Nonostante la mappa di adiacenza sarebbe già stata sufficiente per salvare tutte le informazioni necessarie alla rappresentazione di un grafo, in alcune operazioni risulta essere lenta. L'esempio di operazione che ci ha spinto ad inserire una nuova struttura dati (unordered\_set in questo caso) è il metodo per ritornare tutti gli archi di un grafo in quanto tale metodo se implementato avendo a disposizione la sola mappa di adiacenza prevederebbe in maniera semplice la scansione dell'intera mappa di adiacenza, con l'inserimento degli archi via via che si incontra un nuovo vertice. Tale semplice implementazione però porterebbe alla creazione di un vettore in cui se sussiste un arco tra un vertice 2 e un vertice 3 (come nell'esempio in figura~\ref{fig:AdjMapGraph Abstract}), al vettore verrebbe aggiunto sia l'arco 2 $\rightarrow$ 3 che 3 $\rightarrow$ 2. \\
 
-Le cose si complicano maggiormente infatti se si restringe la richiesta di non restituire gli archi doppi come abbiamo già osservato. A tale proposito si potrebbe ricercare l'eventuale presenza di tali archi doppi ed eliminarli di conseguenza, ma il tutto richiederebbe maggiori operazioni e dunque un maggior complessità temporale.\\
+% Le cose si complicano maggiormente infatti se si restringe la richiesta di non restituire gli archi doppi come abbiamo già osservato. A tale proposito si potrebbe ricercare l'eventuale presenza di tali archi doppi ed eliminarli di conseguenza, ma il tutto richiederebbe maggiori operazioni e dunque un maggior complessità temporale.\\
 
-Per tali ragioni è stato deciso di affiancare alla mappa di adiacenza, un'apposita struttura dati che permettesse di tenere traccia degli archi e di avere tempi di esecuzione costanti per le operazioni di aggiunta, rimozione e ricerca. Così facendo è possibile garantire che l'operazione di restituzione degli archi singoli di un grafo abbia tempo O(m) se si richiede di restituire un vettore, o addirittura O(1) se si richiede la restituzione di un puntatore a tale struttura.
+% Per tali ragioni è stato deciso di affiancare alla mappa di adiacenza, un'apposita struttura dati che permettesse di tenere traccia degli archi e di avere tempi di esecuzione costanti per le operazioni di aggiunta, rimozione e ricerca. Così facendo è possibile garantire che l'operazione di restituzione degli archi singoli di un grafo abbia tempo O(m) se si richiede di restituire un vettore, o addirittura O(1) se si richiede la restituzione di un puntatore a tale struttura.
+
 E' stato scelto dunque di utilizzare come struttura dati da affiancare unordered\_set perché oltre ad avere le caratteristiche richieste, se appositamente configurata permette di garantire l'assenza di archi doppi, compresi quelli visti nell'esempio precedente (ossia 2 $\rightarrow$ 3 e 3 $\rightarrow$ 2). Per fare ciò è stato dunque opportunamente configurato l'operatore di uguaglianza e la funzione di hash, in  modo che archi equivalenti abbiamo la stessa funzione di hash e siano riconosciuti come uguali, evitando così l'inserimento di un arco doppio visto che  unordered\_set non prevede elementi doppi al suo interno.\\
 
 Una rappresentazione astratta di tale struttura è possibile visualizzarla nella figura~\ref{fig:edges_set}, dove è possibile notare che se viene richiesto l'inserimento di un arco 3 $\rightarrow$ 2 ove già presente un arco 2 $\rightarrow$ 3 questo non viene inserito da unordered\_set.\\
@@ -55,17 +92,20 @@ L'ultimo problema non ancora affrontato riguarda la possibilità di inserire un 
 	\item \textbf{se l'arco non era già stato inserito:} si inserisce l'arco sia nella lista di adiacenza che nell'unordered\_set.
 \end{itemize}
 
-Tutte le operazioni di aggiunta, per come sono implementati unordered\_set e unordered\_map in C++ hanno tempo costante e dunque l'operazione di aggiunta richiede tempo costante.
+\noindent Le operazioni di inserimento nei container \textit{std::unordered\_set} e \textit{std::unordered\_set} hanno complessità temporale \complexityConstant{} ammortizzata. Tuttavia, dal momento che sappiamo a priori il numero di vertici da inserire in \textit{adj\_map} e il numero di archi da inserire in \textit{edge\_set}, abbiamo preallocato un numero di bucket sufficienti ad evitare costosi \textit{rehash} in entrambi i casi.
 
 \subsubsection {Costruzione del Grafo}
 
-\textit{Shared/adjacency\_map\_graph\_factory.h} definisce una funzione di utilità che scorre tutte le righe del file in ingresso, salva gli archi in un vettore temporaneo, e lo trasferisce tramite \textit{move semantics} ad un nuovo oggetto di tipo \textit{AdjacencyMapGraph}. La mappa di adiacenza interpreta il grafo come spiegato nella sezione \ref{sub:graph-representation}.
+\textit{Shared/adjacency\_map\_graph\_factory.h} definisce una funzione di utilità che scorre tutte le righe del file in ingresso, salva gli archi in un vettore temporaneo, e lo trasferisce tramite \textit{move semantics} ad un nuovo oggetto di tipo \textit{AdjacencyMapGraph}. La mappa di adiacenza interpreta il grafo come spiegato nella sezione \ref{sub:graph-representation}. \\
+
+\noindent \textbf{NOTA}: il valore dei nodi di ogni grafo è decrementato di 1 in fase di lettura del dataset di input.
+Questo semplifica e rende più leggibile l'implementazione di alcune strutture dati (ad esempio i Disjoint Set) e la costruzione dell'MST con Prim.
 
 \subsection{Strutture Dati}
 
 Tutte le strutture dati elencate di seguito sono definite nella cartella \textit{Shared}.
 Ove possibile, per la nomenclatura dei metodi abbiamo cercato di seguire lo stesso standard dei container STL di C++.
-Inoltre, le strutture dati usate sono sempre preallocate in memoria quando possibile, evitando rehashing e riallocazioni dispendiose. Questo significa che la maggiorparte delle operazioni indicate con \complexity1{} ammortizzato siano in realtà totalmente costanti nella pratica.
+Inoltre, le strutture dati usate sono sempre preallocate in memoria quando possibile, evitando rehashing e riallocazioni dispendiose. Questo significa che la maggiorparte delle operazioni indicate con \complexityConstant{} ammortizzato siano in realtà totalmente costanti nella pratica.
 
 \subsubsection{Heap}
 
@@ -86,7 +126,7 @@ Per generalizzare il concetto di MinHeap/MaxHeap, la classe usa un comparatore b
 
 \paragraph{Ottimizzazioni}\mbox{} \\
 
-L'operazione di divisione per 2, necessaria per determinare ad esempio i figli sinistro e destro di un nodo nella Heap, è stata sostituita con l'operazione di shift binario.
+\noindent L'operazione di divisione per 2, necessaria per determinare ad esempio i figli sinistro e destro di un nodo nella Heap, è stata sostituita con l'operazione di shift binario.
 
 \subsubsection{K-ary Heap}
 
@@ -107,91 +147,59 @@ delle chiavi e degli indici posizionali di ogni elemento della Heap, e permetter
 
 \paragraph{Ottimizzazioni}\mbox{} \\
 
-Poichè istanziare una PriorityQueue così generica e flessibile è un'operazione non triviale, abbiamo creato una serie di funzioni di utilità espressive e facili da usare. Ad esempio, per creare una coda di priorità basa su un Min Heap binario, esiste il metodo \textit{make\_min\_priority\_queue} (analogamente esiste \textit{make\_min\_k\_priority\_queue} per Min Heap K-ari).
+\noindent Poichè istanziare una PriorityQueue così generica e flessibile è un'operazione non triviale, abbiamo creato una serie di funzioni di utilità espressive e facili da usare. Ad esempio, per creare una coda di priorità basa su un Min Heap binario, esiste il metodo \textit{make\_min\_priority\_queue} (analogamente esiste \textit{make\_min\_k\_priority\_queue} per Min Heap K-ari).
 L'utente finale della classe non deve preoccuparsi di inserire manualmente tutti i parametri template di tali funzioni, grazie alla \textit{type deduction} di C++17.
 
 \subsubsection{Disjoint Set}
 
 La classe base astratta in \textit{DisjointSetBase.h} definisce il contratto dei metodi \textit{find} e \textit{unite} (il nome comunemente usato per questa operazione, \textit{union}, è una parola chiave riservata in C++).
-Gli elementi sono salvati in un container \textit{std::vector}, sotto l'assunzione che gli elementi siano solo numeri interi positivi.
-Avremmo potuto rilassare questo vincolo usando una struttura dati \textit{std::unordered\_map}, ma abbiamo preferito evitare perché i vettori sono molto più performanti nella pratica.
+Gli elementi sono salvati in un container \textit{std::vector} chiamato \textbf{parents}, sotto l'assunzione che gli elementi siano solo numeri interi positivi distinti numerati da $0$ a $n-1$.
+Avremmo potuto rilassare questo vincolo usando una struttura dati \textit{std::unordered\_map}, ma abbiamo preferito evitare perché i vettori sono molto più performanti nella pratica. \\
 
-Abbiamo realizzato 2 implementazioni diverse di Disjoint Set.
-\textit{DisjointSet} adotta la policy \textit{union-by-size} vista a lezione, senza particolari ottimizzazioni. Definisce un membro \textit{std::vector} per salvare le dimensioni dei sottoalberi radicati nei vari nodi salvati, inizializzandolo a 1.
-\textit{DisjointSetCompressed}, invece, adotta la policy \textit{union-by-rank} con \textit{path-compression} tramite la tecnica \textit{path-splitting}. Definisce un membro \textit{std::vector} per salvare i rank dei dei vari nodi salvati, inizializzandolo a 0.
+È possibile rappresentare graficamente i Disjoint-Set come alberi.
+\mintinline{c++}{parents[i]} indicizza il padre del nodo $i$. Al momento dell'inizializzazione della classe, ogni nodo è settato come padre di se stesso, come mostrato in figura \ref{fig:disjoint-set-base-parents}.
 
-\subsection{Algoritmi}
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=0.7\textwidth]{./images/DisjointSetParentsVector.png}
+	\caption{Inizializzazione di \textit{parents} nella classe \textit{DisjointSetBase}}
+	\label{fig:disjoint-set-base-parents}
+\end{figure}
 
-\subsubsection{Prim con Binary Heap}
+\noindent Abbiamo realizzato 2 implementazioni diverse di Disjoint Set.
+\textit{DisjointSet} adotta la policy \textit{union-by-size} vista a lezione, senza particolari ottimizzazioni. Definisce un membro \textit{std::vector} per salvare le dimensioni dei sottoalberi radicati nei vari nodi salvati, inizializzandolo a 1, come mostrato in figura \ref{fig:disjoint-set-sizes}.
 
+\begin{figure}[htbp]
+	\centering
+    \includegraphics[width=0.7\textwidth]{./images/DisjointSetSizesVector.png}
+	\caption{Inizializzazione di \textit{sizes} nella classe \textit{DisjointSet}}
+	\label{fig:disjoint-set-sizes}
+\end{figure}
 
-\subsubsection{Kruskal Naive}
-L'algoritmo Kruskal Naive è stato implementato a partire dallo pseudo codice visto in classe. A partire da questo ci si è subito accorti che una delle peculiarità di tale algoritmo e la necessità di verificare ad ogni inserimento di un arco di peso minimo la presenza di un ciclo nell'MST calcolato. Per ottenere tale funzionalità abbiamo deciso di modificare DFS in maniera da rilevare la presenza di un ciclo in un grafo. Per fare questo è stato creata la classe DFSCycleDetection, che è possibile ritrovare nella cartella "Shared", che data la rappresentazione del grafo e richiamando l'apposito metodo has\_cycle() è in grado di rilevare la presenza di un ciclo all'interno di esso usando per l'appunto una visita in profondità.\\
+\noindent \textit{DisjointSetCompressed}, invece, adotta la policy \textit{union-by-rank} con \textit{path-compression} tramite la tecnica \textit{path-splitting}.
+Ad ogni invocazione del metodo \textit{find()} su un nodo $x$, ogni nodo nel percorso da $x$ all'antenato che identifica il set di $x$ è aggiornato per puntare al nodo "nonno". \\
+\noindent DisjointSetCompressed definisce un membro \textit{std::vector} per salvare i rank dei dei vari nodi salvati, inizializzando il rank di ogni nodo a 0. Ad ogni invocazione del metodo \textit{unite()} su due nodi $x$ e $y$, ci sono due possibilità:
 
-E' stato pertanto necessario modificare DFS nel seguente modo:
-\begin{itemize}
-	\item non è necessario avere una label per ogni arco che etichetti quell'arco come "DISCOVERY EDGE" o "BACK EDGE"
-	\item quando un arco verrebbe etichettato come "BACK EDGE" nello pseudo codice visto in classe possiamo affermare che nel grafo è presente un ciclo. Non è necessario riscostruire tutto il ciclo come visto in un ulteriore modifica di DFS in classe.
-	\item al posto di tener traccia di ogni arco se è stato visitato o meno attraverso l'attributo ID visto in clase, è stato deciso di creare un set di archi già visitati dove l'inseriemento e la ricerca avviene in tempo costante.
-	\item per essere sicuri di non prendere in considerazione il vertice da cui viene lanciata ricorsivamente la DFS (ossia per non ritrovare il nodo da cui siamo venuti) è stata passata alla ricorsione il vertice padre, in modo che quando si scansiona la lista di adiacenza del vertice in considerazione non si consideri il vertice padre, simulando così il comportamento della funzione "opposite(v,e)" nel pseudo codice.
-\end{itemize}
+\begin{enumerate}
+    \item Gli alberi di $x$ e $y$ hanno lo stesso rank $\rightarrow{}$ i rank del set che unirà $x$ e $y$ viene incrementato di 1;
+    \item Gli alberi di $x$ e $y$ hanno rank diversi $\rightarrow{}$ il set che unirà $x$ e $y$ avrà rank pari a \\ $max\{ rank(find(x)), rank(find(y)) \}$.
+\end{enumerate}
 
-Per risolvere il problema di più di un eventuale componenente connessa nel grafo, vengono sempre scansionati tutti i nodi non ancora visitati attraverso un ciclo for su tutti i nodi come visto in classe.
+La \textit{path-compression} può modificare le altezze degli alberi ad ogni esecuzione, ma non cambierà mai il valore dei rank.
+Nonostante sia possibile implementare tecniche di \textit{path-compression} anche con la policy \textit{union-by-size}, abbia deciso di cogliere l'opportunità di implementare la policy \textit{union-by-rank}, che non è stata spiegata a lezione. \\
 
-Un ulteriore piccola ottimizzazione aggiunta è la verifica della presenza di soli 2 vertici in cui non è neccessario lanciare una visita in profondita, in quanto un ciclo non può sussistere tra 2 vertici se gli archi non sono diretti e non esistono self-loop TODO: VERIFICARE QUESTA SUPPOSIZIONE.
-
-Un altra ulteriore ottimizzazione di tale algoritmo è la verifica ad ogni aggiunta di un nuovo arco che non crea un ciclo nel grafo, della soglia massima di archi che un MST può avere, che come visto in classe è pari al numero di nodi totali del grafo - 1. Pertanto non appena l'MST che si sta calcolando raggiunge la soglia prestabilità e possibile ritornare immediatamente l'MST.
-
-Tale algoritmo risulta avere complessità dunque complessità O(mn) come visto in classe.
-
-
-\subsubsection{Kruskal con Disjoint Set}
-L'algoritmo di Kruskal con Disjoint Set implementato risulta essere in buona parte fedele a quello già visto in classe, con al differenze che è stato anche ottimizzata la condizione di terminazione, che prevede che al raggiungimento di n-1 archi all'interno dell'mst costruito, l'algoritmo termina restituendo l'mst calcolato fino a quel momento. Per implementare completamente questo algoritmo efficiente di Kruskal è necessario anche la creazione di un Disjoint Set: per fare ciò si e definita una classe astratta di base chiamata "DisjointSetBase" per poi implementarla con la classe "DisjointSet" e "DisjointCompressed" che non fanno altro che implementare i metodi astratti find e unite. 
-
-L'implementazione della classe astratta di basa è stata fatta a partire da 2 vettori:
-\begin{itemize}
-    \item \textbf{sizes}: che contiene la dimensione del set etichettato con l'indice corrispondente alla posizione nel vettore. Tale vettore dopo l'iniziallizazione conterrà tanti 1 quanti sono i vertici del grafo, in quanto ci sarà un set diverso per ogni grafo di dimensione 1. 
-    \begin{figure}[h]
-    	\caption{Inizializzazione di sizes}
-    	\centering
-        \includegraphics[width=0.7\textwidth]{./images/DisjointSetSizesVector.png}
-    	\label{fig:sizes}
-    \end{figure}
-    
-    \item \textbf{parents}: che contiene il nodo padre del nodo attuale etichettato con l'indice corrispondente alla posizione nel vettore dei vertici. Tale vettore dopo l'inizializzazione conterrà dunque, fatta l'assunzione che i vertici siano numerati da 0 a n-1, la posizione attuale nel vettore, in quanto il nodo 0 ha 0 come padre, il nodo 1 ha 1 come suo padre e così via.
-    \begin{figure}[h]
-    	\caption{Inizializzazione di parents}
-    	\centering
-    	\includegraphics[width=0.7\textwidth]{./images/DisjointSetParentsVector.png}
-    	\label{fig:parents}
-    \end{figure}
-\end{itemize}
-
-Per implementare la classe "DisjointSet" si è scelto di eseguire l'operazione di unione tramite union by size come visto in classe. La seconda versione, ossia "DisjointCompressed" implementa invece l'unione tramite union by rank e path splitting: ogni volta che una find viene chiamata su di un nodo, quest'ultima fa puntare ogni nodo nel percorso nodo-radice a suo nonno, rendendo gli alberi via via sempre meno profondi. La ragione di questa scelta, ossia di aver implementato anche la union by rank con path splitting è per approfondire anche tale soluzione accennata in classe, osservandone il comportamento in termini di velocità di esecuzione. Per avere un'idea di come tale struttura dati è stata implementata con l'uso di questi 2 vettori (sizes e parents) ne riportiamo un esempio in versione union by size nella figura~\ref{fig:disjointset example} e un esempio in versione union by rank e path splitting nella figura~\ref{fig:disjointset path c example}.
+In figura \ref{fig:disjoint-set-union-example} è possibile vedere un esempio di union-by-size implementato dalla classe \textit{DisjointSet}. Analogamente, in figura \ref{fig:disjoint-set-compressed-union-example} è possibile vedere un esempio di union-by-rank con path-splitting implementato dalla classe \textit{DisjointSetCompressed}.
 
 \begin{figure}[h]
-	\caption{Esempio di unione con DisjointSet}
 	\centering
 	\includegraphics[width=0.7\textwidth]{./images/DisjointSetExample.png}
-	\label{fig:disjointset example}
+	\caption{Esempio di unione con DisjointSet}
+	\label{fig:disjoint-set-union-example}
 \end{figure}
 
 \begin{figure}[h]
-	\caption{Esempio di unione con DisjointCompressed}
 	\centering
 	\includegraphics[width=0.7\textwidth]{./images/DisjointSetCompressedExample.png}
-	\label{fig:disjointset path c example}
+	\caption{Esempio di unione con DisjointSetCompressed}
+	\label{fig:disjoint-set-compressed-union-example}
 \end{figure}
-
-Infine, per dare una panoramica delle classi che implementano tali strutture dati riportiamo il relativo diagramma di classe, raffigurato in figura ~\ref{fig:DisjointSet Class}.
-
-\begin{figure}[h]
-	\caption{Diagramma di classe di DisjointSet}
-	\centering
-	\includegraphics[width=0.7\textwidth]{./images/DisjointSetClass.png}
-	\label{fig:DisjointSet Class}
-\end{figure}
-
-Come possiamo notare dal diagramma di classe, abbiamo una classe astratta DisjointSetBase che viene implementata dalle classi DisjointSet e DisjointCompressed che implementano i metodi astratti find e union.
-
-
