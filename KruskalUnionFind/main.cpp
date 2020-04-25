@@ -2,14 +2,14 @@
 
 #include "AdjacencyMapGraph.h"
 #include "adjacency_map_graph_factory.h"
-#include "sum_weights.h"
 #include "kruskal_mst.h"
+#include "sum_weights.h"
 
 int main() noexcept {
-    typedef size_t Label; // nodes are identified by size_t type
-    typedef long Weight;  // weights are of type long
+    typedef size_t Label;  // nodes are identified by size_t type
+    typedef long Weight;   // weights are of type long
 
-	AdjacencyMapGraph<Label, Weight> adj_map_graph(adjacency_map_graph_factory<Label, Weight>());
+    AdjacencyMapGraph<Label, Weight> adj_map_graph(adjacency_map_graph_factory<Label, Weight>());
 
     // compute Minimum Spanning Tree with Kruskal algorithm using Disjoint-Set data structure
     const auto& mst = kruskal_mst(std::move(adj_map_graph));

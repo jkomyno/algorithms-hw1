@@ -4,7 +4,7 @@
   \usepackage[italian]{babel}
   \usepackage{tabularx}
   \usepackage[font=small,labelfont=bf]{caption}
-  \usepackage[footskip=0.4in]{geometry}
+  \usepackage[footskip=0.4in,margin=2.5cm]{geometry}
   \usepackage{enumitem}
   \usepackage{graphicx}
   \usepackage{amssymb}
@@ -29,6 +29,17 @@
   \usepackage{caption}
   \usepackage{longtable}
   \usepackage{amssymb}
+  \usepackage{minted}
+
+\newminted{c++}{
+    frame=leftline,
+    framesep=2mm,
+    baselinestretch=1.2,
+    fontsize=\footnotesize,
+    fontfamily=courier,
+    escapeinside=@@,
+    rulecolor=black
+}
 
   \captionsetup[table]{position=bottom}
 
@@ -54,22 +65,6 @@
   \fontfamily{arial}
 
    % C++ code setting
-  \lstset{
-    language=C++,
-    basicstyle=\ttfamily\footnotesize,
-    keywordstyle=\color{red},
-    breaklines=true,
-    xleftmargin=2em,
-    numbers=left,
-    numberstyle=\color[RGB]{222,155,81},
-    frame=leftline,
-    tabsize=4,
-    breakatwhitespace=false,
-    showspaces=false,
-    showstringspaces=false,
-    showtabs=false,
-    morekeywords={Label, Weight},
-  }
 
   \newcommand{\tablepath}{tables}
 
@@ -91,12 +86,19 @@
   \newcommand\strong[1]{\textbf{#1}}
 
   \newcommand\complexity[1]{$\mathcal{O}(${#1}$)$}
-   \newcommand\complexity1[0]{\complexity{$1$}}
+  \newcommand\complexityConstant[0]{\complexity{$1$}}
+   
+  \newcommand\complexityNSquared[0]{\complexity{$n^2$}}
+  \newcommand\complexityNDegree[0]{\complexity{$degree(n)$}}
+  \newcommand\complexityNPlusM[0]{\complexity{$n + m$}}
+  \newcommand\complexityM[0]{\complexity{$m$}}
   \newcommand\complexityN[0]{\complexity{$n$}}
+  \newcommand\complexityMLogN[0]{\complexity{$m \cdot log(n)$}}
   \newcommand\complexityLogN[0]{\complexity{$\log_{2}({n})$}}
   \newcommand\complexityLogkN[0]{\complexity{$\log_{k}({n})$}}
-  \newcommand\complexityKLogkN[0]{\complexity{$k\log_{k}({n})$}}
+  \newcommand\complexityKLogkN[0]{\complexity{$k \cdot \log_{k}({n})$}}
   \newcommand\complexityAlpha[0]{\complexity{$\log_{*}({n})$}}
+  \newcommand\complexityMLogM[0]{\complexity{$m \cdot log(m)$}}
 
   \begin{document}
 
@@ -108,10 +110,13 @@
     \input{chapters/2-language-choice}
     \input{chapters/3-benchmark-process}
     \newpage
-
+    
     \input{chapters/4-code-structure}
     \input{chapters/5-implementation-choices}
 
+    \newpage
+    \input{chapters/6-algorithms}
+    
     \newpage
     \input{chapters/6-performance-analysis}
     \input{chapters/7-tests}
