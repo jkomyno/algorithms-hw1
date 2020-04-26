@@ -515,8 +515,6 @@ if __name__ == '__main__':
             names_to_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min)
             names_to_plot([PRIM_K_HEAP, KRUSKAL_UNION_FIND], dataframes_min)
             names_to_plot([PRIM_K_HEAP, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
-            names_to_plot([PRIM_BINARY_HEAP, PRIM_8_HEAP], dataframes_min)
-            names_to_plot([PRIM_K_HEAP, PRIM_8_HEAP], dataframes_min)
 
     # plot_simple_bar(dataframes_min[KRUSKAL_SIMPLE], x='ms', y='n', title='Kruskal Simple')
     # plot_interesting_nodes_bar(dataframes_min[KRUSKAL_SIMPLE].round(1), title='Kruskal Simple')
