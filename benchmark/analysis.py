@@ -437,22 +437,25 @@ def split_df(df: pd.DataFrame, pred):
     return (df1, df2)
 
 
-def split_and_plot(names: List[str], dfs: Dict[str, pd.DataFrame], split_pred):
+def split_and_plot(names: List[str], dfs: Dict[str, pd.DataFrame], pred, to_print='both'):
     """
     Split dataframes from given names w.r.t. split predicate and plot them.
     :param names: A list of algorithms names.
     :param dfs: A dictionary of dataframes.
-    :param split_pred: A predicate over df benchmark row.
+    :param pred: A predicate over df benchmark row.
+    :param split_print: What to plot, can be either 'left', 'right' or 'both'.
     """
     d1, d2 = {}, {}
     for i in range(len(names)):
         name = names[i]
-        df1, df2 = split_df(dfs[name], pred=split_pred)
+        df1, df2 = split_df(dfs[name], pred=pred)
         d1 = {**d1, **{name: df1}}
         d2 = {**d2, **{name: df2}}
 
-    names_to_plot(names, d1)
-    names_to_plot(names, d2)
+    if to_print == 'left' or to_print == 'both':
+        names_to_plot(names, d1)
+    if to_print == 'right' or to_print == 'both':
+        names_to_plot(names, d2)
 
 
 if __name__ == '__main__':
@@ -485,9 +488,9 @@ if __name__ == '__main__':
     if IS_PLOT_ENABLED:
 
         if IS_PLOT_OTHER_ENABLED:
-            split_and_plot([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, split_pred=lambda x: x['n'] <= 2000)
-            split_and_plot([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, split_pred=lambda x: x['n'] <= 2000)
-            split_and_plot([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, split_pred=lambda x: x['n'] < 20000)
+            split_and_plot([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 2000, to_print='left')
+            split_and_plot([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 2000)
+            split_and_plot([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] < 20000)
 
         if IS_PLOT_MAIN_ENABLED:
             names_to_plot(programs, dataframes_min)   # all
