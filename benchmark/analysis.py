@@ -1,6 +1,6 @@
 """
 Usage:
-> python3 analysis.py [latex] [plot-table-comparison]
+> python3 analysis.py [latex] [plot]
 
 The following script analyzes benchmarks for KruskalSimple, KruskalUnionFind (and variants) and
 PrimBinaryHeap algorithms.
@@ -13,7 +13,7 @@ the benchmarks, in particular
 
 Options:
 - [latex]: export comparison tables in latex format
-- [plot-table-comparison]: plot comparisons listed in comparison tables
+- [plot]: plot comparisons
 """
 
 from functools import reduce
@@ -38,8 +38,8 @@ N_DECIMALS = 3
 N_DECIMALS_PERCENTAGE = 2
 
 # if the script is given the argument 'latex', turn on LaTeX table generation
-FOR_LATEX = 'latex' in sys.argv
-PLOT_TABLE_COMPARISON = 'plot-table-comparison' in sys.argv
+FOR_LATEX = 'latex' in sys.argv or False
+IS_PLOT_ENABLED = 'plot' in sys.argv or False
 
 KRUSKAL_NAIVE = 'KruskalNaive'
 KRUSKAL_UNION_FIND = 'KruskalUnionFind'
@@ -395,7 +395,7 @@ def names_to_vs(names: List[str]) -> str:
 def names_to_dfs(names: List[str], dfs) -> Dict[str, List[pd.DataFrame]]:
     """
     Return a dict where for each name the key is one of the name given and the
-    value is the corresponding benchmark dataframe. 
+    value is the corresponding benchmark dataframe.
     """
     return reduce(lambda x, y: {**x, **y}, map(lambda n: {n: dfs[n]}, names))
 
@@ -419,6 +419,33 @@ def names_to_plot_logy(names: List[str], dfs: pd.DataFrame):
     plot_line(benchmark_subset, x='n', y='ms',
               title=title, options_f=[log_scale])
 
+def split_by_nodes(df: pd.DataFrame, pred):
+    """
+    Return splitted dataframes w.r.t. pred.
+    :param df: A dataframe.
+    :param pred: A predicate.
+    """
+    df1 = pd.DataFrame([df.loc[i] for i in range(len(df)) if pred(df.loc[i])], columns=df.columns)
+    df2 = pd.DataFrame([df.loc[i] for i in range(len(df)) if not pred(df.loc[i])], columns=df.columns)
+    # df2 = [x for x in df[x] if x['n'] >= threshold]
+    return (df1, df2)
+
+def split_and_plot(names: List[str], dfs: Dict[str, pd.DataFrame], split_pred):
+    """
+    Split dataframes from given names w.r.t. split predicate and plot them.
+    :param names: A list of algorithms names.
+    :param dfs: A dictionary of dataframes.
+    :param split_pred: A predicate over df benchmark row.
+    """
+    d1, d2 = {}, {}
+    for i in range(len(names)):
+        name = names[i]
+        df1, df2 = split_by_nodes(dfs[name], pred=split_pred)
+        d1 = {**d1, **{name: df1}}
+        d2 = {**d2, **{name: df2}}
+
+    names_to_plot(names, d1)
+    names_to_plot(names, d2)
 
 if __name__ == '__main__':
     # benchmark CSVs stored in DataFrames and grouped by program name
@@ -491,23 +518,24 @@ if __name__ == '__main__':
         names_to_plot(l, dataframes_min)
 
     # Main plots.
-    plot_all()
-    plot_all_logy()
-    plot_all_but_naive()
+    # plot_all()
+    # plot_all_logy()
+    # plot_all_but_naive()
 
-    plot_the_three()
-    plot_the_three_logy()
+    # plot_the_three()
+    # plot_the_three_logy()
 
-    plot_the_two()
+    # plot_the_two()
 
-    plot_kruskal_versions()
+    # plot_kruskal_versions()
 
-    plot_prim_versions()
-    plot_prim2_prim8()
-    plot_prim2_primK()
-    plot_prim8_primK()
+    # plot_prim_versions()
+    # plot_prim2_prim8()
+    # plot_prim2_primK()
+    # plot_prim8_primK()
 
-    if PLOT_TABLE_COMPARISON:
+    if IS_PLOT_ENABLED:
+        split_and_plot([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, split_pred=lambda x: x['n'] < 20000)
         names_to_plot_logy([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND], dataframes_min)
         names_to_plot_logy([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
         names_to_plot_logy([KRUSKAL_NAIVE, PRIM_BINARY_HEAP], dataframes_min)
