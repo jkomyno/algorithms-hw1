@@ -3,7 +3,7 @@
 
 \subsection{Confronto di runtime tra programmi}
 
-\begin{table}[h!]
+\begin{table}[H]
 \centering
     \begin{tabular}{|l|rrrrrr|}
     \hline
@@ -20,7 +20,7 @@
 \end{table}
 
 
-\begin{table}[h!]
+\begin{table}[H]
 \centering
     \hspace*{-1cm}
     \begin{tabular}{|l|rrrrrr|}
@@ -37,7 +37,7 @@
     \label{table:kruskal-simple-vs-kruskal-union-find-compressed}
 \end{table}
 
-\begin{table}[h!]
+\begin{table}[H]
 \centering
     \begin{tabular}{|l|rrrrrr|}
     \hline
@@ -53,7 +53,7 @@
     \label{table:kruskal-simple-vs-prim-binary-heap}
 \end{table}
 
-\begin{table}[h!]
+\begin{table}[H]
 \centering
     \hspace*{-0.25cm}
     \begin{tabular}{|l|rrrrrr|}
@@ -70,7 +70,7 @@
     \label{table:kruskal-union-find-vs-kruskal-union-find-compressed}
 \end{table}
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
     \begin{tabular}{|l|rrrrrr|}
     \hline
@@ -86,7 +86,7 @@
     \label{table:prim-binary-heap-vs-kruskal-union-find}
 \end{table}
 
-\begin{table}[ht]
+\begin{table}[H]
 \centering
     \begin{tabular}{|l|rrrrrr|}
     \hline
@@ -108,12 +108,57 @@
 Eseguite i tre algoritmi che avete implementato (Prim, Kruskal naive e Kruskal efficiente) sui grafi del dataset. Misurate i tempi di calcolo dei tre algoritmi e create un grafico che mostri la variazione dei tempi di calcolo al variare del numero di vertici nel grafo. Per ognuna delle istanze del problema, riportate il peso del minimum spanning tree ottenuto dagli algoritmi.
 \end{displayquote}
 
-\noindent Il risultato del minimum spanning tree ottenuto dagli algoritmi è illustrato nelle tabelle \ref{table:KruskalSimple-results}, \ref{table:KruskalUnionFind-results}, \ref{table:KruskalUnionFindCompressed-results} e \ref{table:PrimBinaryHeap-results}.
+\noindent Il risultato del minimum spanning tree ottenuto dagli algoritmi è illustrato dai seguenti
+grafici. Le figure \ref{fig:TheThreeComparison300}, \ref{fig:TheThreeComparison1k}
+e \ref{fig:TheThreeComparison2k} mostrano una comparativa piuttosto significativa tra i tre algorimti.
+\'E possibile notare infatti che anche con taglie dell'input molto piccole il comportamento degli 
+algorimti differisce in modo cosistente: in particolare, KruskalSimple assume sin da subito un
+andamento esponenziale nel numero di nodi, e non compete per nulla con KruskalUnionFind e PrimBinaryHeap.
 
-\includetable{KruskalSimple.min}
-\includetable{KruskalUnionFind.min}
-\includetable{KruskalUnionFindCompressed.min}
-\includetable{PrimBinaryHeap.min}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./images/KruskalSimple_vs_KruskalUnionFind_vs_PrimBinaryHeap_(300_nodes).png}
+	\caption{Andamento di KruskalSimple, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 300 nodi.}
+    \label{fig:TheThreeComparison300}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./images/KruskalSimple_vs_KruskalUnionFind_vs_PrimBinaryHeap_(1k_nodes).png}
+    \caption{Andamento di KruskalSimple, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 1000 nodi.}    
+    \label{fig:TheThreeComparison1k}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./images/KruskalSimple_vs_KruskalUnionFind_vs_PrimBinaryHeap_(2k_nodes).png}
+    \caption{Andamento di KruskalSimple, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 2000 nodi.}
+    \label{fig:TheThreeComparison2k}
+\end{figure}
+
+\noindent Per quanto riguarda KruskalUnionFind e PrimBinaryHeap la differenza è più sottile, 
+e viene mostrata dalle figure \ref{fig:TheTwoComparison2k} e \ref{fig:TheTwoComparison5k}, ma è molto facile
+vedere che a meno di un piccolo fattore i due hanno lo stesso trend di crescita.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{./images/KruskalUnionFind_vs_PrimBinaryHeap_(5k_nodes).png}
+	\caption{Andamento di KruskalUnionFind e PrimBinaryHeap con taglia dell'input da 0 a 2000 nodi.}
+    \label{fig:TheTwoComparison2k}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{./images/KruskalUnionFind_vs_PrimBinaryHeap_(20k_nodes).png}
+    \caption{Andamento di KruskalUnionFind e PrimBinaryHeap con taglia dell'input da 0 a 20000 nodi.}
+    \label{fig:TheTwoComparison5k}
+\end{figure}
+
+\noindent Per avere un'idea più precisa dei tempi di esecuzione degli 
+algorimti è possibile consultare le tabelle \ref{table:KruskalSimple-results},
+ \ref{table:KruskalUnionFind-results}, \ref{table:KruskalUnionFindCompressed-results} 
+ e \ref{table:PrimBinaryHeap-results} in appendice TODO che riportano i risultati puntuali 
+ dell'esecuzione degli algoritmi.
 
 \subsection{Domanda \#2}
 

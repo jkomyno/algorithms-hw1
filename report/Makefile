@@ -27,7 +27,7 @@ pdfdocker:
 
 # build using pdflatex
 pdflatex: 
-	pdflatex -shell-escape $(MAINFILE)
+	pdflatex -shell-escape -interaction=nonstopmode $(MAINFILE)
 bib:
 	biber $(MAINFILE)
 
