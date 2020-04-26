@@ -1,6 +1,6 @@
 """
 Usage:
-> python3 analysis.py [--latex] [--plot [main, table, other]] [--tables]
+> python3 analysis.py [--latex] [--plot [main, table, other]] [--tables] [--save-plot]
 
 The following script analyzes benchmarks for KruskalSimple, KruskalUnionFind (and variants) and
 PrimBinaryHeap algorithms.
@@ -18,6 +18,7 @@ Options:
 
 from functools import reduce
 import sys
+import os
 from io import StringIO
 
 import pandas as pd
@@ -46,6 +47,10 @@ IS_PLOT_ENABLED = '--plot' in sys.argv
 IS_PLOT_MAIN_ENABLED = 'main' in sys.argv
 IS_PLOT_TABLE_ENABLED = 'table' in sys.argv
 IS_PLOT_OTHER_ENABLED = 'other' in sys.argv
+# if the script is given the argument '--save-plot', save plots to folder.
+IS_SAVE_PLOT_ENABLED = '--save-plot' in sys.argv
+
+PLOT_IMG_DIR = 'images'
 
 KRUSKAL_SIMPLE = 'KruskalSimple'
 KRUSKAL_UNION_FIND = 'KruskalUnionFind'
@@ -370,6 +375,16 @@ def export_dataframes_min_to_latex(dfs: Dict[str, pd.DataFrame]):
         tably_instance.run()
 
 
+def show_or_save_plot(title: str):
+    if IS_SAVE_PLOT_ENABLED:
+        if not os.path.exists(f'./{PLOT_IMG_DIR}'):
+            os.makedirs(f'./{PLOT_IMG_DIR}')
+        out_title = title.replace(' ', '_')
+        plt.savefig(f'./{PLOT_IMG_DIR}/{out_title}.png')
+    else:
+        plt.show()
+
+
 def plot_line(dfs: Dict[str, pd.DataFrame], x: str, y: str, title: str, options_f=[]):
     """
     Plots `dfs` data.
@@ -385,7 +400,8 @@ def plot_line(dfs: Dict[str, pd.DataFrame], x: str, y: str, title: str, options_
         for fo in options_f:
             fo(g)
     plt.title(title)
-    plt.show()
+
+    show_or_save_plot(title)
 
 
 def names_to_vs(names: List[str]) -> str:
@@ -403,21 +419,23 @@ def names_to_dfs(names: List[str], dfs) -> Dict[str, List[pd.DataFrame]]:
     return reduce(lambda x, y: {**x, **y}, map(lambda n: {n: dfs[n]}, names))
 
 
-def names_to_plot(names: List[str], dfs: pd.DataFrame):
+def names_to_plot(names: List[str], dfs: pd.DataFrame, title=None):
     """
     Plot given programs.
     """
     benchmark_subset = names_to_dfs(names, dfs)
-    title = names_to_vs(names)
+    if title is None:
+        title = names_to_vs(names)
     plot_line(benchmark_subset, x='n', y='ms', title=title)
 
 
-def names_to_plot_logy(names: List[str], dfs: pd.DataFrame):
+def names_to_plot_logy(names: List[str], dfs: pd.DataFrame, title=None):
     """
     Plot given programs with log scaled y axis.
     """
     benchmark_subset = names_to_dfs(names, dfs)
-    title = names_to_vs(names) + ' (log y scaled)'
+    if title is None:
+        title = names_to_vs(names) + ' (log y scaled)'
     def log_scale(g): return g.set_yscale('log')
     plot_line(benchmark_subset, x='n', y='ms',
               title=title, options_f=[log_scale])
@@ -433,29 +451,24 @@ def split_df(df: pd.DataFrame, pred):
     """
     df1 = pd.DataFrame([df.loc[i] for i in range(len(df)) if pred(df.loc[i])], columns=df.columns)
     df2 = pd.DataFrame([df.loc[i] for i in range(len(df)) if not pred(df.loc[i])], columns=df.columns)
-    # df2 = [x for x in df[x] if x['n'] >= threshold]
     return (df1, df2)
 
 
-def split_and_plot(names: List[str], dfs: Dict[str, pd.DataFrame], pred, to_print='both'):
+def split_and_plot(names: List[str], dfs: Dict[str, pd.DataFrame], pred, title=None, to_print='both'):
     """
     Split dataframes from given names w.r.t. split predicate and plot them.
     :param names: A list of algorithms names.
     :param dfs: A dictionary of dataframes.
     :param pred: A predicate over df benchmark row.
-    :param split_print: What to plot, can be either 'left', 'right' or 'both'.
+    :param title: The plot title.
     """
     d1, d2 = {}, {}
     for i in range(len(names)):
         name = names[i]
         df1, df2 = split_df(dfs[name], pred=pred)
         d1 = {**d1, **{name: df1}}
-        d2 = {**d2, **{name: df2}}
 
-    if to_print == 'left' or to_print == 'both':
-        names_to_plot(names, d1)
-    if to_print == 'right' or to_print == 'both':
-        names_to_plot(names, d2)
+    names_to_plot(names, d1, title=title)
 
 
 if __name__ == '__main__':
@@ -487,10 +500,23 @@ if __name__ == '__main__':
 
     if IS_PLOT_ENABLED:
 
+
         if IS_PLOT_OTHER_ENABLED:
-            split_and_plot([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 2000, to_print='left')
-            split_and_plot([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 2000)
-            split_and_plot([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] < 20000)
+            # OK (the tree)
+            split_and_plot([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 300, title=f'{names_to_vs([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (300 nodes)')
+            split_and_plot([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 1000, title=f'{names_to_vs([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (1k nodes)')
+            split_and_plot([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 2000, title=f'{names_to_vs([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (2k nodes)')
+            split_and_plot([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: True, title=f'{names_to_vs([KRUSKAL_SIMPLE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (100k nodes)')
+            
+            # OK (the two)
+            split_and_plot([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 5000, title=f'{names_to_vs([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (5k nodes)')
+            split_and_plot([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 20000, title=f'{names_to_vs([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (20k nodes)')
+
+            # OK (prim bin heap / k-ary heap)
+            split_and_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min, pred=lambda x: x['n'] <= 500, title=f'{names_to_vs([PRIM_BINARY_HEAP, PRIM_K_HEAP])} (500 nodes)')
+            split_and_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min, pred=lambda x: x['n'] >= 2000 and x['n'] <= 4000, title=f'{names_to_vs([PRIM_BINARY_HEAP, PRIM_K_HEAP])} (nodes between 2k and 4k)')
+            split_and_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min, pred=lambda x: x['n'] >= 80000, title=f'{names_to_vs([PRIM_BINARY_HEAP, PRIM_K_HEAP])} (nodes between 80k and 100k)')
+            
 
         if IS_PLOT_MAIN_ENABLED:
             names_to_plot(programs, dataframes_min)   # all
