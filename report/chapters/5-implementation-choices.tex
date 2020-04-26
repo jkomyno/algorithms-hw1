@@ -47,7 +47,7 @@ L'occupazione di spazio aggiuntiva è dovuta all'utilizzo di una \textit{std::un
      Rimozione arco & \complexityConstant{} & \complexityM{} & \complexityConstant{} \\
     \hline
     \end{tabular}
-    \caption{Confronto di complessità spaziali (prima riga) e complessità temporali di alcune operazioni su grafi rappresentati da diverse strutture dati. "Adj. Matrix" indica "Matrice di adiacenza", "Adj. List" indica "Lista di adiacenza", e "Adj. Map" indica "Mappa di adiacenza".}
+    \caption{Confronto di complessità spaziali (prima riga) e complessità temporali di alcune operazioni su grafi rappresentati da diverse strutture dati. "Adj. Matrix" indica "Matrice di adiacenza", "Adj. List" indica "Lista di adiacenza", e "Adj. Map" indica "Mappa di adiacenza".} \textbf{TODO: Ottenere vertici adiacenti di un nodo è O(1) in Adj Map? Sotto l'assunzione che non si restituisca un vettore o altra struttura dati forse}
     \label{table:graph-representation-comparison}
 \end{table}
 
@@ -105,20 +105,20 @@ Questo semplifica e rende più leggibile l'implementazione di alcune strutture d
 
 Tutte le strutture dati elencate di seguito sono definite nella cartella \textit{Shared}.
 Ove possibile, per la nomenclatura dei metodi abbiamo cercato di seguire lo stesso standard dei container STL di C++.
-Inoltre, le strutture dati usate sono sempre preallocate in memoria quando possibile, evitando rehashing e riallocazioni dispendiose. Questo significa che la maggiorparte delle operazioni indicate con \complexityConstant{} ammortizzato siano in realtà totalmente costanti nella pratica.
+Inoltre, le strutture dati usate sono sempre preallocate in memoria quando possibile, evitando rehashing e riallocazioni dispendiose. Questo significa che la maggior parte delle operazioni indicate con \complexityConstant{} ammortizzato siano in realtà totalmente costanti nella pratica.
 
 \subsubsection{Heap}
 
 \textit{Heap.h} contiene la definizione astratta di una generica Heap.
 Gli elementi della Heap sono salvati in un \textit{std::vector}.
 Per generalizzare il concetto di MinHeap/MaxHeap, la classe usa un comparatore binario booleano. Se il funtore dato in input alla classe è
-\textit{std::greater<>}, la struttura dati avrà la semantica di una Min Heap; viceversa, col comparatore \textit{std::less<>} si avrà la semantica di una Max Heap.
+\textit{std::greater<>}, la struttura dati avrà la semantica di una Min Heap; viceversa, con il comparatore \textit{std::less<>} si avrà la semantica di una Max Heap.
 
 \paragraph{Ottimizzazioni}\mbox{} \\
 
 \noindent Il parametro template \textit{IsAlreadyHeap} è usato per evitare di costruire la Heap se l'utente specifica il container dato in input alla struttura dati rispetta già la proprietà di essere una Heap. Il controllo su questo flag booleano avviene a compile-time. Questa ottimizzazione garantisce un risparmio di tempo pari a \complexityN{}, ed è usata nell'implementazione dell'algoritmo di \textbf{Prim}. \\
 
-\noindent I metodi che ripristinano la prioprietà di Heap (\textit{heapify\_up} e \textit{heapify\_down}) sono definiti in maniera iterative invece che ricorsiva, ottenendo performance migliori a parità di input.
+\noindent I metodi che ripristinano la prioprietà di Heap (\textit{heapify\_up} e \textit{heapify\_down}) sono definiti in modo iterativo invece che ricorsivo, ottenendo performance migliori a parità di input. \textbf{TODO: ne siamo ancora convinti al riguardo??}
 
 \subsubsection{Binary Heap}
 
@@ -126,7 +126,7 @@ Per generalizzare il concetto di MinHeap/MaxHeap, la classe usa un comparatore b
 
 \paragraph{Ottimizzazioni}\mbox{} \\
 
-\noindent L'operazione di divisione per 2, necessaria per determinare ad esempio i figli sinistro e destro di un nodo nella Heap, è stata sostituita con l'operazione di shift binario.
+\noindent L'operazione di divisione per 2, necessaria per determinare ad esempio il figlio sinistro e destro di un nodo nella Heap, è stata sostituita con l'operazione di shift binario.
 
 \subsubsection{K-ary Heap}
 
@@ -138,8 +138,7 @@ Per generalizzare il concetto di MinHeap/MaxHeap, la classe usa un comparatore b
 \textit{PriorityQueue.h} è una classe concreta che eredita privatamente \textit{BinaryHeap.h} o \textit{KHeap.h}, a seconda del parametro template \textit{Heap}.
 La semantica di PriorityQueue dipende dal comparatore passato al costruttore, che indica se si vuole usare una coda di priorità basata su Min Heap o su Max Heap. \\
 
-\noindent PriorityQueue ha accesso diretto ai nodi salvati nella Heap, e usa due container associativi di tipo \textit{std::unordered\_map} per tenere traccia
-delle chiavi e degli indici posizionali di ogni elemento della Heap, e permetterne la consultazione e l'aggiornamento in tempo costante ammortizzato. \\
+\noindent PriorityQueue ha accesso diretto ai nodi salvati nella Heap, e usa due container associativi di tipo \textit{std::unordered\_map} per tenere traccia, ad ogni elemento della Heap, la rispettiva chiave e indice, e permetterne dunque la consultazione e l'aggiornamento in tempo costante ammortizzato. \\
 
 \noindent Rispetto ai costruttori delle varie classi Heap, PriorityQueue richiede non un comparatore, bensì una factory di comparatori. A tale factory è data in input una mappa che associa i valori degli elementi della Heap alle rispettive chiavi. Poiché tale input è passato per reference, il comparatore generato userà sempre la versione più aggiornata della mappa.
 
@@ -147,12 +146,12 @@ delle chiavi e degli indici posizionali di ogni elemento della Heap, e permetter
 
 \paragraph{Ottimizzazioni}\mbox{} \\
 
-\noindent Poichè istanziare una PriorityQueue così generica e flessibile è un'operazione non triviale, abbiamo creato una serie di funzioni di utilità espressive e facili da usare. Ad esempio, per creare una coda di priorità basa su un Min Heap binario, esiste il metodo \textit{make\_min\_priority\_queue} (analogamente esiste \textit{make\_min\_k\_priority\_queue} per Min Heap K-ari).
+\noindent Poichè istanziare una PriorityQueue così generica e flessibile è un'operazione non banale, abbiamo creato una serie di funzioni di utilità di facile comprensione da usare. Ad esempio, per creare una coda di priorità basata su una Min Heap binaria, esiste il metodo \textit{make\_min\_priority\_queue} (analogamente esiste \textit{make\_min\_k\_priority\_queue} per Min Heap K-ari).
 L'utente finale della classe non deve preoccuparsi di inserire manualmente tutti i parametri template di tali funzioni, grazie alla \textit{type deduction} di C++17.
 
 \subsubsection{Disjoint Set}
 
-La classe base astratta in \textit{DisjointSetBase.h} definisce il contratto dei metodi \textit{find} e \textit{unite} (il nome comunemente usato per questa operazione, \textit{union}, è una parola chiave riservata in C++).
+La classe base astratta in \textit{DisjointSetBase.h} definisce il contratto dei metodi \textit{find} e \textit{unite} (il nome comunemente usato per questa operazione (\textit{union}) è una parola chiave riservata in C++).
 Gli elementi sono salvati in un container \textit{std::vector} chiamato \textbf{parents}, sotto l'assunzione che gli elementi siano solo numeri interi positivi distinti numerati da $0$ a $n-1$.
 Avremmo potuto rilassare questo vincolo usando una struttura dati \textit{std::unordered\_map}, ma abbiamo preferito evitare perché i vettori sono molto più performanti nella pratica. \\
 
@@ -186,7 +185,7 @@ Ad ogni invocazione del metodo \textit{find()} su un nodo $x$, ogni nodo nel per
 \end{enumerate}
 
 La \textit{path-compression} può modificare le altezze degli alberi ad ogni esecuzione, ma non cambierà mai il valore dei rank.
-Nonostante sia possibile implementare tecniche di \textit{path-compression} anche con la policy \textit{union-by-size}, abbia deciso di cogliere l'opportunità di implementare la policy \textit{union-by-rank}, che non è stata spiegata a lezione. \\
+Nonostante sia possibile implementare tecniche di \textit{path-compression} anche con la policy \textit{union-by-size}, abbiamo deciso di cogliere l'opportunità di implementare la policy \textit{union-by-rank}, che non è stata spiegata a lezione. \\
 
 In figura \ref{fig:disjoint-set-union-example} è possibile vedere un esempio di union-by-size implementato dalla classe \textit{DisjointSet}. Analogamente, in figura \ref{fig:disjoint-set-compressed-union-example} è possibile vedere un esempio di union-by-rank con path-splitting implementato dalla classe \textit{DisjointSetCompressed}.
 

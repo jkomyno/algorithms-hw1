@@ -15,7 +15,7 @@
      Miglioramento \%    &   97.25  &    97.87  &    98.99  &     99.66 &   99.85        &   99.87        \\
     \hline
     \end{tabular}
-    \caption{Confronto tra KruskalSimple e KruskalUnionFind.}
+    \caption{Confronto tra KruskalSimple e KruskalUnionFind}
     \label{table:kruskal-simple-vs-kruskal-union-find}
 \end{table}
 
@@ -130,6 +130,6 @@ Commentate i risultati che avete ottenuto: come si comportano gli algoritmi risp
 \noindent In teoria, KruskalUnionFindCompressed avrebbe dovuto essere l'algoritmo più efficiente di tutti (complessità temporale: \textbf{TODO}).
 \noindent PrimBinaryHeap e KruskalUnionFind hanno la stessa complessità temporale teorica, ma in realtà la complessità delle operazioni del BinaryHeap ha un coefficiente più elevato rispetto a quelle della struttura dati Disjoint-Set. \\
 
-\noindent Infine, la complessità teorica di KruskalSimple (\textbf{TODO}) c'avevano già fatto immaginare che i tempi di calcolo nella pratica sarebbero esplosi a partire da grafi con poche centinaia di nodi e archi, e così è stato. \\
+\noindent Infine, data la complessità teorica di KruskalSimple (\textbf{TODO}), abbiamo ipotizzato che i tempi di calcolo nella pratica sarebbero stati più elevati a partire da grafi con poche centinaia di nodi e archi. Tale assunzione è poi stata confermata dall'analisi pratica effettuata. \\
 
-\noindent Non abbiamo un'idea certa del perché Kruskal implementato con \textit{DisjointSetCompressed} sia poco meno performante di \textit{DisjointSet}. La nostra ipotesi è che, per gli input forniti ai programmi, il \textit{cache behaviour} di KruskalUnionFind sia molto migliore di quello di KruskalUnionFindCompressed.
+\noindent Non abbiamo un'idea certa del perché Kruskal implementato con \textit{DisjointSetCompressed} sia meno performante di \textit{DisjointSet}. La nostra ipotesi è che, per gli input forniti al nostro programma, il \textit{cache behaviour} di KruskalUnionFind sia molto migliore di quello di KruskalUnionFindCompressed.
