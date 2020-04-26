@@ -104,10 +104,6 @@ public:
      */
     bool has_cycle() const {
         const auto n = adj_map_graph_ptr->vertexes_size();
-        // if the graph has less than 3 vertexes, there can't possibly exist a cycle
-        if (n < 3) {
-            return false;
-        }
 
         // set that keeps track of the visited nodes
         std::unordered_set<Label> visited;
