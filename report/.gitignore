@@ -26,6 +26,7 @@
 *.listing
 *.loa
 *.lof
+_minted-main/*
 
 ### emacs backups
 *~

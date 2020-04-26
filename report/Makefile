@@ -27,7 +27,7 @@ pdfdocker:
 
 # build using pdflatex
 pdflatex: 
-	pdflatex $(MAINFILE)
+	pdflatex -shell-escape $(MAINFILE)
 bib:
 	biber $(MAINFILE)
 
