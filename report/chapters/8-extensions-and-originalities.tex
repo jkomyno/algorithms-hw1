@@ -47,4 +47,13 @@ tende a fare lievemente meglio del k-ary heap.
 
 \subsection{Kruskal con Disjoint-Set e path-compression}
 
+Il grafico in figura \ref{fig:Kruskal-KruskalCompressed-80k-100k} mostra una lievissima differenza tra KruskalUnionFind e KruskalUnionFindCompressed che vede vincitore il secondo. La differenza però è veramente molto sottile ed entrambi gli algoritmi presentano una piccola oscillazione che copre la differenza tra i tempi di esecuzione tra i due. Le tecniche di ottimizzazione per union find quindi, nel nostro caso, non sono state efficaci.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{./images/KruskalUnionFind_vs_KruskalUnionFindCompressed_(nodes_between_80k_and_100k).png}
+	\caption{Andamento di KruskalUnionFind e KruskalUnionFindCompressed con taglia dell'input da 80k a 100k nodi.}
+    \label{fig:Kruskal-KruskalCompressed-80k-100k}
+\end{figure}
+
 % path-compression via path-halving + union by size

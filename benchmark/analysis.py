@@ -516,6 +516,9 @@ if __name__ == '__main__':
             split_and_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min, pred=lambda x: x['n'] <= 500, title=f'{names_to_vs([PRIM_BINARY_HEAP, PRIM_K_HEAP])} (500 nodes)')
             split_and_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min, pred=lambda x: x['n'] >= 2000 and x['n'] <= 4000, title=f'{names_to_vs([PRIM_BINARY_HEAP, PRIM_K_HEAP])} (nodes between 2k and 4k)')
             split_and_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min, pred=lambda x: x['n'] >= 80000, title=f'{names_to_vs([PRIM_BINARY_HEAP, PRIM_K_HEAP])} (nodes between 80k and 100k)')
+
+            # OK (KruskalUnionFind, KruskalUnionFind w/ path compression)
+            split_and_plot([KRUSKAL_UNION_FIND, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min, pred=lambda x: x['n'] >= 80000, title=f'{names_to_vs([KRUSKAL_UNION_FIND, KRUSKAL_UNION_FIND_COMPRESSED])} (nodes between 80k and 100k)')
             
 
         if IS_PLOT_MAIN_ENABLED:
