@@ -1,17 +1,14 @@
 \section{Struttura del codice}
 \label{cap:code-structure}
 
-Il progetto è strutturato in un'unica soluzione Visual Studio contenente molteplici progetti, uno per ogni algoritmo implementato.
-Una soluzione Visual Studio può essere vista come un macro-progetto che contiene più sottomoduli.
-Il codice di ogni progetto è contenuto in una cartella omonima.
-Questi progetti sono:
+Il progetto è strutturato in un'unica soluzione Visual Studio\footnote{Una soluzione Visual Studio può essere vista come un macro-progetto che contiene più sotto-moduli.} contenente molteplici progetti, uno per ogni algoritmo implementato. Il codice di ogni progetto è contenuto nella omonima cartella. Di seguito l'elenco dei progetti realizzati.
 
 \begin{itemize}
-    \item \textbf{KruskalNaive}:
-    \item \textbf{KruskalUnionFind}:
-    \item $(*)$ \textbf{KruskalUnionFindCompressed}:
-    \item \textbf{PrimBinaryHeap}:
-    \item $(*)$ \textbf{PrimKHeap}:
+    \item \textbf{KruskalNaive}
+    \item \textbf{KruskalUnionFind}
+    \item $(*)$ \textbf{KruskalUnionFindCompressed}
+    \item \textbf{PrimBinaryHeap}
+    \item $(*)$ \textbf{PrimKHeap}
 \end{itemize}
 
 \noindent I progetti indicati con $(*)$ sono delle estensioni originali degli algoritmi richiesti.
@@ -21,5 +18,5 @@ Questi progetti sono:
 condivisi tra progetti.
 
 \noindent Abbiamo configurato Visual Studio per importare automaticamente i file di header salvati nella cartella \textit{Shared}
-durante la compilazione di ogni sottoprogetto. Analogamente, tale cartella è inclusa nella compilazione del \textit{Makefile}, grazie all'opzione \textit{-i} del compilatore \textit{g++}.
+durante la compilazione di ogni sottoprogetto. Analogamente, tale cartella è inclusa nella compilazione del \textit{Makefile}, grazie all'opzione \textit{-I} del compilatore \textit{g++}.
 

@@ -157,7 +157,7 @@ vedere che a meno di un piccolo fattore i due hanno lo stesso trend di crescita.
 \noindent Per avere un'idea più precisa dei tempi di esecuzione degli 
 algorimti è possibile consultare le tabelle \ref{table:KruskalSimple-results},
  \ref{table:KruskalUnionFind-results}, \ref{table:KruskalUnionFindCompressed-results} 
- e \ref{table:PrimBinaryHeap-results} in appendice TODO che riportano i risultati puntuali 
+ e \ref{table:PrimBinaryHeap-results} in appendice \ref{cap:runtime-tables} che riportano i risultati puntuali 
  dell'esecuzione degli algoritmi.
 
 \subsection{Domanda \#2}
@@ -170,7 +170,7 @@ Commentate i risultati che avete ottenuto: come si comportano gli algoritmi risp
 
 % È doveroso notare che nei dataset a disposizione non esiste alcun grafo il cui numero di archi $m$ sia maggiore del numero di vertici $n$ per più di un fattore 1.5 (ovvero, $m = $ \complexityN{}). In questo homework abbiamo quindi avuto a che fare con grafi sparsi. Poiché l'algoritmo Kruskal con Disjoint-Set ha complessità \complexityMLogN{} e 
 
-\noindent Dalle tabelle di confronto \ref{table:kruskal-simple-vs-kruskal-union-find} e \ref{table:prim-binary-heap-vs-kruskal-union-find} è evidente che \textbf{KruskalUnionFind} è il più efficiente tra gli algoritmi di cui era richiesta l'implementazione. Inoltre, osservando la tabella di confronto \ref{table:kruskal-union-find-vs-kruskal-union-find-compressed}, è possibile notare che l'utilizzo della tecnica \textit{path-compression} nella struttura dati \textbf{Disjoint-Set} in realtà non abbia portato benefici, e anzi abbia peggiorato leggermenete le performance (che sono comunque migliori di \textit{PrimBinaryHeap}, vedasi la tabella di confronto \ref{table:prim-binary-heap-vs-kruskal-union-find-compressed}). \\
+\noindent Dalle tabelle di confronto \ref{table:kruskal-simple-vs-kruskal-union-find} e \ref{table:prim-binary-heap-vs-kruskal-union-find} è evidente che \textbf{KruskalUnionFind} è il più efficiente tra gli algoritmi di cui era richiesta l'implementazione. Inoltre, osservando la tabella di confronto \ref{table:kruskal-union-find-vs-kruskal-union-find-compressed}, è possibile notare che l'utilizzo della tecnica \textit{path-compression} nella struttura dati \textbf{Disjoint-Set} in realtà non abbia portato benefici, e anzi abbia peggiorato leggermente le performance (che sono comunque migliori di \textit{PrimBinaryHeap}, vedasi la tabella di confronto \ref{table:prim-binary-heap-vs-kruskal-union-find-compressed}). \\
 
 \noindent In teoria, KruskalUnionFindCompressed avrebbe dovuto essere l'algoritmo più efficiente di tutti (complessità temporale: \textbf{TODO}).
 \noindent PrimBinaryHeap e KruskalUnionFind hanno la stessa complessità temporale teorica, ma in realtà la complessità delle operazioni del BinaryHeap ha un coefficiente più elevato rispetto a quelle della struttura dati Disjoint-Set. \\
