@@ -371,4 +371,6 @@ MigrationBackup/
 
 ### Out Files ###
 out/
+build/
 *.out
+*.exe
