@@ -45,7 +45,7 @@ testall_explicit:
 # ./test.sh ${KRUSKAL_SIMPLE}.${EXT}
 
 report:
-	cd report; make pdf2
+	cd report; make pdf1
 
 .PHONY: all algs ensure_build_dir
 .PHONY: ${KRUSKAL_SIMPLE} ${KRUSKAL_UNION_FIND} ${KRUSKAL_UNION_FIND_COMPRESSED} ${PRIM_BINARY_HEAP} ${PRIM_K_HEAP} report
