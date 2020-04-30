@@ -5,6 +5,15 @@ sudo: required
 notifications:
   email: false
 
+cache:
+  directories:
+    - /tmp/texlive
+    - $HOME/.texlive
+
+before_install:
+  # support minted LaTeX package
+  - sudo apt-get install python-pygments
+
 before_script:
 - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
 - sudo apt-get update -y
@@ -13,17 +22,12 @@ before_script:
 script:
 - cd ${TRAVIS_BUILD_DIR}
 - g++-9 --version
-- make all
-- make testall
-- make report
 
-# deploy:
-#   provider: releases
-#   api_key:
-#     secure: iIDU9KPurmSsLTJaNLmiUoHxHWHJLZutbYZQYcJubcERXUDiZyNiwD/jET1237GhLE7j2HvKrgSFFBqoADvetlB2TbIDzbgGGWljS5hsjUjuA2ibLGoaCyCSV5fs25s8JEcc3u77waLids0/ujEk8q+z8I9b7h5Q/8Melo7XDoeI6BckijsZdtaa5Vwa6QACvFGX6dOjnwmCAM6D1PzbrUUIo/4elw1fOYQ1SQQe1cpy7s4a0B2EErTDcwG1cN7rCs6YCvDbfI2tTPR/bwWlpscG3aaxVKr+JQ5Ekp5LipVCFt1uO+Y7jEttsLmhq717w6lN4jOv/aW14t49PDaET47EfjjO7S3lCYVZ0PXOxLvp+yhOSU7PN2OBSO4JMcswn/7+v1vwG8bcooFRtvbWdo7vu58/cLy+AYVFFPGXjMyWMoXP1uG49ltBr6VceOY0IO7UpcKS1/dmKxC2HdilczmyRqo9pBAA5+lnUN3OvKPCT8YZpSKs4DUQXvJhbcSjUyW5lKAp5bPEkBY4EnYZCrNt5e0u/KgX+Ai3SweCyKPKHyUeJJrP5MmxagbyWcY31P4vtrfJIHjBWXDHLISAm9HI8EWDpJTsl9pV1cOyn+JC+6DhzL19aGOXjdX9ICI5BdbtrllbEtJfrHZ9SHOMG4VEIN9fEm3/kcv+wMlfOaA=
-#   file: "report/main.pdf"
-#   skip_cleanup: true
-#   on:
-#     repo: jkomyno/algorithms-hw1
-#     tags: true
-#
+# build executables from C++ sources
+- make all
+
+# test executables
+- make testall
+
+# build PDF report from LaTeX sources
+- (cd report && texliveonfly --arguments='-shell-escape' main.tex)
