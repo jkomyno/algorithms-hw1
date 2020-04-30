@@ -13,6 +13,7 @@ occupa almeno 32bit.
 \subsection{Rappresentazione del grafo}
 \label{sub:graph-representation}
 
+Gli algoritmi di questo homework operano su grafi pesati non diretti.
 Le operazioni sui grafi di cui abbiamo bisogno sono:
 
 \begin{itemize}
@@ -28,7 +29,7 @@ Le operazioni sui grafi di cui abbiamo bisogno sono:
 \noindent Le due rappresentazioni più comuni per rappresentare un grafo sono \textbf{Matrici di Adiacenza} (\textit{Adj. Matrix}) o \textbf{Liste di Adiacenza} (\textit{Adj. List}). \\
 Noi abbiamo deciso invece di utilizzare una \textbf{Mappa di Adiacenza} (\textit{Adj. Map}), la quale ci permette complessità temporali migliori per le operazioni richieste a scapito di un moderato aumento della complessità spaziale, che rimane comunque \complexityNPlusM{}, lo stesso delle Matrici di Adiacenza. Nella tabella \ref{table:graph-representation-comparison} è possibile vedere un confronto tra le 3 diverse rappresentazioni di grafi possibili citate sopra. \\
 
-L'occupazione di spazio aggiuntiva è dovuta all'utilizzo di una \codeinline{std::unordered\_map} e un \codeinline{std::unordered\_set} ausiliario. Quest'ultimo tiene traccia degli archi inseriti per permettere una rapida estrazione, modifica e cancellazione degli archi del grafo. La mappa è invece usata per mappare ogni nodo ad un'altra mappa (nodo $\rightarrow{}$ peso), usata per eliminare efficacemente i nodi duplicati di peso non minimo al momento della creazione del grafo (scelta necessaria, vista la presenza di archi duplicati nei dataset dati). L'uso di mappe ci permette inoltre di individuare ed eliminare archi in tempo \complexityConstant{} ammortizzato.
+\noindent L'occupazione di spazio aggiuntiva è dovuta all'utilizzo di una \codeinline{std::unordered\_map} e un \codeinline{std::unordered\_set} ausiliario. Quest'ultimo tiene traccia degli archi inseriti per permettere una rapida estrazione, modifica e cancellazione degli archi del grafo. La mappa è invece usata per mappare ogni nodo ad un'altra mappa (nodo $\rightarrow{}$ peso), usata per eliminare efficacemente i nodi duplicati di peso non minimo al momento della creazione del grafo (scelta necessaria, vista la presenza di archi duplicati nei dataset dati). L'uso di mappe ci permette inoltre di individuare ed eliminare archi in tempo \complexityConstant{} ammortizzato.
 
 \begin{table}[ht]
 \centering
@@ -51,7 +52,7 @@ L'occupazione di spazio aggiuntiva è dovuta all'utilizzo di una \codeinline{std
     \label{table:graph-representation-comparison}
 \end{table}
 
-Il diagramma di classe in figura \ref{fig:AdjMapGraph Class} riporta gli attributi e i metodi offerti dalla classe AdjacentMapGraph.
+\noindent Il diagramma di classe in figura \ref{fig:AdjMapGraph Class} riporta gli attributi e i metodi offerti dalla classe AdjacentMapGraph.
 
 \begin{figure}[h]
 	\caption{Diagramma di classe per AdjacentMapGraph, definita in \codeinline{Shared/AdjacentMapGraph.h}}
@@ -60,7 +61,10 @@ Il diagramma di classe in figura \ref{fig:AdjMapGraph Class} riporta gli attribu
 	\label{fig:AdjMapGraph Class}
 \end{figure}
 
-Nella figura \ref{fig:AdjMapGraph Abstract} è riprodotta in maniera pittorica la trasformazione di un grafo di esempio nella relativa mappa di adiacenza, riportata sopra. Dalla figura si nota che la mappa di adiacenza è composta da una prima mappa che elenca tutti i vertici del grafo (\codeinline{adj\_map\_t}). Ogni entry della mappa è composta dalla chiave che rappresenta il nome del nodo e da un valore che associa al nodo un'altra mappa (\codeinline{vertex\_weight\_map\_t}) che rappresenta gli archi del grafo: vengono elencati dunque tutti i nodi adiacenti al vertice dato con il relativo peso dell'arco. In questo modo è possibile avere tutte le operazioni di inserimento, ricerca, cancellazione e update in tempo costante, a discapito di una complessità spaziale più elevata. 
+\noindent In figura \ref{fig:AdjMapGraph Abstract} è illustrato un esempio di trasformazione di un grafo in mappa di adiacenza. Si può notare che la mappa di adiacenza è composta da una prima mappa avente una chiave per ogni vertice del grafo (\codeinline{adj\_map\_t}). Ogni entry della mappa è composta dalla chiave che rappresenta il nome del nodo e da un valore che associa al nodo un'altra mappa (\codeinline{vertex\_weight\_map\_t}), che rappresenta gli archi del grafo.
+In particolare, \codeinline{vertex\_weight\_map\_t} ha come chiave l'etichetta del vertice opposto, e come valore il peso dell'arco dal vertice di origine. \\
+
+\noindent Quindi, tutte le operazioni di inserimento, ricerca, cancellazione e aggiornamento sono eseguite in tempo costante ammortizzato. Gli unici drawback riscontrati sono un'occupazione di spazio più grande di un fattore costante (ma sempre \complexityNPlusM{}) e una maggiore complessità nell'implementare le operazioni di \textit{bookkeeping} della classe. \\
 
 \begin{figure}[h]
 	\caption{Rappresentazione della mappa di adiacenza}
@@ -69,36 +73,72 @@ Nella figura \ref{fig:AdjMapGraph Abstract} è riprodotta in maniera pittorica l
 	\label{fig:AdjMapGraph Abstract}
 \end{figure}
 
-Nonostante la mappa di adiacenza sarebbe stata sufficiente per salvare tutte le informazioni necessarie alla rappresentazione di un grafo, abbiamo notato che per alcune operazioni risulta particolarmente lenta. L'operazione che ci ha spinto maggiormente ad inserire una nuova struttura dati (\codeinline{unordered\_set} in questo caso) è il metodo per ritornare tutti gli archi di un grafo. Tale metodo se implementato avendo a disposizione la sola mappa di adiacenza prevederebbe la scansione dell'intera mappa di adiacenza, con l'inserimento degli archi man mano che si incontra un nuovo vertice. Tale semplice implementazione però porterebbe alla creazione di un vettore in cui se sussiste un arco tra un vertice 2 e un vertice 3 (come nell'esempio in figura~\ref{fig:AdjMapGraph Abstract}), al vettore verrebbe aggiunto sia l'arco 2 $\rightarrow$ 3 che 3 $\rightarrow$ 2. \\
+\noindent Il campo \codeinline{adj\_map} permette quindi di rappresentare un grafo non diretto pesato, ma da solo non basta ad ottenere le complessità temporali che ci eravamo prefissati. In particolare, l'utilizzo di un container \textit{std::unordered\_set} ausiliario ha i seguenti vantaggi:
 
-% Le cose si complicano maggiormente infatti se si restringe la richiesta di non restituire gli archi doppi come abbiamo già osservato. A tale proposito si potrebbe ricercare l'eventuale presenza di tali archi doppi ed eliminarli di conseguenza, ma il tutto richiederebbe maggiori operazioni e dunque un maggior complessità temporale.\\
+\begin{itemize}
+    \item Rende \complexityConstant{} la complessità temporale del metodo \codeinline{get\_edges()}, evitando la scansione dell'intera mappa di adiacenza per ricavare la lista degli archi ad ogni step della scansione. Quet'ultima scansione avrebbe un'ulteriore problema: se ad esempio sussiste un arco tra i vertici 2 e 3 (come nell'esempio in figura \ref{fig:AdjMapGraph Abstract}), nella lista di archi verrebbe ritornato sia l'arco $2 \rightarrow 3$ che $3 \rightarrow 2$;
+    \item Se opportunamente configurato, ci permette di garantire l'assenza di archi doppi (come quelli visti nell'esempio precedente, $2 \rightarrow 3$ e $3 \rightarrow 2$). Per ottenere ciò, abbiamo definito la funzione hash \codeinline{custom\_hash::edge\_hash}, rendendola commutativa e invariante rispetto al peso dell'arco. Quindi, ad esempio, l'arco ($2 \rightarrow 3$, peso 5) e l'arco ($3 \rightarrow 2$, peso -2) hanno la stessa funzione hash, e sono considerati uguali dal campo \codeinline{edge\_set}.
+\end{itemize}
 
-% Per tali ragioni è stato deciso di affiancare alla mappa di adiacenza, un'apposita struttura dati che permettesse di tenere traccia degli archi e di avere tempi di esecuzione costanti per le operazioni di aggiunta, rimozione e ricerca. Così facendo è possibile garantire che l'operazione di restituzione degli archi singoli di un grafo abbia tempo O(m) se si richiede di restituire un vettore, o addirittura O(1) se si richiede la restituzione di un puntatore a tale struttura.
+\noindent In figura \ref{fig:edges_set} è presente una rappresentazione astratta del campo \codeinline{edge\_set}. Si noti che se viene richiesto l'inserimento di un arco 3 $\rightarrow$ 2 ove già presente un arco 2 $\rightarrow$ 3, \codeinline{unordered\_set} non inserisce tale arco, poiché considerato già presente. Si faccia invece riferimento al listing \ref{listing:add_edge} per ulteriori dettagli su come funziona l'inserimento e aggiornamento di un arco del grafo. \\
 
-E' stato scelto dunque di utilizzare come struttura dati da affiancare \codeinline{unordered\_set} perché oltre ad avere le caratteristiche richieste, se appositamente configurata permette di garantire l'assenza di archi doppi, compresi quelli visti nell'esempio precedente (ossia 2 $\rightarrow$ 3 e 3 $\rightarrow$ 2). Per fare ciò è stato dunque opportunamente configurato l'operatore di uguaglianza e la funzione di hash, in  modo che archi equivalenti abbiamo la stessa funzione di hash e siano riconosciuti come uguali, evitando così l'inserimento di un arco doppio visto che \codeinline{unordered\_set} non prevede elementi doppi al suo interno.\\
-
-Una rappresentazione astratta di tale struttura è possibile visualizzarla nella figura~\ref{fig:edges_set}, dove è possibile notare che se viene richiesto l'inserimento di un arco 3 $\rightarrow$ 2 ove già presente un arco 2 $\rightarrow$ 3 questo non viene inserito da \codeinline{unordered\_set}.\\
-
-\begin{figure}[h]
+\begin{figure}[!ht]
 	\caption{Visualizzazione astratta di \codeinline{edges\_set}}
 	\centering
 	\includegraphics[width=0.7\textwidth]{./images/edges_setAbstract.png}
 	\label{fig:edges_set}
 \end{figure}
 
-L'ultimo problema non ancora affrontato riguarda la possibilità di inserire un arco doppio tra due nodi uguali (come richiesto da problema), con la differenza che questi due archi hanno un peso diverso. Siccome la nostra implementazione non prevede la presenza di tali archi doppi, la funzione \codeinline{add\_eddge()} si occupa di verificare l'eventuale presenza di un arco già inserito e di conseguenza i relativi pesi, per andare a modificare il peso qualora il peso del nuovo arco sia inferiore al peso dell'arco precedentemente già inserito. Per fare questo ad ogni aggiunta di un nuovo arco si va a verificare nella lista di adiacenza l'esistenza di un arco per quei due vertici:
-\begin{itemize}
-	\item \textbf{se l'arco era già stato aggiunto:} si confrontano i due pesi e si aggiorna il peso dell'arco solo nell'eventualità in cui il nuovo peso sia inferiore a quello già presente nella lista di adiacenza. Dopodiché se c'è stato un aggiornamento si aggiorna anche il relativo \codeinline{unordered\_set}, eliminando l'arco precedente e si ri-aggiunge l'arco con il nuovo peso. 
-	\item \textbf{se l'arco non era già stato inserito:} si inserisce l'arco sia nella lista di adiacenza che in \codeinline{unordered\_set}.
-\end{itemize}
+\begin{listing}[!hb]
+\begin{minted}{c++}
+// Shared/AdjacencyMapGraph.h
+template <typename Label, typename Weight>
+void add_edge(const Edge<Label, Weight> &edge) noexcept {
+  const auto &[from, to, weight] = edge;
+  vertex_weight_map_t &adj_map_from = adj_map[from];
+  vertex_weight_map_t &adj_map_to = adj_map[to];
 
-\noindent Le operazioni di inserimento nei container \codeinline{std::unordered\_set} e \codeinline{std::unordered\_set} hanno complessità temporale \complexityConstant{} ammortizzata. Tuttavia, dal momento che sappiamo a priori il numero di vertici da inserire in \codeinline{adj\_map} e il numero di archi da inserire in \codeinline{edge\_set}, abbiamo preallocato un numero di bucket sufficienti ad evitare costosi \textit{rehash} in entrambi i casi.
+  // se l'arco in input esiste già, controlliamo il peso.
+  // Se abbiamo già inserito un arco tra gli stessi nodi con un peso
+  // maggiore, sovrascriviamo il vecchio arco con quello nuovo.
+  if (adj_map_from.count(to)) {
+    if (adj_map_from[to] > weight) {
+      adj_map_from[to] = weight;
+      adj_map_to[from] = weight;
+        
+      // rimuoviamo il vecchio arco con un peso più alto per aggiungere
+      // lo stesso arco, ma con il nuovo peso più basso. Questo funziona
+      // perché la funzione hash custom_hash::edge_hash, usata da
+      // edge_set, è commutativa e non considera il campo "weight".
+      edge_set.erase(edge);
+      edge_set.insert(edge);
+    }
+  }
+  // se l'arco in input è nuovo, lo aggiungiamo al grafo non diretto
+  else {
+    adj_map_from[to] = weight;
+    adj_map_to[from] = weight;
+    edge_set.insert(edge);
+  }
+}
+\end{minted}
+\caption{Implementazione del metodo \codeinline{add\_edge} di \textit{AdjacentMapGraph} che mette in evidenza l'impatto della funzione hash \codeinline{custom\_hash::edge\_hash}.}
+\label{listing:add_edge}
+\end{listing}
+
+% L'ultimo problema non ancora affrontato riguarda la possibilità di inserire un arco doppio tra due nodi uguali (come richiesto da problema), con la differenza che questi due archi hanno un peso diverso. Siccome la nostra implementazione non prevede la presenza di tali archi doppi, la funzione \codeinline{add\_eddge()} si occupa di verificare l'eventuale presenza di un arco già inserito e di conseguenza i relativi pesi, per andare a modificare il peso qualora il peso del nuovo arco sia inferiore al peso dell'arco precedentemente già inserito. Per fare questo ad ogni aggiunta di un nuovo arco si va a verificare nella lista di adiacenza l'esistenza di un arco per quei due vertici:
+% \begin{itemize}
+% 	\item \textbf{se l'arco era già stato aggiunto:} si confrontano i due pesi e si aggiorna il peso dell'arco solo nell'eventualità in cui il nuovo peso sia inferiore a quello già presente nella lista di adiacenza. Dopodiché se c'è stato un aggiornamento si aggiorna anche il relativo \codeinline{unordered\_set}, eliminando l'arco precedente e si ri-aggiunge l'arco con il nuovo peso. 
+% 	\item \textbf{se l'arco non era già stato inserito:} si inserisce l'arco sia nella lista di adiacenza che in \codeinline{unordered\_set}.
+% \end{itemize}
+
+\noindent Le operazioni di inserimento nei container \codeinline{std::unordered\_set} e \codeinline{std::unordered\_set} hanno complessità temporale \complexityConstant{} ammortizzata. Dal momento che sappiamo a priori il numero di vertici da inserire in \codeinline{adj\_map} e il numero di archi da inserire in \codeinline{edge\_set}, abbiamo preallocato un numero di bucket sufficienti ad evitare costosi \textit{rehash} in entrambi i casi, rimuovendo di fatto il fattore ammortizzato.
 
 \subsubsection {Costruzione del Grafo}
 
 \textit{Shared/adjacency\_map\_graph\_factory.h} definisce una funzione di utilità che scorre tutte le righe del file in ingresso, salva gli archi in un vettore temporaneo, e lo trasferisce tramite \textit{move semantics} ad un nuovo oggetto di tipo \codeinline{AdjacencyMapGraph}. La mappa di adiacenza interpreta il grafo come spiegato nella sezione \ref{sub:graph-representation}. \\
 
-\noindent \textbf{NOTA}: il valore dei nodi di ogni grafo è decrementato di 1 in fase di lettura del dataset di input.
+\noindent \textbf{NOTA}: la label dei nodi di ogni grafo è decrementata di 1 in fase di lettura del dataset di input. Il grafo viene quindi rappresentato con nodi le cui label sono nel range $[0, N-1]$.
 Questo semplifica e rende più leggibile l'implementazione di alcune strutture dati (ad esempio i Disjoint Set) e la costruzione dell'MST con Prim.
 
 \subsection{Strutture Dati}
@@ -126,7 +166,7 @@ Per generalizzare il concetto di MinHeap/MaxHeap, la classe usa un comparatore b
 
 \paragraph{Ottimizzazioni}\mbox{} \\
 
-\noindent L'operazione di divisione per due utilizzata da funzioni come ad esempio il reperimento del figlio sinistro o destro di un nodo nello Heap, è stata sostituita con l'operazione di shift binario.
+\noindent L'operazione di divisione per 2, utilizzata ad esempio per determinare i figli sinistro e destro di un nodo nella Heap, è stata sostituita con l'operazione di shift binario.
 
 \subsubsection{K-ary Heap}
 
@@ -138,7 +178,7 @@ Per generalizzare il concetto di MinHeap/MaxHeap, la classe usa un comparatore b
 \textit{PriorityQueue.h} è una classe concreta che eredita privatamente \textit{BinaryHeap.h} o \textit{KHeap.h}, a seconda del parametro template \textit{Heap}.
 La semantica di PriorityQueue dipende dal comparatore passato al costruttore, che indica se si vuole usare una coda di priorità basata su Min Heap o su Max Heap. \\
 
-\noindent PriorityQueue ha accesso diretto ai nodi salvati nella Heap, e usa due container associativi di tipo \codeinline{std::unordered\_map} per tenere traccia, ad ogni elemento della Heap, la rispettiva chiave e indice, e permetterne dunque la consultazione e l'aggiornamento in tempo costante ammortizzato. \\
+\noindent PriorityQueue ha accesso diretto ai nodi salvati nella Heap, e usa due container associativi di tipo \codeinline{std::unordered\_map} per tenere traccia delle chiavi e degli indici posizionali di ogni elemento della Heap, permettendone la lettura e l'aggiornamento in tempo costante ammortizzato. \\
 
 \noindent Rispetto ai costruttori delle varie classi Heap, PriorityQueue richiede non un comparatore, bensì una factory di comparatori. A tale factory è data in input una mappa che associa i valori degli elementi della Heap alle rispettive chiavi. Poiché tale input è passato per reference, il comparatore generato userà sempre la versione più aggiornata della mappa.
 
@@ -151,11 +191,11 @@ L'utente finale della classe non deve preoccuparsi di inserire manualmente tutti
 
 \subsubsection{Disjoint Set}
 
-La classe base astratta in \textit{DisjointSetBase.h} definisce il contratto dei metodi \codeinline{find} e \codeinline{unite} (\textit{union} è una parola chiave riservata in C++).
+La classe base astratta in \textit{DisjointSetBase.h} definisce il contratto dei metodi \codeinline{find} e \codeinline{unite} (il nome comunemente usato per questa operazione, \textit{union}, è una parola chiave riservata in C++).
 Gli elementi sono salvati in un container \codeinline{std::vector} chiamato \textbf{parents}, sotto l'assunzione che gli elementi siano solo numeri interi positivi distinti numerati da $0$ a $n-1$.
 Avremmo potuto rilassare questo vincolo usando una struttura dati \codeinline{std::unordered\_map}, ma abbiamo preferito evitare perché i vettori sono molto più performanti nella pratica. \\
 
-È possibile rappresentare graficamente i Disjoint-Set come alberi.
+\noindent È possibile rappresentare graficamente i Disjoint-Set come alberi.
 \mintinline{c++}{parents[i]} indicizza il padre del nodo $i$. Al momento dell'inizializzazione della classe, ogni nodo è settato come padre di se stesso, come mostrato in figura \ref{fig:disjoint-set-base-parents}.
 
 \begin{figure}[htbp]
@@ -184,10 +224,10 @@ Ad ogni invocazione del metodo \codeinline{find()} su un nodo $x$, ogni nodo nel
     \item Gli alberi di $x$ e $y$ hanno rank diversi $\rightarrow{}$ il set che unirà $x$ e $y$ avrà rank pari a \\ $max\{ rank(find(x)), rank(find(y)) \}$.
 \end{enumerate}
 
-La \textit{path-compression} può modificare le altezze degli alberi ad ogni esecuzione, ma non cambierà mai il valore dei rank.
+\noindent La \textit{path-compression} può modificare le altezze degli alberi ad ogni esecuzione, ma non cambierà mai il valore dei rank.
 Nonostante sia possibile implementare tecniche di \textit{path-compression} anche con la policy \textit{union-by-size}, abbiamo deciso di cogliere l'opportunità di implementare la policy \textit{union-by-rank}, che non è stata spiegata a lezione. \\
 
-In figura \ref{fig:disjoint-set-union-example} è possibile vedere un esempio di union-by-size implementato dalla classe \codeinline{DisjointSet}. Analogamente, in figura \ref{fig:disjoint-set-compressed-union-example} è possibile vedere un esempio di union-by-rank con path-splitting implementato dalla classe \codeinline{DisjointSetCompressed}.
+\noindent In figura \ref{fig:disjoint-set-union-example} è possibile vedere un esempio di union-by-size implementato dalla classe \codeinline{DisjointSet}. Analogamente, in figura \ref{fig:disjoint-set-compressed-union-example} è possibile vedere un esempio di union-by-rank con path-splitting implementato dalla classe \codeinline{DisjointSetCompressed}.
 
 \begin{figure}[h]
 	\centering

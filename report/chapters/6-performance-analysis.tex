@@ -1,7 +1,71 @@
 \section{Analisi delle performance}
 \label{cap:performance-analysis}
 
-\subsection{Confronto di runtime tra programmi}
+\subsection{Domanda \#1}
+
+\begin{displayquote}
+Eseguite i tre algoritmi che avete implementato (Prim, Kruskal naive e Kruskal efficiente) sui grafi del dataset. Misurate i tempi di calcolo dei tre algoritmi e create un grafico che mostri la variazione dei tempi di calcolo al variare del numero di vertici nel grafo. Per ognuna delle istanze del problema, riportate il peso del minimum spanning tree ottenuto dagli algoritmi.
+\end{displayquote}
+
+\noindent Il risultato del minimum spanning tree ottenuto dagli algoritmi è illustrato dai seguenti
+grafici. Le figure \ref{fig:TheThreeComparison300}, \ref{fig:TheThreeComparison1k}
+e \ref{fig:TheThreeComparison2k} mostrano una comparativa piuttosto significativa tra i tre algorimti.
+\'E possibile notare infatti che anche con taglie dell'input molto piccole il comportamento degli 
+algorimti differisce in modo cosistente: in particolare, KruskalSimple assume sin da subito un
+andamento esponenziale nel numero di nodi, e non compete per nulla con KruskalUnionFind e PrimBinaryHeap.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./images/KruskalSimple_vs_KruskalUnionFind_vs_PrimBinaryHeap_(300_nodes).png}
+	\caption{Andamento di KruskalSimple, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 300 nodi.}
+    \label{fig:TheThreeComparison300}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./images/KruskalSimple_vs_KruskalUnionFind_vs_PrimBinaryHeap_(1k_nodes).png}
+    \caption{Andamento di KruskalSimple, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 1000 nodi.}    
+    \label{fig:TheThreeComparison1k}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./images/KruskalSimple_vs_KruskalUnionFind_vs_PrimBinaryHeap_(2k_nodes).png}
+    \caption{Andamento di KruskalSimple, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 2000 nodi.}
+    \label{fig:TheThreeComparison2k}
+\end{figure}
+
+\noindent Per quanto riguarda KruskalUnionFind e PrimBinaryHeap la differenza è più sottile, 
+e viene mostrata dalle figure \ref{fig:TheTwoComparison2k} e \ref{fig:TheTwoComparison5k}, ma è molto facile
+vedere che a meno di un piccolo fattore i due hanno lo stesso trend di crescita.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{./images/KruskalUnionFind_vs_PrimBinaryHeap_(5k_nodes).png}
+	\caption{Andamento di KruskalUnionFind e PrimBinaryHeap con taglia dell'input da 0 a 2000 nodi.}
+    \label{fig:TheTwoComparison2k}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{./images/KruskalUnionFind_vs_PrimBinaryHeap_(20k_nodes).png}
+    \caption{Andamento di KruskalUnionFind e PrimBinaryHeap con taglia dell'input da 0 a 20000 nodi.}
+    \label{fig:TheTwoComparison5k}
+\end{figure}
+
+\noindent Per avere un'idea più precisa dei tempi di esecuzione degli 
+algorimti è possibile consultare le tabelle \ref{table:KruskalSimple-results},
+ \ref{table:KruskalUnionFind-results}, \ref{table:KruskalUnionFindCompressed-results} 
+ e \ref{table:PrimBinaryHeap-results} in appendice \ref{cap:runtime-tables} che riportano i risultati puntuali 
+ dell'esecuzione degli algoritmi.
+
+\subsection{Domanda \#2}
+
+\begin{displayquote}
+Commentate i risultati che avete ottenuto: come si comportano gli algoritmi rispetto alle varie istanze? C'è un algoritmo che riesce sempre a fare meglio degli altri? Quale dei tre algoritmi che avete implementato è più efficiente?
+\end{displayquote}
+
+\noindent Dalle tabelle di confronto \ref{table:kruskal-simple-vs-kruskal-union-find} e \ref{table:prim-binary-heap-vs-kruskal-union-find} è evidente che \textbf{KruskalUnionFind} è il più efficiente tra gli algoritmi di cui era richiesta l'implementazione. Inoltre, osservando la tabella di confronto \ref{table:kruskal-union-find-vs-kruskal-union-find-compressed}, è possibile notare che l'utilizzo della tecnica \textit{path-compression} nella struttura dati \textbf{Disjoint-Set} in realtà non abbia portato benefici, e anzi abbia peggiorato leggermente le performance (che sono comunque migliori di \textit{PrimBinaryHeap}, vedasi la tabella di confronto \ref{table:prim-binary-heap-vs-kruskal-union-find-compressed}). \\
 
 \begin{table}[H]
 \centering
@@ -18,7 +82,6 @@
     \caption{Confronto tra KruskalSimple e KruskalUnionFind}
     \label{table:kruskal-simple-vs-kruskal-union-find}
 \end{table}
-
 
 \begin{table}[H]
 \centering
@@ -102,75 +165,9 @@
     \label{table:prim-binary-heap-vs-kruskal-union-find-compressed}
 \end{table}
 
-\subsection{Domanda \#1}
-
-\begin{displayquote}
-Eseguite i tre algoritmi che avete implementato (Prim, Kruskal naive e Kruskal efficiente) sui grafi del dataset. Misurate i tempi di calcolo dei tre algoritmi e create un grafico che mostri la variazione dei tempi di calcolo al variare del numero di vertici nel grafo. Per ognuna delle istanze del problema, riportate il peso del minimum spanning tree ottenuto dagli algoritmi.
-\end{displayquote}
-
-\noindent Il risultato del minimum spanning tree ottenuto dagli algoritmi è illustrato dai seguenti
-grafici. Le figure \ref{fig:TheThreeComparison300}, \ref{fig:TheThreeComparison1k}
-e \ref{fig:TheThreeComparison2k} mostrano una comparativa piuttosto significativa tra i tre algorimti.
-\'E possibile notare infatti che anche con taglie dell'input molto piccole il comportamento degli 
-algorimti differisce in modo cosistente: in particolare, KruskalSimple assume sin da subito un
-andamento esponenziale nel numero di nodi, e non compete per nulla con KruskalUnionFind e PrimBinaryHeap.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{./images/KruskalSimple_vs_KruskalUnionFind_vs_PrimBinaryHeap_(300_nodes).png}
-	\caption{Andamento di KruskalSimple, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 300 nodi.}
-    \label{fig:TheThreeComparison300}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{./images/KruskalSimple_vs_KruskalUnionFind_vs_PrimBinaryHeap_(1k_nodes).png}
-    \caption{Andamento di KruskalSimple, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 1000 nodi.}    
-    \label{fig:TheThreeComparison1k}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\textwidth]{./images/KruskalSimple_vs_KruskalUnionFind_vs_PrimBinaryHeap_(2k_nodes).png}
-    \caption{Andamento di KruskalSimple, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 2000 nodi.}
-    \label{fig:TheThreeComparison2k}
-\end{figure}
-
-\noindent Per quanto riguarda KruskalUnionFind e PrimBinaryHeap la differenza è più sottile, 
-e viene mostrata dalle figure \ref{fig:TheTwoComparison2k} e \ref{fig:TheTwoComparison5k}, ma è molto facile
-vedere che a meno di un piccolo fattore i due hanno lo stesso trend di crescita.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.0\textwidth]{./images/KruskalUnionFind_vs_PrimBinaryHeap_(5k_nodes).png}
-	\caption{Andamento di KruskalUnionFind e PrimBinaryHeap con taglia dell'input da 0 a 2000 nodi.}
-    \label{fig:TheTwoComparison2k}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.0\textwidth]{./images/KruskalUnionFind_vs_PrimBinaryHeap_(20k_nodes).png}
-    \caption{Andamento di KruskalUnionFind e PrimBinaryHeap con taglia dell'input da 0 a 20000 nodi.}
-    \label{fig:TheTwoComparison5k}
-\end{figure}
-
-\noindent Per avere un'idea più precisa dei tempi di esecuzione degli 
-algorimti è possibile consultare le tabelle \ref{table:KruskalSimple-results},
- \ref{table:KruskalUnionFind-results}, \ref{table:KruskalUnionFindCompressed-results} 
- e \ref{table:PrimBinaryHeap-results} in appendice \ref{cap:runtime-tables} che riportano i risultati puntuali 
- dell'esecuzione degli algoritmi.
-
-\subsection{Domanda \#2}
-
-\begin{displayquote}
-Commentate i risultati che avete ottenuto: come si comportano gli algoritmi rispetto alle varie istanze? C'è un algoritmo che riesce sempre a fare meglio degli altri? Quale dei tre algoritmi che avete implementato è più efficiente?
-\end{displayquote}
-
 % \paragraph{Premessa}\mbox{} \\
 
 % È doveroso notare che nei dataset a disposizione non esiste alcun grafo il cui numero di archi $m$ sia maggiore del numero di vertici $n$ per più di un fattore 1.5 (ovvero, $m = $ \complexityN{}). In questo homework abbiamo quindi avuto a che fare con grafi sparsi. Poiché l'algoritmo Kruskal con Disjoint-Set ha complessità \complexityMLogN{} e 
-
-\noindent Dalle tabelle di confronto \ref{table:kruskal-simple-vs-kruskal-union-find} e \ref{table:prim-binary-heap-vs-kruskal-union-find} è evidente che \textbf{KruskalUnionFind} è il più efficiente tra gli algoritmi di cui era richiesta l'implementazione. Inoltre, osservando la tabella di confronto \ref{table:kruskal-union-find-vs-kruskal-union-find-compressed}, è possibile notare che l'utilizzo della tecnica \textit{path-compression} nella struttura dati \textbf{Disjoint-Set} in realtà non abbia portato benefici, e anzi abbia peggiorato leggermente le performance (che sono comunque migliori di \textit{PrimBinaryHeap}, vedasi la tabella di confronto \ref{table:prim-binary-heap-vs-kruskal-union-find-compressed}). \\
 
 \noindent In teoria, KruskalUnionFindCompressed avrebbe dovuto essere l'algoritmo più efficiente di tutti (complessità temporale: \textbf{TODO}).
 \noindent PrimBinaryHeap e KruskalUnionFind hanno la stessa complessità temporale teorica, ma in realtà la complessità delle operazioni del BinaryHeap ha un coefficiente più elevato rispetto a quelle della struttura dati Disjoint-Set. \\

@@ -122,9 +122,9 @@ return mst_set_graph.get_edges();
 \label{listing:kruskal-simple}
 \end{listing}
 
-L'algoritmo Kruskal Naive è stato implementato a partire dallo pseudo codice visto in classe. A partire da questo ci si è subito accorti che una delle peculiarità di tale algoritmo e la necessità di verificare ad ogni inserimento di un arco di peso minimo la presenza di un ciclo nell'MST calcolato. Per ottenere tale funzionalità abbiamo deciso di modificare DFS in maniera da rilevare la presenza di un ciclo in un grafo. Per fare questo è stato creata la classe DFSCycleDetection, che è possibile ritrovare nella cartella ``Shared'', che data la rappresentazione del grafo e richiamando l'apposito metodo \codeinline{has\_cycle()} è in grado di rilevare la presenza di un ciclo all'interno di esso usando per l'appunto una visita in profondità.\\
+\noindent L'algoritmo Kruskal Naive è stato implementato a partire dallo pseudo codice visto in classe. A partire da questo ci si è subito accorti che una delle peculiarità di tale algoritmo e la necessità di verificare ad ogni inserimento di un arco di peso minimo la presenza di un ciclo nell'MST calcolato. Per ottenere tale funzionalità abbiamo deciso di modificare DFS in maniera da rilevare la presenza di un ciclo in un grafo. Per fare questo è stato creata la classe DFSCycleDetection, che è possibile ritrovare nella cartella ``Shared'', che data la rappresentazione del grafo e richiamando l'apposito metodo \codeinline{has\_cycle()} è in grado di rilevare la presenza di un ciclo all'interno di esso usando per l'appunto una visita in profondità.\\
 
-\noindent E' stato pertanto necessario modificare DFS nel seguente modo:
+\noindent Abbiamo pertanto dovuto modificare DFS nel seguente modo:
 \begin{itemize}
 	\item non è necessario avere una label per ogni arco che etichetti quell'arco come ``DISCOVERY EDGE'' o ``BACK EDGE''
 	\item quando un arco verrebbe etichettato come ``BACK EDGE'' nello pseudo codice visto in classe possiamo affermare che nel grafo è presente un ciclo. Non è necessario riscostruire tutto il ciclo come visto in un ulteriore modifica di DFS in classe.
@@ -132,7 +132,7 @@ L'algoritmo Kruskal Naive è stato implementato a partire dallo pseudo codice vi
 	\item per essere sicuri di non prendere in considerazione il vertice da cui viene lanciata ricorsivamente la DFS (ossia per non lanciare DFS sul nodo padre) è stata passata alla ricorsione il vertice padre, in modo che quando si scansiona la lista di adiacenza del vertice in considerazione non si consideri il vertice padre, simulando così il comportamento della funzione \codeinline{opposite(v,e)} nello pseudo codice.
 \end{itemize}
 
-Per risolvere il problema di più di un eventuale componenente connessa nel grafo, vengono sempre scansionati tutti i nodi non ancora visitati attraverso un ciclo for su tutti i nodi come visto in classe.
+\noindent Per risolvere il problema di più di un eventuale componenente connessa nel grafo, vengono sempre scansionati tutti i nodi non ancora visitati attraverso un ciclo \codeinline{for} su tutti i vertici del grafo, come visto in classe.
 
 \subsubsection{Osservazioni}
 
@@ -147,48 +147,46 @@ Per risolvere il problema di più di un eventuale componenente connessa nel graf
     
     \item Menzioniamo anche la gestione dei self loop o altri casi particolari che possiamo ritrovare nei grafi in input. Per fare questo ci aiutiamo con questi 2 esempi di base, raffigurati in figura~\ref{fig:SelfLoop}.
 
-    \begin{figure}[h]
-    	\caption{Esempi particolari di grafi da gestire}
-    	\centering
-    	\includegraphics[width=0.7\textwidth]{./images/ExampleSelfLoop.png}
-    	\label{fig:SelfLoop}
-    \end{figure}
-    
+\begin{figure}[h]
+	\caption{Esempi particolari di grafi da gestire}
+	\centering
+	\includegraphics[width=0.7\textwidth]{./images/ExampleSelfLoop.png}
+	\label{fig:SelfLoop}
+\end{figure}
+
     Partendo dal caso di sinistra in cui esiste un nodo con un self loop, la funzione $has\_cycle\_$ $helper\_rec()$ è comunque in grado di rilevare la presenza di tale ciclo. Infatti come è possibile vedere dal listato \ref{listing:dfs-cycle} una volta lanciata la DFS sul nodo 0, la condizione dell'if sarà vera, in quanto il nodo 0 risulterà già visitato. 
-    
-    \begin{listing}[!ht]
-    \begin{minted}{c++}
-    // Shared/DFSCycleDetection.h
-    
-    bool has_cycle_helper_rec(
-    const Label& v, std::unordered_set<Label>& visited,
-    const Label& parent = std::numeric_limits<Label>::max()
-    ) const {
 
-        visited.insert(v);
+\begin{listing}[!ht]
+\begin{minted}{c++}
+// Shared/DFSCycleDetection.h
 
-        for (const auto& uw : adj_map_graph_ptr->adj_map.at(v)) {
-             
-            const auto& u = uw.first;
+bool has_cycle_helper_rec(
+    const Label &v, std::unordered_set<Label> &visited,
+    const Label &parent = std::numeric_limits<Label>::max()) const {
+  // segna il nodo corrente v come visitato
+  visited.insert(v);
 
-            if (u != parent && 
-               (visited.count(u) || has_cycle_helper_rec(u, visited, v))
-               ){
-                
-                return true;
-                
-            }
-        }
+  // visita i nodi vicini del nodo corrente
+  for (const auto &uw : adj_map_graph_ptr->adj_map.at(v)) {
+    const auto &u = uw.first;
 
-        return false;
+    // se il nodo corrente è diverso da suo padre, abbiamo 2 modi diversi
+    // di segnalare la presenza di un ciclo:
+    // 1) se il nodo u è già stato visitato, vi è un ciclo
+    // 2) se l'invocazione ricorsiva con u come nodo sorgente ha ritornato
+    // true, vi è un ciclo
+    if (u != parent &&
+        (visited.count(u) || has_cycle_helper_rec(u, visited, v))) {
+      return true;
     }
-    
-    // step 5
-    return mst_set_graph.get_edges();
-    \end{minted}
-    \caption{Funzione has\_cycle\_helper\_rec() per la rilevazione di cicli}
-    \label{listing:dfs-cycle}
-    \end{listing}
+  }
+
+  return false;
+}
+\end{minted}
+\caption{Funzione \codeinline{has\_cycle\_helper\_rec()} per la rilevazione di cicli}
+\label{listing:dfs-cycle}
+\end{listing}
     
     Per quanto riguarda invece l'esempio a destra in figura ~\ref{fig:SelfLoop}, viene automaticamente gestito dalle scelta implementativa fatta per la rappresentazione interna di un grafo. Infatti tale esempio, preso come input verrebbe trasformato in un grafo in cui sussiste un solo arco tra il nodo 0 e 1. L'arco che verrebbe preso in considerazione sarebbe quello di peso più basso, mentre l'altro viene scartato automaticamente. Pertanto all'interno della nostra struttura dati per rappresentare i grafi non sarà mai possibile avere nodi collegati in questo modo\\
     
