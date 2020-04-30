@@ -33,7 +33,7 @@ auto kruskal_naive_mst(AdjacencyMapGraph<Label, Weight>&& adj_map_graph) noexcep
         mst_set_graph.add_edge(edge);
         // detect a cycle in O(n' + m'), where n' is the number of vertexes and m'
         // it the number of edges currently present in mst_set_graph
-        if (dfs.has_cycle) {
+        if (dfs.has_cycle()) {
             // remove edge from the spanning tree in O(1) because it introduced a cycle.
             // This is much cheaper than constructing a new AdjacencyMapGraph
             // object every time we need to detect a cycle
