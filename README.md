@@ -4,8 +4,8 @@
 
 > Minumum Spanning Tree with Kruskal and Prim algorithms.
 
-An hands-on experience about algorithms over graph and graph theory 
-with the focus on efficiency and, obviously, correctness. 
+An hands-on experience about algorithms over graph and graph theory
+with the focus on efficiency and, obviously, correctness.
 
 ## Usage
 
@@ -16,8 +16,8 @@ this process.
 **Available commands**
 
 - `make all`, to compile all the algorithm sources in this project.
-- `make ALG`, where *ALG* is one of *KruskalSimple*, *KruskalUnionFind*,
-    *KruskalUnionFindCompressed*, *PrimBinaryHeap*, *PrimKHeap* to 
+- `make ALG`, where *ALG* is one of *KruskalNaive*, *KruskalUnionFind*,
+    *KruskalUnionFindCompressed*, *PrimBinaryHeap*, *PrimKHeap* to
     compile given algorithm sources.
 - `make testall`, to run tests on our algorithms.
 - `make testall_explicit`, to run tests with verbose output on our algoritms.
@@ -34,7 +34,7 @@ make CXX="g++" CXXFLAGS="-O3 -std=c++17 -I Shared" OUT_DIR="build" EXT="exe" all
 
 **Scripts**
 
-If you are a Windows user you can look at `test.ps1`, `testall.ps1` and 
+If you are a Windows user you can look at `test.ps1`, `testall.ps1` and
 `time.ps1` scripts in order to run tests and bench algorithms.
 
 If you are a Linux user, we have created a porting of the above scripts.
@@ -49,10 +49,10 @@ algorithms are stored in the *Shared* folder.
 
 The project comes with some extra folders:
 - *benchmark*, that contains benchmark results for the algorithms;
-- *dataset*, that contains benchmakr input data, i.e. about 70 random graph 
+- *dataset*, that contains benchmakr input data, i.e. about 70 random graph
     from 10 to 100k nodes;
 - *report*, that contains the sources for our report about the project;
-- *test*, that contains tests to verify algorithms correctness. 
+- *test*, that contains tests to verify algorithms correctness.
 
 ## Authors
 

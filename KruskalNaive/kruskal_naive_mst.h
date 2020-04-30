@@ -8,7 +8,7 @@
 #include "DFSCycleDetection.h"
 
 template <typename Label, typename Weight>
-auto kruskal_simple_mst(AdjacencyMapGraph<Label, Weight>&& adj_map_graph) noexcept
+auto kruskal_naive_mst(AdjacencyMapGraph<Label, Weight>&& adj_map_graph) noexcept
     -> std::unordered_set<Edge<Label, Weight>, custom_hash::edge_hash> {
     const size_t n = adj_map_graph.vertexes_size();
 
@@ -31,10 +31,9 @@ auto kruskal_simple_mst(AdjacencyMapGraph<Label, Weight>&& adj_map_graph) noexce
 
         // add the current edge to the spanning tree
         mst_set_graph.add_edge(edge);
-
         // detect a cycle in O(n' + m'), where n' is the number of vertexes and m'
         // it the number of edges currently present in mst_set_graph
-        if (dfs.has_cycle()) {
+        if (dfs.has_cycle) {
             // remove edge from the spanning tree in O(1) because it introduced a cycle.
             // This is much cheaper than constructing a new AdjacencyMapGraph
             // object every time we need to detect a cycle

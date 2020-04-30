@@ -26,7 +26,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PrimKHeap", "PrimKHeap\Prim
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PrimBinaryHeap", "PrimBinaryHeap\PrimBinaryHeap.vcxproj", "{52F6D1CD-B812-4A2D-BBE3-7BBF09D03D13}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KruskalSimple", "KruskalSimple\KruskalSimple.vcxproj", "{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KruskalNaive", "KruskalNaive\KruskalNaive.vcxproj", "{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

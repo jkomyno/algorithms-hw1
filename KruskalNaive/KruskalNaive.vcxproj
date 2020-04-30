@@ -22,15 +22,15 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="kruskal_simple_mst.h" />
+    <ClInclude Include="kruskal_naive_mst.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{61E742AA-4B3A-4F9F-BD8B-A5E4468EF7FD}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>KruskalSimple</RootNamespace>
+    <RootNamespace>KruskalNaive</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>KruskalSimple</ProjectName>
+    <ProjectName>KruskalNaive</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

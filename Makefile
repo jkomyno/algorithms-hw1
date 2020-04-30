@@ -2,7 +2,7 @@ CXX=g++-9
 CXXFLAGS=-O3 -Wall -Wextra -std=c++17 -I Shared
 MAINFILE=main.cpp
 
-KRUSKAL_SIMPLE=KruskalSimple
+KRUSKAL_NAIVE=KruskalNaive
 KRUSKAL_UNION_FIND=KruskalUnionFind
 KRUSKAL_UNION_FIND_COMPRESSED=KruskalUnionFindCompressed
 PRIM_BINARY_HEAP=PrimBinaryHeap
@@ -13,10 +13,10 @@ EXT="out"
 
 all: ensure_build_dir algs
 
-algs: ${KRUSKAL_SIMPLE} ${KRUSKAL_UNION_FIND} ${KRUSKAL_UNION_FIND_COMPRESSED} ${PRIM_BINARY_HEAP} ${PRIM_K_HEAP}
+algs: ${KRUSKAL_NAIVE} ${KRUSKAL_UNION_FIND} ${KRUSKAL_UNION_FIND_COMPRESSED} ${PRIM_BINARY_HEAP} ${PRIM_K_HEAP}
 
-${KRUSKAL_SIMPLE}:
-	${CXX} ${CXXFLAGS} ${KRUSKAL_SIMPLE}/${MAINFILE} -o ${OUT_DIR}/${KRUSKAL_SIMPLE}.${EXT}
+${KRUSKAL_NAIVE}:
+	${CXX} ${CXXFLAGS} ${KRUSKAL_NAIVE}/${MAINFILE} -o ${OUT_DIR}/${KRUSKAL_NAIVE}.${EXT}
 
 ${KRUSKAL_UNION_FIND}:
 	${CXX} ${CXXFLAGS} ${KRUSKAL_UNION_FIND}/${MAINFILE} -o ${OUT_DIR}/${KRUSKAL_UNION_FIND}.${EXT}
@@ -41,11 +41,11 @@ testall_explicit:
 	./test.sh ${KRUSKAL_UNION_FIND_COMPRESSED}.${EXT}
 	./test.sh ${PRIM_BINARY_HEAP}.${EXT}
 	./test.sh ${PRIM_K_HEAP}.${EXT}
-# TODO: Test KruskalSimple excluded due to its excessively long runtime.
-# ./test.sh ${KRUSKAL_SIMPLE}.${EXT}
+# TODO: Test KruskalNaive excluded due to its excessively long runtime.
+# ./test.sh ${KRUSKAL_NAIVE}.${EXT}
 
 report:
 	cd report; make pdf1
 
 .PHONY: all algs ensure_build_dir
-.PHONY: ${KRUSKAL_SIMPLE} ${KRUSKAL_UNION_FIND} ${KRUSKAL_UNION_FIND_COMPRESSED} ${PRIM_BINARY_HEAP} ${PRIM_K_HEAP} report
+.PHONY: ${KRUSKAL_NAIVE} ${KRUSKAL_UNION_FIND} ${KRUSKAL_UNION_FIND_COMPRESSED} ${PRIM_BINARY_HEAP} ${PRIM_K_HEAP} report

@@ -12,7 +12,7 @@ La versione vista a lezione di Prim vista in aula prevede i seguenti step:
     \item Creare una coda di priorità basata su Min Heap che contenga tutti i nodi non ancora inseriti nell'MST;
     \item Fino a che la coda non è vuota, estrarre il nodo $u$ avente chiave minore dalla coda;
     \item Iterare lungo i vertici $v$ adiacenti al nodo $u$ dentro al ciclo $while$;
-    \item Se $v$ appartiene alla coda e il peso dell'arco $(u, v)$ è $<$ della chiave di $v$, inserire l'arco $(u, v)$ allo Spanning Tree $\pi$ e decrementare il valore della chiave di $v$ al peso dell'arco $(u, v)$;  
+    \item Se $v$ appartiene alla coda e il peso dell'arco $(u, v)$ è $<$ della chiave di $v$, inserire l'arco $(u, v)$ allo Spanning Tree $\pi$ e decrementare il valore della chiave di $v$ al peso dell'arco $(u, v)$;
     \item Restituire $\pi$.
 \end{enumerate}
 
@@ -65,13 +65,13 @@ return mst;
 
 \begin{itemize}
     \item Abbiamo utilizzato \mintinline{c++}{std::numeric_limits<Weight>::max()} per inizializzare le chiavi al valore massimo assumibile dal tipo generico \mintinline{c++}{Weight}, che è istanziato come \mintinline{c++}{long}. Il massimo valore rappresentabile è quindi \mintinline{c++}{2147483647L}. \\
-    
+
     \item Poiché scegliamo sempre il primo nodo per inizializzare a 0 la chiave dello step 3, il container \textit{keys} rispetta già la proprietà di Min Heap. La coda di priorità è quindi creata in tempo \complexityConstant{}. \\
-    
+
     \item Se l'MST che stiamo costruendo arriva a contenere $n - 1$ archi prima che la coda sia svuotata, usciamo prematuramente dal ciclo. \\
-    
+
     \item Determinare se la coda contiene un nodo $v$ e se il peso $weight$ corrente è minore della chiave associata a $v$ ha complessità temporale \complexityConstant{} ammortizzata.\\
-    
+
     \item Aggiornare il valore della chiave associata ad un nodo $v$ ha complessità temporale pari a \complexityLogN{}.\\
 \end{itemize}
 
@@ -92,7 +92,7 @@ La versione vista a lezione di Kruskal vista in aula prevede i seguenti step:
 
 \begin{listing}[!ht]
 \begin{minted}{c++}
-// KruskalSimple/kruskal_simple_mst.h
+// KruskalNaive/kruskal_naive_mst.h
 
 // step 1
 const size_t n = adj_map_graph.vertexes_size();
@@ -107,7 +107,7 @@ DFSCycleDetection<Label, Weight> dfs(&mst_set_graph);
 for (auto it = edges.cbegin();
      !(it == edges.cend() && n == mst_set_graph.vertexes_size()); ++it) {
   const auto &edge = *it;
-  
+
   // step 4
   mst_set_graph.add_edge(edge);
   if (dfs.has_cycle()) {
@@ -118,7 +118,7 @@ for (auto it = edges.cbegin();
 // step 5
 return mst_set_graph.get_edges();
 \end{minted}
-\caption{Implementazione di KruskalSimple. I commenti del file originale sono stati omessi per una maggiore compattezza.}
+\caption{Implementazione di KruskalNaive. I commenti del file originale sono stati omessi per una maggiore compattezza.}
 \label{listing:kruskal-simple}
 \end{listing}
 
@@ -138,13 +138,13 @@ return mst_set_graph.get_edges();
 
 \begin{itemize}
     \item Abbiamo utilizzato \mintinline{c++}{adj_map_graph.get_sorted_edges(std::less<>{})} per ricevere un \mintinline{c++}{std::vector<Edge<Label, Weight>>} contenente gli archi in ordine non decrescente. Questa operazione costa tempo \complexityMLogM{} e usa il comparatore generico \mintinline{c++}{std::less<>}.\\
-    
+
     \item Nello pseudo-codice non viene esplicitato in modo concreto come effettuare la verifica della ciclicità, i.e. verificare se $A \cup \{ e \}$ sia aciclico, lasciando così campo libero all'implementazione. Tra i vari modi di verificare la ciclicità abbiamo scelto di adattare l'algoritmo Depth-First Search per questo scopo.\\
 
     \item Se l'MST che stiamo costruendo arriva a contenere $n$ vertici prima di aver attraversato tutti gli archi, usciamo prematuramente dal ciclo.\\
-    
+
     \item Il modo più ``comodo'' che abbiamo a disposizione per verificare se $A \cup \{ e \}$ abbia un ciclo, dove la $A$ dell'algoritmo visto a lezione corrisponde all'oggetto $mst\_set\_graph$ e $e$ corrisponde alla variabile $edge$, è aggiungere $edge$ a $mst\_set\_graph$ ed eventualmente rimuoverlo subito dopo in caso $dfs$ abbia individuato la presenza di un ciclo.\\
-    
+
     \item Menzioniamo anche la gestione dei self loop o altri casi particolari che possiamo ritrovare nei grafi in input. Per fare questo ci aiutiamo con questi 2 esempi di base, raffigurati in figura~\ref{fig:SelfLoop}.
 
 \begin{figure}[h]
@@ -154,7 +154,7 @@ return mst_set_graph.get_edges();
 	\label{fig:SelfLoop}
 \end{figure}
 
-    Partendo dal caso di sinistra in cui esiste un nodo con un self loop, la funzione $has\_cycle\_$ $helper\_rec()$ è comunque in grado di rilevare la presenza di tale ciclo. Infatti come è possibile vedere dal listato \ref{listing:dfs-cycle} una volta lanciata la DFS sul nodo 0, la condizione dell'if sarà vera, in quanto il nodo 0 risulterà già visitato. 
+    Partendo dal caso di sinistra in cui esiste un nodo con un self loop, la funzione $has\_cycle\_$ $helper\_rec()$ è comunque in grado di rilevare la presenza di tale ciclo. Infatti come è possibile vedere dal listato \ref{listing:dfs-cycle} una volta lanciata la DFS sul nodo 0, la condizione dell'if sarà vera, in quanto il nodo 0 risulterà già visitato.
 
 \begin{listing}[!ht]
 \begin{minted}{c++}
@@ -187,11 +187,11 @@ bool has_cycle_helper_rec(
 \caption{Funzione \codeinline{has\_cycle\_helper\_rec()} per la rilevazione di cicli}
 \label{listing:dfs-cycle}
 \end{listing}
-    
+
     Per quanto riguarda invece l'esempio a destra in figura ~\ref{fig:SelfLoop}, viene automaticamente gestito dalle scelta implementativa fatta per la rappresentazione interna di un grafo. Infatti tale esempio, preso come input verrebbe trasformato in un grafo in cui sussiste un solo arco tra il nodo 0 e 1. L'arco che verrebbe preso in considerazione sarebbe quello di peso più basso, mentre l'altro viene scartato automaticamente. Pertanto all'interno della nostra struttura dati per rappresentare i grafi non sarà mai possibile avere nodi collegati in questo modo\\
-    
+
     \item Un altra ulteriore ottimizzazione di tale algoritmo è la verifica ad ogni aggiunta di un nuovo arco che non crea un ciclo nel grafo, della soglia massima di archi che un MST può avere, che come visto in classe è pari al numero di nodi totali del grafo - 1. Pertanto non appena l'MST che si sta calcolando raggiunge la soglia prestabilità e possibile ritornare immediatamente l'MST.
-    
+
 \end{itemize}
 
 
@@ -236,7 +236,7 @@ for (auto it = edges.cbegin(); !(it == edges.cend() && n_stop == mst.size());
   if (!disjoint_set.are_connected(v, w)) {
     // step 5
     mst.push_back(edge);
-    
+
     // step 6
     disjoint_set.unite(v, w);
   }
@@ -251,11 +251,11 @@ return mst;
 
 \subsubsection{Osservazioni}
 \begin{itemize}
-    \item Come osservato per KruskalSimple, abbiamo utilizzato il metodo  \mintinline{c++}{get_sorted_edges} \mintinline{c++}{(std::less<>{})} per ricevere un \mintinline{c++}{std::vector<Edge<Label, Weight>>} contenente gli archi in ordine non decrescente. \\
-    
+    \item Come osservato per KruskalNaive, abbiamo utilizzato il metodo  \mintinline{c++}{get_sorted_edges} \mintinline{c++}{(std::less<>{})} per ricevere un \mintinline{c++}{std::vector<Edge<Label, Weight>>} contenente gli archi in ordine non decrescente. \\
+
     \item Se l'MST che stiamo costruendo arriva a contenere $n - 1$ archi prima di aver attraversato tutti gli archi del grafo originale, usciamo prematuramente dal ciclo $for$. \\
-    
+
 \end{itemize}
 
 
-% L'algoritmo di Kruskal con Disjoint Set implementato risulta essere in buona parte fedele a quello già visto in classe, con al differenze che è stato anche ottimizzata la condizione di terminazione, che prevede che al raggiungimento di n-1 archi all'interno dell'mst costruito, l'algoritmo termina restituendo l'mst calcolato fino a quel momento. Per implementare completamente questo algoritmo efficiente di Kruskal è necessario anche la creazione di un Disjoint Set: per fare ciò si e definita una classe astratta di base chiamata "DisjointSetBase" per poi implementarla con la classe "DisjointSet" e "DisjointCompressed" che non fanno altro che implementare i metodi astratti find e unite. 
+% L'algoritmo di Kruskal con Disjoint Set implementato risulta essere in buona parte fedele a quello già visto in classe, con al differenze che è stato anche ottimizzata la condizione di terminazione, che prevede che al raggiungimento di n-1 archi all'interno dell'mst costruito, l'algoritmo termina restituendo l'mst calcolato fino a quel momento. Per implementare completamente questo algoritmo efficiente di Kruskal è necessario anche la creazione di un Disjoint Set: per fare ciò si e definita una classe astratta di base chiamata "DisjointSetBase" per poi implementarla con la classe "DisjointSet" e "DisjointCompressed" che non fanno altro che implementare i metodi astratti find e unite.
