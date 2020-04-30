@@ -28,21 +28,21 @@ struct Edge {
     /**
      * Default assignment operator, needed to sort a container of Edges in place
      */
-    Edge<Label, Weight>& operator=(const Edge<Label, Weight>& rhs) = default;
+    Edge<Label, Weight>& operator=(const Edge<Label, Weight>& rhs) noexcept = default;
 
     /**
      * Default copy and move constructors, needed because in Prim's algorithm we need
      * to override edges
      */
-    Edge(const Edge<Label, Weight>& rhs) = default;
-    Edge(Edge<Label, Weight>&& rhs) = default;
+    Edge(const Edge<Label, Weight>& rhs) noexcept = default;
+    Edge(Edge<Label, Weight>&& rhs) noexcept = default;
 
     /**
      * Equality operator, used by std::unordered_set.
      * (from, to, w1) and (to, from, w2) are considered the same edge, even if
      * the weights are different.
      */
-    bool operator==(const Edge& e) const {
+    bool operator==(const Edge& e) const noexcept {
         return (from == e.from && to == e.to) || (to == e.from && from == e.to);
     }
 };
@@ -54,7 +54,7 @@ namespace custom_hash {
     // commutative hash functor for Edge<Label, Weight>
     struct edge_hash {
         template <class Label, class Weight>
-        std::size_t operator()(const Edge<Label, Weight>& edge) const {
+        std::size_t operator()(const Edge<Label, Weight>& edge) const noexcept {
             constexpr auto hash_max = std::numeric_limits<Label>::max();
             const auto& [i, j, _] = edge;
             return (i * j + (i * i) * (j * j) + (i * i * i) * (j * j * j)) % hash_max;
@@ -99,7 +99,7 @@ class AdjacencyMapGraph {
      * to efficiently preallocate memory and void exprensive and multiple rehashes. Time: O(n + m)
      * Space: O(n + m)
      */
-    void init(const std::vector<Edge<Label, Weight>>& edge_list, const size_t n_vertex);
+    void init(const std::vector<Edge<Label, Weight>>& edge_list, size_t n_vertex) noexcept;
 
 public:
     /**
@@ -117,21 +117,21 @@ public:
      * Time:  O(1)
      * Space: O(1)
      */
-    [[nodiscard]] size_t vertexes_size() const;
+    [[nodiscard]] size_t vertexes_size() const noexcept;
 
     /**
      * Return the list of vertexes.
      * Time:  O(n)
      * Space: O(n)
      */
-    [[nodiscard]] std::vector<Label> get_vertexes() const;
+    [[nodiscard]] std::vector<Label> get_vertexes() const noexcept;
 
     /**
      * Return the set of edges.
      * Time:  O(1)
      * Space: O(1)
      */
-    [[nodiscard]] const edge_set_t& get_edges() const;
+    [[nodiscard]] const edge_set_t& get_edges() const noexcept;
 
     /**
      * Return the set of edges sorted by weight according to the given comparator.
@@ -146,17 +146,17 @@ public:
      * Time:  O(1)
      * Space: O(1)
      */
-    [[nodiscard]] const vertex_weight_map_t& adjacent_vertexes(const Label& vertex) const;
+    [[nodiscard]] const vertex_weight_map_t& adjacent_vertexes(const Label& vertex) const noexcept;
 
     /**
      * Add a new non-directed edge.
      * Time:  O(1) amortized
      * Space: O(1)
      */
-    void add_edge(const Edge<Label, Weight>& edge);
+    void add_edge(const Edge<Label, Weight>& edge) noexcept;
 
     /**
-     * Remove edge from the storage.
+     * Remove edge from the storage. The given edge must exist.
      * Time:  O(1) amortized
      * Space: O(1)
      */
@@ -165,7 +165,7 @@ public:
 
 template <typename Label, typename Weight>
 inline void AdjacencyMapGraph<Label, Weight>::init(
-    const std::vector<Edge<Label, Weight>>& edge_list, const size_t n_vertex) {
+    const std::vector<Edge<Label, Weight>>& edge_list, const size_t n_vertex) noexcept {
     // preallocate memory
     adj_map.reserve(n_vertex);
     edge_set.reserve(edge_list.size());
@@ -176,12 +176,12 @@ inline void AdjacencyMapGraph<Label, Weight>::init(
 }
 
 template <typename Label, typename Weight>
-inline size_t AdjacencyMapGraph<Label, Weight>::vertexes_size() const {
+inline size_t AdjacencyMapGraph<Label, Weight>::vertexes_size() const noexcept {
     return adj_map.size();
 }
 
 template <typename Label, typename Weight>
-inline std::vector<Label> AdjacencyMapGraph<Label, Weight>::get_vertexes() const {
+inline std::vector<Label> AdjacencyMapGraph<Label, Weight>::get_vertexes() const noexcept {
     std::vector<Label> vertexes;
     vertexes.reserve(adj_map.size());
 
@@ -196,7 +196,7 @@ inline std::vector<Label> AdjacencyMapGraph<Label, Weight>::get_vertexes() const
 
 template <typename Label, typename Weight>
 inline const std::unordered_set<Edge<Label, Weight>, custom_hash::edge_hash>&
-AdjacencyMapGraph<Label, Weight>::get_edges() const {
+AdjacencyMapGraph<Label, Weight>::get_edges() const noexcept {
     return edge_set;
 }
 
@@ -213,7 +213,7 @@ inline std::vector<Edge<Label, Weight>> AdjacencyMapGraph<Label, Weight>::get_so
 
     // sort the values in sorted_edges applying the comparator to the internal weights
     std::sort(sorted_edges.begin(), sorted_edges.end(),
-              [comp{std::move(comparator)}](const auto& l, const auto& r) {
+              [comp{std::forward<Comparator>(comparator)}](const auto& l, const auto& r) {
                   return comp(l.weight, r.weight);
               });
 
@@ -222,31 +222,35 @@ inline std::vector<Edge<Label, Weight>> AdjacencyMapGraph<Label, Weight>::get_so
 
 template <typename Label, typename Weight>
 inline const std::unordered_map<Label, Weight>& AdjacencyMapGraph<Label, Weight>::adjacent_vertexes(
-    const Label& vertex) const {
+    const Label& vertex) const noexcept {
     return adj_map.at(vertex);
 }
 
 template <typename Label, typename Weight>
-void AdjacencyMapGraph<Label, Weight>::add_edge(const Edge<Label, Weight>& edge) {
-    using vertex_weight_map_t = AdjacencyMapGraph<Label, Weight>::vertex_weight_map_t;
+void AdjacencyMapGraph<Label, Weight>::add_edge(const Edge<Label, Weight>& edge) noexcept {
     const auto& [from, to, weight] = edge;
 
     vertex_weight_map_t& adj_map_from = adj_map[from];
     vertex_weight_map_t& adj_map_to = adj_map[to];
 
-    // If the edge is already present, check the weight.
+    // if the given edge is already present, check the weight.
+    // If we already saved an edge between the same two vertexes but with a higher weight, we
+    // override the old edge with the new one.
     if (adj_map_from.count(to)) {
         if (adj_map_from[to] > weight) {
             adj_map_from[to] = weight;
             adj_map_to[from] = weight;
 
-            // removes the old edge by keys from and to and
-            // re-add the new edge with the new weight
+            // removes the old edge with a higher weight and adds the same edge again, but with the new lower weight.
+            // This works because edge_set uses the custom_hash::edge_hash hash function, which:
+            // 1) is commutative
+            // 2) doesn't consider the weight
+            // E.g. edges (5,2,10) and (2,5,-2) have the same hash function
             edge_set.erase(edge);
             edge_set.insert(edge);
         }
     }
-    // else, add the edge to the non-directed graph
+    // if the given edge is new, add the edge to the non-directed graph
     else {
         adj_map_from[to] = weight;
         adj_map_to[from] = weight;
