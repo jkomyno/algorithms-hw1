@@ -110,9 +110,8 @@ for (auto it = edges.cbegin();
   const auto &edge = *it;
 
   // step 4
-  mst_set_graph.add_edge(edge);
-  if (dfs.has_cycle()) {
-    mst_set_graph.remove_edge(edge);
+  if (!dfs.are_connected(edge.from, edge.to)) {
+    mst_set_graph.add_edge(edge);
   }
 }
 
@@ -123,19 +122,24 @@ return mst_set_graph.get_edges();
 \label{listing:kruskal-simple}
 \end{listing}
 
-\noindent L'algoritmo Kruskal Naive è stato implementato a partire dallo pseudo codice visto in classe. A partire da questo ci si è subito accorti che una delle peculiarità di tale algoritmo e la necessità di verificare ad ogni inserimento di un arco di peso minimo la presenza di un ciclo nell'MST calcolato. Per ottenere tale funzionalità abbiamo deciso di modificare DFS in maniera da rilevare la presenza di un ciclo in un grafo. Per fare questo è stato creata la classe DFSCycleDetection, che è possibile ritrovare nella cartella ``Shared'', che data la rappresentazione del grafo e richiamando l'apposito metodo \codeinline{has\_cycle()} è in grado di rilevare la presenza di un ciclo all'interno di esso usando per l'appunto una visita in profondità.\\
+\noindent L'algoritmo Kruskal Naive è stato implementato a partire dallo pseudo codice visto in classe. Per individuare se la foresta $A \cup \{ e \}$ dello step 4 dell'algoritmo sia aciclica, abbiamo usato \textbf{Depth First Search} (DFS). \\
 
-\noindent Abbiamo pertanto dovuto modificare DFS nel seguente modo:
-\begin{itemize}
-	\item non è necessario avere una label per ogni arco che etichetti quell'arco come ``DISCOVERY EDGE'' o ``BACK EDGE''
-	\item quando un arco verrebbe etichettato come ``BACK EDGE'' nello pseudo codice visto in classe possiamo affermare che nel grafo è presente un ciclo. Non è necessario riscostruire tutto il ciclo come visto in un ulteriore modifica di DFS in classe.
-	\item al posto di tener traccia di ogni arco se è stato visitato o meno attraverso l'attributo ID visto in clase, è stato deciso di creare un set di archi già visitati dove l'inseriemento e la ricerca avviene in tempo costante.
-	\item per essere sicuri di non prendere in considerazione il vertice da cui viene lanciata ricorsivamente la DFS (ossia per non lanciare DFS sul nodo padre) è stata passata alla ricorsione il vertice padre, in modo che quando si scansiona la lista di adiacenza del vertice in considerazione non si consideri il vertice padre, simulando così il comportamento della funzione \codeinline{opposite(v,e)} nello pseudo codice.
-\end{itemize}
+\noindent Ci sono venute in mente 2 idee di utilizzo di \textit{DFS} (definite nel file \textit{Shared/DFSCycleDetection.h}) che affrontano il problema da 2 punti di vista diversi.
 
-\noindent Per risolvere il problema di più di un eventuale componenente connessa nel grafo, vengono sempre scansionati tutti i nodi non ancora visitati attraverso un ciclo \codeinline{for} su tutti i vertici del grafo, come visto in classe.
+\paragraph{Idea 1: Ricerca di un ciclo}\mbox{} \\
 
-\subsubsection{Osservazioni}
+\noindent L'idea consiste nell'aggiungere un arco alla foresta $A$, controllare se l'inserimento ha causato un ciclo, e eventualmente rimuovere l'arco appena inserito. Questo approccio risponde alla domanda "Esiste un ciclo all'interno della foresta che diventerà MST alla fine dell'algoritmo?", ed è implementato dal metodo \codeinline{has\_cycle()} della classe \codeinline{DFSCycleDetection}.
+
+\paragraph{Idea 2: Ricerca di un path}\mbox{} \\
+
+\noindent Quest'altra idea è meno generale ma più efficiente rispetto alla precedente. Consiste nell'assumere che la foresta $A$ sia rimasta aciclica dopo l'iterazione precedente del ciclo, per poi controllare (stavolta senza effettuare nessun inserimento preliminare dell'arco corrente) che non esista nessun path che colleghi i due estremi dell'arco corrente in $A$.
+Solo tale path esistesse già e noi inserissimo l'arco corrente, andremmo ad introdurre un ciclo in $A$, cosa che vogliamo evitare. Per dirla nei termini di DFS, andremmo ad inserire un BACK EDGE. Viceversa, se tale path non esiste (ovvero, se DFS etichetta tutti i lati di $A$ come DISCOVERY EDGE), possiamo aggiungere l'edge corrente con la sicurezza di non introdurre alcun ciclo.
+Questo approccio risponde alla domanda "Dato il lato $(u, v)$ e la foresta $A$, esiste un percorso tra $u$ e $v$?", ed è implementato dal metodo \codeinline{are\_connected(source, target)} della classe \codeinline{DFSCycleDetection}. \\
+
+\vspace{0.9cm}
+L'idea 2 si è rivelata più efficace per i dataset a disposizione. Nel caso di un grafo in input con 100.000 nodi e circa 130.000, quest'idea è il ~30\% più efficiente in termini di tempo rispetto all'idea 1. In nessuna delle due implementazione di DFS è stato necessario usare esplicitamente le etichettature DISCOVERY EDGE e BACK EDGE: abbiamo semplicemente usato un container di tipo \codeinline{std::unordered\_set<Label>} per tenere traccia dei nodi visitati.
+
+\subsubsection{Osservazioni (TODO)}
 
 \begin{itemize}
     \item Abbiamo utilizzato \mintinline{c++}{adj_map_graph.get_sorted_edges(std::less<>{})} per ricevere un \mintinline{c++}{std::vector<Edge<Label, Weight>>} contenente gli archi in ordine non decrescente. Questa operazione costa tempo \complexityMLogM{} e usa il comparatore generico \mintinline{c++}{std::less<>}.\\
