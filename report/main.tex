@@ -9,6 +9,7 @@
   \usepackage{graphicx}
   \usepackage{amssymb}
   \usepackage{wrapfig}
+  \usepackage{tgcursor}
   \usepackage[dvipsnames]{xcolor}
   \usepackage{listings}
   \usepackage{fancyvrb}
@@ -16,11 +17,14 @@
   \usepackage{mathtools}
   \usepackage{nameref}
   \usepackage{array,collcell}
+  \usepackage{tikz}
+  \usepackage{tikz-qtree}
   \usepackage{float}
   \usepackage{subfig}
   \usepackage{minted} % Needs to be above csquotes.
   \usepackage{csquotes} % Quotes
   \usepackage{booktabs} % For \toprule, \midrule and \bottomrule
+  \usepackage{siunitx} % Formats the units and values
   \usepackage{pgfplotstable} % Generates table from .csv
   \usepackage{caption}
   \usepackage{longtable}
@@ -38,6 +42,12 @@
 }
 
   \captionsetup[table]{position=bottom}
+
+  % Setup siunitx:
+  \sisetup{
+    round-mode          = places, % Rounds numbers
+    round-precision     = 2, % to 2 places
+  }
 
   % Setup hyperref
   \hypersetup{
@@ -103,8 +113,6 @@
     \input{chapters/1-abstract}
     \input{chapters/2-language-choice}
     \input{chapters/3-benchmark-process}
-    \newpage
-
     \input{chapters/4-code-structure}
     \input{chapters/5-implementation-choices}
 

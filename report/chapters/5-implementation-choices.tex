@@ -38,7 +38,7 @@ Noi abbiamo deciso invece di utilizzare una \textbf{Mappa di Adiacenza} (\textit
     &  \multicolumn{1}{c}{Adj. Matrix} & \multicolumn{1}{c}{Adj. List} & \multicolumn{1}{c|}{Adj. Map} \\
     \hline
      Complessità spaziale   & \complexityNSquared{}  & \complexityNPlusM{} & \complexityNPlusM{} \\ \hline
-     
+
      Creazione grafo & \complexityNSquared{}  & \complexityNPlusM{} & \complexityNPlusM{} \\
      Enumerazione archi & \complexityNSquared{} & \complexityM{} & \complexityM{} \\
      Enumerazione vertici & \complexityN{} & \complexityN{} & \complexityN{} \\
@@ -105,7 +105,7 @@ void add_edge(const Edge<Label, Weight> &edge) noexcept {
     if (adj_map_from[to] > weight) {
       adj_map_from[to] = weight;
       adj_map_to[from] = weight;
-        
+
       // rimuoviamo il vecchio arco con un peso più alto per aggiungere
       // lo stesso arco, ma con il nuovo peso più basso. Questo funziona
       // perché la funzione hash custom_hash::edge_hash, usata da
@@ -128,7 +128,7 @@ void add_edge(const Edge<Label, Weight> &edge) noexcept {
 
 % L'ultimo problema non ancora affrontato riguarda la possibilità di inserire un arco doppio tra due nodi uguali (come richiesto da problema), con la differenza che questi due archi hanno un peso diverso. Siccome la nostra implementazione non prevede la presenza di tali archi doppi, la funzione \codeinline{add\_eddge()} si occupa di verificare l'eventuale presenza di un arco già inserito e di conseguenza i relativi pesi, per andare a modificare il peso qualora il peso del nuovo arco sia inferiore al peso dell'arco precedentemente già inserito. Per fare questo ad ogni aggiunta di un nuovo arco si va a verificare nella lista di adiacenza l'esistenza di un arco per quei due vertici:
 % \begin{itemize}
-% 	\item \textbf{se l'arco era già stato aggiunto:} si confrontano i due pesi e si aggiorna il peso dell'arco solo nell'eventualità in cui il nuovo peso sia inferiore a quello già presente nella lista di adiacenza. Dopodiché se c'è stato un aggiornamento si aggiorna anche il relativo \codeinline{unordered\_set}, eliminando l'arco precedente e si ri-aggiunge l'arco con il nuovo peso. 
+% 	\item \textbf{se l'arco era già stato aggiunto:} si confrontano i due pesi e si aggiorna il peso dell'arco solo nell'eventualità in cui il nuovo peso sia inferiore a quello già presente nella lista di adiacenza. Dopodiché se c'è stato un aggiornamento si aggiorna anche il relativo \codeinline{unordered\_set}, eliminando l'arco precedente e si ri-aggiunge l'arco con il nuovo peso.
 % 	\item \textbf{se l'arco non era già stato inserito:} si inserisce l'arco sia nella lista di adiacenza che in \codeinline{unordered\_set}.
 % \end{itemize}
 

@@ -1,32 +1,19 @@
 \section{Conclusioni}
 \label{cap:conclusions}
 
-Abbiamo già ampiamente discusso gli algoritmi, tempi di esecuzione, scelte implementative e ``furberie'' per rendere il codice più
-efficiente. In particolare alla sezione \ref{cap:performance-analysis} è possibile trovare le risposte alle due principali domande
-dell'homework e l'analisi delle performance, mentre in \ref{cap:benchmark-process} è stato descritto il processo di benchmark adottato. 
-Nelle sezioni \ref{cap:code-structure}, \ref{cap:implementation-choices} e \ref{cap:algorithms} è possibile trovare invece
-i dettagli tecnici quali struttura, scelte implementative e codice degli algoritmi. La sezione \ref{cap:tests} descrive il processo
-di testing svolto, mentre la sezione \ref{cap:extensions-and-originalities} descrive le estensioni esplorate per rendere gli 
-algoritmi più efficienti.
+In questa relazione abbiamo ampiamente gli algoritmi, le scelte implementative, i tempi di esecuzioni e i ``tricks'' usati per rendere i programmi più efficienti. \\
 
-Questo homework ci ha permesso in primo luogo di capire a fondo le logiche e gli algoritmi per il calcolo del Minimum Spaning Tree dal
-punto di vista intuitivo e teorico. In secondo luogo, dato l'aspetto fortemente pratico dell'esercizio, ci ha permesso di confrontarci
-e sperimentare diverse tecniche e soluzioni di implementazione diverse e originali, ricercando anche con fantasia la nuova 
-implementazione che potesse essere più efficiente delle precedenti, stando però sempre attenti a garantire la correttezza dei risultati.
+\noindent sezione \ref{cap:performance-analysis} abbiamo risposto alle 2 principali domande dell'homework, mentre in \ref{cap:benchmark-process} abbiamo descritto il processo di benchmark adottato, pensato per essere quanto più affidabile e stabile.
+Nelle sezioni \ref{cap:code-structure}, \ref{cap:implementation-choices} e \ref{cap:algorithms} abbiamo invece discusso i dettagli tecnici, quali struttura, scelte implementative e codice degli algoritmi. \\
 
-Il problema, oltre che agli algoritmi del calcolo dell'MST quali KruskalNaive, KruskalUnionFind e PrimBinaryHeap, ci ha permesso di 
-sviluppare anche un buon numero di strutture dati da zero e algoritmi ``collaterali'' da utilizzare in combinazione con i principali.
-Si veda ad esempio la struttura dati per la rappresentazione del grafo, componente fondamentale e utilizzata da tutti gli algoritmi. 
-Questa componente se non implementata a dovere, avrebbe inficiato le performance di tutti gli algoritmi, penalizzando così i nostri
-risultati.
+\noindent  La sezione \ref{cap:tests} descrive il processo di testing automatico che abbiamo adottato, che c'ha permesso di rilasciare versioni migliori degli algoritmi in più iterazioni, accorgendoci immediatamente di eventuali regressioni. La sezione \ref{cap:extensions-and-originalities} descrive infine le estensioni esplorate per soddisfare la nostra curiosità e arricchire il nostro bagaglio accademico, garantendo comunque la correttezza dei risultati. \\
 
-Altri due aspetti fondamentali che abbiamo dovuto affrontare sono stati il benchmarking degli algoritmi, facendo attenzione a svolgere
-le misurazioni in modo più scientifico possibile e il testing degli algoritmi per garantire la correttezza della soluzione di modo da
-non vanificare gli sforzi effettuati per rendere efficienti gli algoritmi.
+\noindent L'algoritmo a cui abbiamo dedicato più tempo ed energie è, paradossalmente, KruskalSimple. Sapevamo sin dall'inizio che sarebbe stato l'algoritmo con i tempi di esecuzione più lenti, ma ci siamo ugualmente adoperati per cercare di ottimizzare l'implementazione di DFS per l'individuazione di cicli nel grafo, migliorando le performance di circa il 30\% per i grafi più complessi del dataset.
 
-Altro punto importante è stato il saper lavorare in gruppo: un progetto tutto sommato non troppo piccolo come questo ci ha
-fatto capire l'importanza del saper cooperare, condividere e sviluppare idee, essere aperti ai confronti e ai suggerimenti.
+\noindent Questo progetto ci ha permesso di sperimentare più approcci, implementare e debuggare strutture dati non banali ``from scratch'' e valutare con attenzione che complessità temporali e che operazioni debba offrire una struttura dati per rendere efficienti algoritmi che la sfruttano. Questo homework ci ha permesso inoltre di migliorare la nostra comprensione del linguaggio di programmazione scelto e di come funziona la collaborazione da remoto di un piccolo team di persone. \\
 
-\vspace{1em}
-In conclusione, per noi l'esperienza è stata molto positiva e oltre a capire diversi aspetti del mondo gli algoritmi e delle strutture
-dati ci ha permesso di sviluppare skill sicuramente utili per un informatico.
+\noindent Questo progetto è disponibile anche come repository pubblica su Github:
+
+\begin{center}
+\href{https://github.com/jkomyno/algorithms-hw1}{github.com/jkomyno/algorithms-hw1}
+\end{center}

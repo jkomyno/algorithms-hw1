@@ -7,31 +7,34 @@
 Eseguite i tre algoritmi che avete implementato (Prim, Kruskal naive e Kruskal efficiente) sui grafi del dataset. Misurate i tempi di calcolo dei tre algoritmi e create un grafico che mostri la variazione dei tempi di calcolo al variare del numero di vertici nel grafo. Per ognuna delle istanze del problema, riportate il peso del minimum spanning tree ottenuto dagli algoritmi.
 \end{displayquote}
 
-\noindent Il risultato del minimum spanning tree ottenuto dagli algoritmi è illustrato dai seguenti
-grafici. Le figure \ref{fig:TheThreeComparison300}, \ref{fig:TheThreeComparison1k}
+\noindent Le tabelle \ref{table:KruskalSimple-results},
+ \ref{table:KruskalUnionFind-results}, \ref{table:KruskalUnionFindCompressed-results}
+ e \ref{table:PrimBinaryHeap-results} in appendice \ref{cap:runtime-tables} riportano i risultati dell'MST ottenuto dagli algoritmi e il loro tempo di esecuzione per ogni file di input. \\
+
+\noindent I seguenti grafici mostrano la variazioni delle performance temporali degli algoritmi rispetto al numero di nodi del grafico. Non abbiamo incluso il numero di edges poiché tutti i grafi in input erano sparsi, ovvero gli archi non erano mai più numerosi di un fattore 1.4 rispetto al numero di vertici, quindi tale dato non avrebbe aggiunto informazioni. Le figure \ref{fig:TheThreeComparison300}, \ref{fig:TheThreeComparison1k}
 e \ref{fig:TheThreeComparison2k} mostrano una comparativa piuttosto significativa tra i tre algorimti.
 \'E possibile notare infatti che anche con taglie dell'input molto piccole il comportamento degli
-algorimti differisce in modo cosistente: in particolare, KruskalNaive assume sin da subito un
+algorimti differisce in modo cosistente: in particolare, KruskalSimple assume sin da subito un
 andamento esponenziale nel numero di nodi, e non compete per nulla con KruskalUnionFind e PrimBinaryHeap.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{./images/KruskalNaive_vs_KruskalUnionFind_vs_PrimBinaryHeap_(300_nodes).png}
-	\caption{Andamento di KruskalNaive, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 300 nodi.}
+    \includegraphics[width=0.9\textwidth]{./images/KruskalSimple_vs_KruskalUnionFind_vs_PrimBinaryHeap_(300_nodes).png}
+	\caption{Andamento di KruskalSimple, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 300 nodi.}
     \label{fig:TheThreeComparison300}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{./images/KruskalNaive_vs_KruskalUnionFind_vs_PrimBinaryHeap_(1k_nodes).png}
-    \caption{Andamento di KruskalNaive, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 1000 nodi.}
+    \includegraphics[width=0.9\textwidth]{./images/KruskalSimple_vs_KruskalUnionFind_vs_PrimBinaryHeap_(1k_nodes).png}
+    \caption{Andamento di KruskalSimple, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 1000 nodi.}
     \label{fig:TheThreeComparison1k}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{./images/KruskalNaive_vs_KruskalUnionFind_vs_PrimBinaryHeap_(2k_nodes).png}
-    \caption{Andamento di KruskalNaive, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 2000 nodi.}
+    \includegraphics[width=0.9\textwidth]{./images/KruskalSimple_vs_KruskalUnionFind_vs_PrimBinaryHeap_(2k_nodes).png}
+    \caption{Andamento di KruskalSimple, KruskalUnionFind, PrimBinaryHeap con taglia dell'input da 0 a 2000 nodi.}
     \label{fig:TheThreeComparison2k}
 \end{figure}
 
@@ -53,12 +56,6 @@ vedere che a meno di un piccolo fattore i due hanno lo stesso trend di crescita.
     \label{fig:TheTwoComparison5k}
 \end{figure}
 
-\noindent Per avere un'idea più precisa dei tempi di esecuzione degli
-algorimti è possibile consultare le tabelle \ref{table:KruskalNaive-results},
- \ref{table:KruskalUnionFind-results}, \ref{table:KruskalUnionFindCompressed-results}
- e \ref{table:PrimBinaryHeap-results} in appendice \ref{cap:runtime-tables} che riportano i risultati puntuali
- dell'esecuzione degli algoritmi.
-
 \subsection{Domanda \#2}
 
 \begin{displayquote}
@@ -73,13 +70,13 @@ Commentate i risultati che avete ottenuto: come si comportano gli algoritmi risp
     \hline
     &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
     \hline
-     KruskalNaive     & 7431.57  & 11939.8   & 59257     & 366313    &    1.99612e+06 &    3.12073e+06 \\
+     KruskalSimple     & 7431.57  & 11939.8   & 59257     & 366313    &    1.99612e+06 &    3.12073e+06 \\
      KruskalUnionFind &  204.429 &   254.504 &   599.704 &   1249.7  & 3010.99        & 4050.49        \\ \hline
      Differenza       & 7227.15  & 11685.3   & 58657.3   & 365064    &    1.99311e+06 &    3.11668e+06 \\
      Miglioramento \%    &   97.25  &    97.87  &    98.99  &     99.66 &   99.85        &   99.87        \\
     \hline
     \end{tabular}
-    \caption{Confronto tra KruskalNaive e KruskalUnionFind}
+    \caption{Confronto tra KruskalSimple e KruskalUnionFind}
     \label{table:kruskal-simple-vs-kruskal-union-find}
 \end{table}
 
@@ -90,13 +87,13 @@ Commentate i risultati che avete ottenuto: come si comportano gli algoritmi risp
     \hline
     &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
     \hline
-     KruskalNaive               & 7431.57  & 11939.8   & 59257     & 366313    &    1.99612e+06 &    3.12073e+06 \\
+     KruskalSimple               & 7431.57  & 11939.8   & 59257     & 366313    &    1.99612e+06 &    3.12073e+06 \\
      KruskalUnionFindCompressed &  204.429 &   256.287 &   599.704 &   1271.32 & 3062.76        & 4050.49        \\ \hline
      Differenza                 & 7227.15  & 11683.5   & 58657.3   & 365042    &    1.99306e+06 &    3.11668e+06 \\
      Miglioramento \%              &   97.25  &    97.85  &    98.99  &     99.65 &   99.85        &   99.87        \\
     \hline
     \end{tabular}
-    \caption{Confronto tra KruskalNaive e KruskalUnionFindCompressed.}
+    \caption{Confronto tra KruskalSimple e KruskalUnionFindCompressed.}
     \label{table:kruskal-simple-vs-kruskal-union-find-compressed}
 \end{table}
 
@@ -106,13 +103,13 @@ Commentate i risultati che avete ottenuto: come si comportano gli algoritmi risp
     \hline
     &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
     \hline
-     KruskalNaive   & 7431.57 & 11939.8   & 59257     & 366313    &    1.99612e+06 &    3.12073e+06 \\
+     KruskalSimple   & 7431.57 & 11939.8   & 59257     & 366313    &    1.99612e+06 &    3.12073e+06 \\
      PrimBinaryHeap &  227.5  &   273.581 &   646.039 &   1365.97 & 3197.83        & 4372.45        \\ \hline
      Differenza     & 7204.07 & 11666.2   & 58610.9   & 364947    &    1.99293e+06 &    3.11636e+06 \\
      Miglioramento \%  &   96.94 &    97.71  &    98.91  &     99.63 &   99.84        &   99.86        \\
     \hline
     \end{tabular}
-    \caption{Confronto tra KruskalNaive e PrimBinaryHeap.}
+    \caption{Confronto tra KruskalSimple e PrimBinaryHeap.}
     \label{table:kruskal-simple-vs-prim-binary-heap}
 \end{table}
 
@@ -172,6 +169,6 @@ Commentate i risultati che avete ottenuto: come si comportano gli algoritmi risp
 \noindent In teoria, KruskalUnionFindCompressed avrebbe dovuto essere l'algoritmo più efficiente di tutti (complessità temporale: \textbf{TODO}).
 \noindent PrimBinaryHeap e KruskalUnionFind hanno la stessa complessità temporale teorica, ma in realtà la complessità delle operazioni del BinaryHeap ha un coefficiente più elevato rispetto a quelle della struttura dati Disjoint-Set. \\
 
-\noindent Infine, data la complessità teorica di KruskalNaive (\textbf{TODO}), abbiamo ipotizzato che i tempi di calcolo nella pratica sarebbero stati più elevati a partire da grafi con poche centinaia di nodi e archi. Tale assunzione è poi stata confermata dall'analisi pratica effettuata. \\
+\noindent Infine, data la complessità teorica di KruskalSimple (\textbf{TODO}), abbiamo ipotizzato che i tempi di calcolo nella pratica sarebbero stati più elevati a partire da grafi con poche centinaia di nodi e archi. Tale assunzione è poi stata confermata dall'analisi pratica effettuata. \\
 
 \noindent Non abbiamo un'idea certa del perché Kruskal implementato con \textit{DisjointSetCompressed} sia meno performante di \textit{DisjointSet}. La nostra ipotesi è che, per gli input forniti al nostro programma, il \textit{cache behaviour} di KruskalUnionFind sia molto migliore di quello di KruskalUnionFindCompressed.
