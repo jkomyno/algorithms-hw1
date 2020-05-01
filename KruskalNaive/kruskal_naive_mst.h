@@ -29,15 +29,14 @@ auto kruskal_naive_mst(AdjacencyMapGraph<Label, Weight>&& adj_map_graph) noexcep
         // edge is the object pointed by the current iterator
         const auto& edge = *it;
 
-        // add the current edge to the spanning tree
-        mst_set_graph.add_edge(edge);
-        // detect a cycle in O(n' + m'), where n' is the number of vertexes and m'
-        // it the number of edges currently present in mst_set_graph
-        if (dfs.has_cycle()) {
-            // remove edge from the spanning tree in O(1) because it introduced a cycle.
-            // This is much cheaper than constructing a new AdjacencyMapGraph
-            // object every time we need to detect a cycle
-            mst_set_graph.remove_edge(edge);
+        // pre: mst_set_graph is a forest without any cycles.
+        // If there already exist a path that links the two end nodes of edge, then adding
+        // a direct link between them (i.e. edge) would introduce a loop.
+        // Time: O(n' + m'), where n' is the number of vertexes and m'
+        //                   it the number of edges currently present in mst_set_graph
+        if (!dfs.are_connected(edge.from, edge.to)) {
+            // add the current edge to the spanning tree
+            mst_set_graph.add_edge(edge);
         }
     }
 

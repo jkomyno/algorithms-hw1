@@ -142,6 +142,20 @@ public:
     [[nodiscard]] std::vector<Edge<Label, Weight>> get_sorted_edges(Comparator&& comparator) const;
 
     /**
+     * Return true iff the given vertex is in the graph.
+     * Time:  O(1)
+     * Space: O(1)
+     */
+    [[nodiscard]] bool has_vertex(const Label& vertex) const noexcept;
+
+    /**
+     * Return true iff the given edge is in the graph.
+     * Time:  O(1)
+     * Space: O(1)
+     */
+    [[nodiscard]] bool has_edge(const Label& from, const Label& to) const noexcept;
+
+    /**
      * Return the set of vertexes adjacent to the given vertex.
      * Time:  O(1)
      * Space: O(1)
@@ -169,6 +183,14 @@ inline void AdjacencyMapGraph<Label, Weight>::init(
     // preallocate memory
     adj_map.reserve(n_vertex);
     edge_set.reserve(edge_list.size());
+
+    // this vertex initialization is redundant in the case of connected graphs, which
+    // is the type of input we expect.
+    // We add it here just for completeness, since it doesn't add any significant time
+    // overhead.
+    for (size_t v = 0; v < n_vertex; ++v) {
+        adj_map[v];
+    }
 
     for (const auto& edge : edge_list) {
         add_edge(edge);
@@ -221,6 +243,18 @@ inline std::vector<Edge<Label, Weight>> AdjacencyMapGraph<Label, Weight>::get_so
 }
 
 template <typename Label, typename Weight>
+bool AdjacencyMapGraph<Label, Weight>::has_vertex(const Label& vertex) const noexcept {
+    return adj_map.find(vertex) != adj_map.end();
+}
+
+template <typename Label, typename Weight>
+bool AdjacencyMapGraph<Label, Weight>::has_edge(const Label& from, const Label& to) const noexcept {
+    constexpr Weight arbitrary_weight = 1;
+    Edge<Label, Weight> edge{from, to, arbitrary_weight};
+    return edge_set.find(edge) != edge_set.end();
+}
+
+template <typename Label, typename Weight>
 inline const std::unordered_map<Label, Weight>& AdjacencyMapGraph<Label, Weight>::adjacent_vertexes(
     const Label& vertex) const noexcept {
     return adj_map.at(vertex);
@@ -241,11 +275,10 @@ void AdjacencyMapGraph<Label, Weight>::add_edge(const Edge<Label, Weight>& edge)
             adj_map_from[to] = weight;
             adj_map_to[from] = weight;
 
-            // removes the old edge with a higher weight and adds the same edge again, but with the new lower weight.
-            // This works because edge_set uses the custom_hash::edge_hash hash function, which:
-            // 1) is commutative
-            // 2) doesn't consider the weight
-            // E.g. edges (5,2,10) and (2,5,-2) have the same hash function
+            // removes the old edge with a higher weight and adds the same edge again, but with the
+            // new lower weight. This works because edge_set uses the custom_hash::edge_hash hash
+            // function, which: 1) is commutative 2) doesn't consider the weight E.g. edges (5,2,10)
+            // and (2,5,-2) have the same hash function
             edge_set.erase(edge);
             edge_set.insert(edge);
         }
