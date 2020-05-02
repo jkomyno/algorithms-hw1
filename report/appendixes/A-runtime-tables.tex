@@ -2,11 +2,12 @@
 \section{Tabelle tempi di esecuzione}
 \label{cap:runtime-tables}
 
-Di seguito le tabelle che riportano i tempi di esecuzione degli algoritmi KruskalNaive (tabella \ref{table:KruskalNaive-results}), KruskalUnionFind (tabella \ref{table:KruskalUnionFind-results}), KruskalUnionFindCompressed  (tabella \ref{table:KruskalUnionFindCompressed-results}) e PrimBinaryHeap (tabella \ref{table:PrimBinaryHeap-results}) su diversi grafi che vanno dai 10 ai 100.000 vertici, e da 9 a 133525 archi.
+Di seguito le tabelle che riportano i tempi di esecuzione degli algoritmi KruskalSimple (tabella \ref{table:KruskalSimple-results}), KruskalUnionFind (tabella \ref{table:KruskalUnionFind-results}), KruskalUnionFindCompressed  (tabella \ref{table:KruskalUnionFindCompressed-results}), PrimBinaryHeap (tabella \ref{table:PrimBinaryHeap-results}) e PrimKHeap (tabella \ref{table:PrimKHeap-results}) su diversi grafi che vanno dai 10 ai 100.000 vertici, e da 9 a 133525 archi. \\
 
-Le tabelle riportano il tempo impiegato per trovare un MST sul grafo in input in millisecondi, la sommatoria dei pesi degli archi dell'MST calcolato, il nome del file del grafo in input.
+\noindent Le tabelle riportano il tempo impiegato per trovare un MST sul grafo in input in millisecondi, la sommatoria dei pesi degli archi dell'MST calcolato, il nome del file del grafo in input. Ovviamente, ognuno degli algoritmi implementati, a parità di input, produce lo stesso peso del Minimum Spanning Tree in output.
 
 \includetable{KruskalNaive.min}
 \includetable{KruskalUnionFind.min}
 \includetable{KruskalUnionFindCompressed.min}
 \includetable{PrimBinaryHeap.min}
+\includetable{PrimKHeap.min}

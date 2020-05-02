@@ -62,7 +62,9 @@ vedere che a meno di un piccolo fattore i due hanno lo stesso trend di crescita.
 Commentate i risultati che avete ottenuto: come si comportano gli algoritmi rispetto alle varie istanze? C'è un algoritmo che riesce sempre a fare meglio degli altri? Quale dei tre algoritmi che avete implementato è più efficiente?
 \end{displayquote}
 
-\noindent Dalle tabelle di confronto \ref{table:kruskal-simple-vs-kruskal-union-find} e \ref{table:prim-binary-heap-vs-kruskal-union-find} è evidente che \textbf{KruskalUnionFind} è il più efficiente tra gli algoritmi di cui era richiesta l'implementazione. Inoltre, osservando la tabella di confronto \ref{table:kruskal-union-find-vs-kruskal-union-find-compressed}, è possibile notare che l'utilizzo della tecnica \textit{path-compression} nella struttura dati \textbf{Disjoint-Set} in realtà non abbia portato benefici, e anzi abbia peggiorato leggermente le performance (che sono comunque migliori di \textit{PrimBinaryHeap}, vedasi la tabella di confronto \ref{table:prim-binary-heap-vs-kruskal-union-find-compressed}). \\
+\noindent Le tabelle \ref{table:kruskal-naive-vs-kruskal-union-find}, \ref{table:kruskal-naive-vs-kruskal-union-find-compressed}, \ref{table:kruskal-naive-vs-prim-binary-heap}, \ref{table:kruskal-union-find-vs-kruskal-union-find-compressed}, \ref{table:prim-binary-heap-vs-kruskal-union-find-compressed}, \ref{table:prim-binary-heap-vs-kruskal-union-find}, \ref{table:prim-binary-heap-vs-prim-k-heap}, \ref{table:prim-k-heap-vs-kruskal-union-find}, \ref{table:prim-k-heap-vs-kruskal-union-find-compressed} mostrano il confronto tra i millisecondi di esecuzione e il numero di nodi del grafo. Per motivazioni grafiche, abbiamo scelto gli scaglioni 8.000, 10.000, 20.000, 80.000, 100.000 come numero di nodi. \\
+
+\noindent Dalle tabelle di confronto \ref{table:kruskal-naive-vs-kruskal-union-find}, \ref{table:prim-binary-heap-vs-kruskal-union-find} e \ref{table:prim-k-heap-vs-kruskal-union-find} è evidente che \textbf{KruskalUnionFind} è il più efficiente tra gli algoritmi di cui era richiesta l'implementazione. Inoltre, osservando la tabella di confronto \ref{table:kruskal-union-find-vs-kruskal-union-find-compressed}, è possibile notare che l'utilizzo della tecnica \textit{path-compression} nella struttura dati \textbf{Disjoint-Set} in realtà non abbia portato benefici, e anzi abbia peggiorato leggermente le performance (che sono comunque migliori di \textit{PrimBinaryHeap} e \textit{PrimKHeap}, vedasi le tabella di confronto \ref{table:prim-binary-heap-vs-kruskal-union-find-compressed} e \ref{table:prim-k-heap-vs-kruskal-union-find-compressed}). \\
 
 \begin{table}[H]
 \centering
@@ -70,14 +72,14 @@ Commentate i risultati che avete ottenuto: come si comportano gli algoritmi risp
     \hline
     &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
     \hline
-     KruskalNaive     & 7431.57  & 11939.8   & 59257     & 366313    &    1.99612e+06 &    3.12073e+06 \\
-     KruskalUnionFind &  204.429 &   254.504 &   599.704 &   1249.7  & 3010.99        & 4050.49        \\ \hline
-     Differenza       & 7227.15  & 11685.3   & 58657.3   & 365064    &    1.99311e+06 &    3.11668e+06 \\
-     Miglioramento \%    &   97.25  &    97.87  &    98.99  &     99.66 &   99.85        &   99.87        \\
+     KruskalNaive     & 3043.06  & 4865.46  & 24826.2   & 165997    & 757996    &    1209660.531 \\
+     KruskalUnionFind &  194.548 &  249.867 &   592.052 &   1241.17 &   2935.21 & 3956.8         \\ \hline
+     Differenza       & 2848.51  & 4615.6   & 24234.2   & 164756    & 755061    &    1205703.731  \\
+     Miglioramento \%  &   93.61  &   94.86  &    97.62  &     99.25 &     99.61 &   99.67           \\
     \hline
     \end{tabular}
-    \caption{Confronto tra KruskalNaive e KruskalUnionFind}
-    \label{table:kruskal-simple-vs-kruskal-union-find}
+    \caption{Confronto tra KruskalNaive e KruskalUnionFind.}
+    \label{table:kruskal-naive-vs-kruskal-union-find}
 \end{table}
 
 \begin{table}[H]
@@ -87,14 +89,14 @@ Commentate i risultati che avete ottenuto: come si comportano gli algoritmi risp
     \hline
     &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
     \hline
-     KruskalNaive               & 7431.57  & 11939.8   & 59257     & 366313    &    1.99612e+06 &    3.12073e+06 \\
-     KruskalUnionFindCompressed &  204.429 &   256.287 &   599.704 &   1271.32 & 3062.76        & 4050.49        \\ \hline
-     Differenza                 & 7227.15  & 11683.5   & 58657.3   & 365042    &    1.99306e+06 &    3.11668e+06 \\
-     Miglioramento \%              &   97.25  &    97.85  &    98.99  &     99.65 &   99.85        &   99.87        \\
+     KruskalNaive               & 3043.06  & 4865.46  & 24826.2   & 165997    & 757996    &    1209660.531 \\
+     KruskalUnionFindCompressed &  203.831 &  249.867 &   594.038 &   1246.26 &   2935.21 & 3956.8         \\ \hline
+     Differenza                 & 2839.23  & 4615.6   & 24232.2   & 164751    & 755061    &    1205703.731 \\
+     Miglioramento \%            &   93.3   &   94.86  &    97.61  &     99.25 &     99.61 &   99.67          \\
     \hline
     \end{tabular}
     \caption{Confronto tra KruskalNaive e KruskalUnionFindCompressed.}
-    \label{table:kruskal-simple-vs-kruskal-union-find-compressed}
+    \label{table:kruskal-naive-vs-kruskal-union-find-compressed}
 \end{table}
 
 \begin{table}[H]
@@ -103,14 +105,14 @@ Commentate i risultati che avete ottenuto: come si comportano gli algoritmi risp
     \hline
     &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
     \hline
-     KruskalNaive   & 7431.57 & 11939.8   & 59257     & 366313    &    1.99612e+06 &    3.12073e+06 \\
-     PrimBinaryHeap &  227.5  &   273.581 &   646.039 &   1365.97 & 3197.83        & 4372.45        \\ \hline
-     Differenza     & 7204.07 & 11666.2   & 58610.9   & 364947    &    1.99293e+06 &    3.11636e+06 \\
-     Miglioramento \%  &   96.94 &    97.71  &    98.91  &     99.63 &   99.84        &   99.86        \\
+     KruskalNaive      & 3043.06  & 4865.46  & 24826.2   & 165997    & 757996   & 1209660.531 \\
+     PrimBinaryHeap    &  217.068 &  256.007 &   623.884 &   1315.29 &   3007.6 & 4073.46        \\ \hline
+     Differenza        & 2825.99  & 4609.45  & 24202.3   & 164682    & 754989   & 1205587.075 \\
+     Miglioramento \%   &   92.87  &   94.74  &    97.49  &     99.21 &     99.6 &   99.66       \\
     \hline
     \end{tabular}
     \caption{Confronto tra KruskalNaive e PrimBinaryHeap.}
-    \label{table:kruskal-simple-vs-prim-binary-heap}
+    \label{table:kruskal-naive-vs-prim-binary-heap}
 \end{table}
 
 \begin{table}[H]
@@ -120,10 +122,10 @@ Commentate i risultati che avete ottenuto: come si comportano gli algoritmi risp
     \hline
     &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
     \hline
-     KruskalUnionFind           & 204.429 & 254.504 & 599.704 & 1249.7   & 3010.99  & 4050.49 \\
-     KruskalUnionFindCompressed & 204.429 & 256.287 & 599.704 & 1271.32  & 3062.76  & 4050.49 \\ \hline
-     Differenza                 &   0     &  -1.783 &   0     &  -21.615 &  -51.773 &    0    \\
-     Miglioramento \%              &   0     &  -0.7   &   0     &   -1.73  &   -1.72  &    0    \\
+     KruskalUnionFind           & 194.548 & 249.867 & 592.052 & 1241.17 & 2935.21 & 3956.8 \\
+     KruskalUnionFindCompressed & 203.831 & 249.867 & 594.038 & 1246.26 & 2935.21 & 3956.8 \\ \hline
+     Differenza                 &  -9.283 &   0     &  -1.986 &   -5.09 &    0    &    0   \\
+     Miglioramento \%            &  -4.77  &   0     &  -0.34  &   -0.41 &    0    &    0     \\
     \hline
     \end{tabular}
     \caption{Confronto tra KruskalUnionFind e KruskalUnionFindCompressed.}
@@ -136,10 +138,10 @@ Commentate i risultati che avete ottenuto: come si comportano gli algoritmi risp
     \hline
     &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
     \hline
-     PrimBinaryHeap   & 227.5   & 273.581 & 646.039 & 1365.97  & 3197.83  & 4372.45  \\
-     KruskalUnionFind & 204.429 & 254.504 & 599.704 & 1249.7   & 3010.99  & 4050.49 \\ \hline
-     Differenza       &  23.071 &  19.077 &  46.335 &  116.265 &  186.843 &  321.954 \\
-     Miglioramento \%    &  10.14  &   6.97  &   7.17  &    8.51  &    5.84  &    7.36  \\
+     PrimBinaryHeap   & 217.068 & 256.007 & 623.884 & 1315.29  & 3007.6   & 4073.46  \\
+     KruskalUnionFind & 194.548 & 249.867 & 592.052 & 1241.17  & 2935.21  & 3956.8   \\ \hline
+     Differenza       &  22.52  &   6.14  &  31.832 &   74.119 &   72.386 &  116.656 \\
+     Miglioramento \%  &  10.37  &   2.4   &   5.1   &    5.64  &    2.41  &    2.86 \\
     \hline
     \end{tabular}
     \caption{Confronto tra PrimBinaryHeap e KruskalUnionFind.}
@@ -152,16 +154,63 @@ Commentate i risultati che avete ottenuto: come si comportano gli algoritmi risp
     \hline
     &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
     \hline
- PrimBinaryHeap             & 227.5   & 273.581 & 646.039 & 1365.97 & 3197.83 & 4372.45  \\
- KruskalUnionFindCompressed & 204.429 & 256.287 & 599.704 & 1271.32 & 3062.76 & 4050.49 \\ \hline
-     Differenza                 &  23.071 &  17.294 &  46.335 &   94.65 &  135.07 &  321.954 \\
-     Miglioramento \%              &  10.14  &   6.32  &   7.17  &    6.93 &    4.22 &    7.36  \\
+ PrimBinaryHeap             & 217.068 & 256.007 & 623.884 & 1315.29  & 3007.6   & 4073.46  \\
+ KruskalUnionFindCompressed & 203.831 & 249.867 & 594.038 & 1246.26  & 2935.21  & 3956.8   \\ \hline
+     Differenza             &  13.237 &   6.14  &  29.846 &   69.029 &   72.386 &  116.656 \\
+     Miglioramento \%        &   6.1   &   2.4   &   4.78  &    5.25  &    2.41  &    2.86  \\
     \hline
     \end{tabular}
     \caption{Confronto tra PrimBinaryHeap e KruskalUnionFindCompressed.}
     \label{table:prim-binary-heap-vs-kruskal-union-find-compressed}
 \end{table}
 
+\begin{table}[H]
+\centering
+    \begin{tabular}{|l|rrrrrr|}
+    \hline
+    &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
+    \hline
+PrimBinaryHeap    & 217.068 & 256.007 & 623.884 & 1315.29  & 3007.6   & 4073.46  \\
+PrimKHeap         & 214.689 & 266.522 & 622.871 & 1305.54  & 3092.63  & 4104.52  \\ \hline
+Differenza        &   2.379 & -10.515 &   1.013 &    9.747 &  -85.032 &  -31.063 \\
+Miglioramento \%  &   1.1   &  -4.11  &   0.16  &    0.74  &   -2.83  &   -0.76  \\
+    \hline
+    \end{tabular}
+    \caption{Confronto tra PrimBinaryHeap e PrimKHeap.}
+    \label{table:prim-binary-heap-vs-prim-k-heap}
+\end{table}
+
+\begin{table}[H]
+\centering
+    \begin{tabular}{|l|rrrrrr|}
+    \hline
+    &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
+    \hline
+PrimKHeap        & 214.689 & 266.522 & 622.871 & 1305.54  & 3092.63  & 4104.52  \\
+KruskalUnionFind & 194.548 & 249.867 & 592.052 & 1241.17  & 2935.21  & 3956.8   \\ \hline
+Differenza       &  20.141 &  16.655 &  30.819 &   64.372 &  157.418 &  147.719 \\
+Miglioramento \%    &   9.38  &   6.25  &   4.95  &    4.93  &    5.09  &    3.6   \\
+    \hline
+    \end{tabular}
+    \caption{Confronto tra PrimKHeap e KruskalUnionFind.}
+    \label{table:prim-k-heap-vs-kruskal-union-find}
+\end{table}
+
+\begin{table}[H]
+\centering
+    \begin{tabular}{|l|rrrrrr|}
+    \hline
+    &  \multicolumn{1}{c}{8k} & \multicolumn{1}{c}{10k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{20k} & \multicolumn{1}{c}{80k} &           \multicolumn{1}{c|}{100k} \\
+    \hline
+PrimKHeap                  & 214.689 & 266.522 & 622.871 & 1305.54  & 3092.63  & 4104.52  \\
+KruskalUnionFindCompressed & 203.831 & 249.867 & 594.038 & 1246.26  & 2935.21  & 3956.8   \\ \hline
+Differenza                 &  10.858 &  16.655 &  28.833 &   59.282 &  157.418 &  147.719 \\
+Miglioramento \%           &   5.06  &   6.25  &   4.63  &    4.54  &    5.09  &    3.6   \\
+    \hline
+    \end{tabular}
+    \caption{Confronto tra PrimKHeap e KruskalUnionFindCompressed.}
+    \label{table:prim-k-heap-vs-kruskal-union-find-compressed}
+\end{table}
 % \paragraph{Premessa}\mbox{} \\
 
 % È doveroso notare che nei dataset a disposizione non esiste alcun grafo il cui numero di archi $m$ sia maggiore del numero di vertici $n$ per più di un fattore 1.5 (ovvero, $m = $ \complexityN{}). In questo homework abbiamo quindi avuto a che fare con grafi sparsi. Poiché l'algoritmo Kruskal con Disjoint-Set ha complessità \complexityMLogN{} e

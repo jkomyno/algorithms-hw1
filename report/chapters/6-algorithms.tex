@@ -89,7 +89,7 @@ La versione vista a lezione di Kruskal vista in aula prevede i seguenti step:
     \item Restituire $A$.
 \end{enumerate}
 
-\noindent Il listato \ref{listing:kruskal-simple} contiene la nostra implementazione dell'algoritmo, step per step.
+\noindent Il listato \ref{listing:kruskal-naive} contiene la nostra implementazione dell'algoritmo, step per step.
 
 \begin{listing}[!ht]
 \begin{minted}{c++}
@@ -119,7 +119,7 @@ for (auto it = edges.cbegin();
 return mst_set_graph.get_edges();
 \end{minted}
 \caption{Implementazione di KruskalNaive. I commenti del file originale sono stati omessi per una maggiore compattezza.}
-\label{listing:kruskal-simple}
+\label{listing:kruskal-naive}
 \end{listing}
 
 \noindent L'algoritmo Kruskal Naive è stato implementato a partire dallo pseudo codice visto in classe. Per individuare se la foresta $A \cup \{ e \}$ dello step 4 dell'algoritmo sia aciclica, abbiamo usato \textbf{Depth First Search} (DFS). \\
