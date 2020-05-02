@@ -215,9 +215,9 @@ Miglioramento \%           &   5.06  &   6.25  &   4.63  &    4.54  &    5.09  &
 
 % È doveroso notare che nei dataset a disposizione non esiste alcun grafo il cui numero di archi $m$ sia maggiore del numero di vertici $n$ per più di un fattore 1.5 (ovvero, $m = $ \complexityN{}). In questo homework abbiamo quindi avuto a che fare con grafi sparsi. Poiché l'algoritmo Kruskal con Disjoint-Set ha complessità \complexityMLogN{} e
 
-\noindent In teoria, KruskalUnionFindCompressed avrebbe dovuto essere l'algoritmo più efficiente di tutti (complessità temporale: \textbf{TODO}).
+\noindent In teoria, KruskalUnionFindCompressed avrebbe dovuto essere l'algoritmo più efficiente di tutti (complessità temporale: \complexityMLogN).
 \noindent PrimBinaryHeap e KruskalUnionFind hanno la stessa complessità temporale teorica, ma in realtà la complessità delle operazioni del BinaryHeap ha un coefficiente più elevato rispetto a quelle della struttura dati Disjoint-Set. \\
 
-\noindent Infine, data la complessità teorica di KruskalNaive (\textbf{TODO}), abbiamo ipotizzato che i tempi di calcolo nella pratica sarebbero stati più elevati a partire da grafi con poche centinaia di nodi e archi. Tale assunzione è poi stata confermata dall'analisi pratica effettuata. \\
+\noindent Infine, data la complessità teorica di KruskalNaive (\complexityMN{}), abbiamo ipotizzato che i tempi di calcolo nella pratica sarebbero stati più elevati a partire da grafi con poche centinaia di nodi e archi. Tale assunzione è poi stata confermata dall'analisi pratica effettuata. \\
 
 \noindent Non abbiamo un'idea certa del perché Kruskal implementato con \textit{DisjointSetCompressed} sia meno performante di \textit{DisjointSet}. La nostra ipotesi è che, per gli input forniti al nostro programma, il \textit{cache behaviour} di KruskalUnionFind sia molto migliore di quello di KruskalUnionFindCompressed.
