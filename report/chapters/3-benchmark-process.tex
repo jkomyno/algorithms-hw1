@@ -7,8 +7,8 @@ Il nostro benchmark tiene quindi conto di tutto, ovvero:
 \begin{itemize}
     \item Tempo necessario a leggere il file di input in un container \textit{std::vector} temporaneo;
     \item Tempo per trasformare il container temporaneo in una lista di adiacenza;
-    \item Tempo per eseguire l'algoritmo vero e proprio per il calcolo dell'\textbf{MST};
-    \item Tempo per scorrere l'\textbf{MST} ritornato dall'algoritmo per calcolarne il peso totale.
+    \item Tempo per eseguire l'algoritmo vero e proprio per il calcolo dell'MST;
+    \item Tempo per scorrere l'MST ritornato dall'algoritmo per calcolarne il peso totale.
 \end{itemize}
 
 \noindent Lo script Powershell \textit{benchmark.ps1}, che richiama a sua volta lo script \textit{time.ps1}, si occupa di misurare il tempo richiesto a ogni programma sviluppato per questo homework per calcolare il peso del Minimum Spanning Tree di ogni dataset di input. Al termine dell'esecuzione, esso genera un file CSV per ogni programma di cui è stato fatto il benchmark. Il nome di ogni file CSV generato contiene il nominativo del programma misurato e il timestamp in cui è stato creato. \\
@@ -17,7 +17,7 @@ Il nostro benchmark tiene quindi conto di tutto, ovvero:
 
 \begin{itemize}
     \item \textbf{ms}: tempo in millisecondi per eseguire il programma su un singolo file di input;
-    \item \textbf{output}: risultato del programma, ovvero peso dell'\textbf{MST} del grafo letto in input;
+    \item \textbf{output}: risultato del programma, ovvero peso dell'MST del grafo letto in input;
     \item \textbf{n}: numero di nodi del grafo letto;
     \item \textbf{m}: numero di archi del grafo letto;
     \item \textbf{filename}: nome del file di input letto.

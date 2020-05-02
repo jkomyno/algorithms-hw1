@@ -13,15 +13,15 @@ occupa almeno 32bit.
 \subsection{Rappresentazione del grafo}
 \label{sub:graph-representation}
 
-Gli algoritmi di questo homework operano su grafi pesati non diretti.
-Le operazioni sui grafi di cui abbiamo bisogno sono:
+Gli algoritmi di questo homework operano su grafi pesati connessi e non diretti.
+Le operazioni generiche sui grafi di cui abbiamo bisogno sono:
 
 \begin{itemize}
-    \item Creazione di un grafo a partire da una lista di archi in input, con numero di vertici ($n$) e archi ($m$) noto a priori, e con nodi etichettati in $ 0 \leq n < n $;
-    \item Enumerazione degli archi del grafo;
-    \item Enumerazione dei vertici del grafo;
+    \item Creazione di un grafo a partire da una lista di archi in input, con ($n$) vertici e ($m$) archi noti a priori, e con nodi etichettati nell'intervallo $ [0, n[ $ ;
+    \item Lista degli archi del grafo;
+    \item Lista dei vertici del grafo;
     \item Ottenere dei vertici adiacenti ad un nodo;
-    \item Enumerazione dei vertici adiacenti ad un nodo;
+    \item Lista dei vertici adiacenti ad un nodo;
     \item Aggiunta di un arco (escludendo archi duplicati di peso non minimo);
     \item Rimozione di un arco.
 \end{itemize}
@@ -29,7 +29,7 @@ Le operazioni sui grafi di cui abbiamo bisogno sono:
 \noindent Le due rappresentazioni più comuni per rappresentare un grafo sono \textbf{Matrici di Adiacenza} (\textit{Adj. Matrix}) o \textbf{Liste di Adiacenza} (\textit{Adj. List}). \\
 Noi abbiamo deciso invece di utilizzare una \textbf{Mappa di Adiacenza} (\textit{Adj. Map}), la quale ci permette complessità temporali migliori per le operazioni richieste a scapito di un moderato aumento della complessità spaziale, che rimane comunque \complexityNPlusM{}, lo stesso delle Matrici di Adiacenza. Nella tabella \ref{table:graph-representation-comparison} è possibile vedere un confronto tra le 3 diverse rappresentazioni di grafi possibili citate sopra. \\
 
-\noindent L'occupazione di spazio aggiuntiva è dovuta all'utilizzo di una \codeinline{std::unordered\_map} e un \codeinline{std::unordered\_set} ausiliario. Quest'ultimo tiene traccia degli archi inseriti per permettere una rapida estrazione, modifica e cancellazione degli archi del grafo. La mappa è invece usata per mappare ogni nodo ad un'altra mappa (nodo $\rightarrow{}$ peso), usata per eliminare efficacemente i nodi duplicati di peso non minimo al momento della creazione del grafo (scelta necessaria, vista la presenza di archi duplicati nei dataset dati). L'uso di mappe ci permette inoltre di individuare ed eliminare archi in tempo \complexityConstant{} ammortizzato.
+\noindent L'occupazione di spazio aggiuntiva è dovuta all'utilizzo di una \codeinline{std::unordered\_map} e un \newline \codeinline{std::unordered\_set} ausiliario. Quest'ultimo tiene traccia degli archi inseriti per permettere una rapida estrazione, modifica e cancellazione degli archi del grafo. La mappa è invece usata per mappare ogni nodo ad un'altra mappa (nodo $\rightarrow{}$ peso), usata per eliminare efficacemente i nodi duplicati di peso non minimo al momento della creazione del grafo (scelta necessaria, vista la presenza di archi duplicati nei dataset dati). L'uso di mappe ci permette inoltre di individuare ed eliminare archi in tempo \complexityConstant{} ammortizzato.
 
 \begin{table}[ht]
 \centering
@@ -64,7 +64,7 @@ Noi abbiamo deciso invece di utilizzare una \textbf{Mappa di Adiacenza} (\textit
 \noindent In figura \ref{fig:AdjMapGraph Abstract} è illustrato un esempio di trasformazione di un grafo in mappa di adiacenza. Si può notare che la mappa di adiacenza è composta da una prima mappa avente una chiave per ogni vertice del grafo (\codeinline{adj\_map\_t}). Ogni entry della mappa è composta dalla chiave che rappresenta il nome del nodo e da un valore che associa al nodo un'altra mappa (\codeinline{vertex\_weight\_map\_t}), che rappresenta gli archi del grafo.
 In particolare, \codeinline{vertex\_weight\_map\_t} ha come chiave l'etichetta del vertice opposto, e come valore il peso dell'arco dal vertice di origine. \\
 
-\noindent Quindi, tutte le operazioni di inserimento, ricerca, cancellazione e aggiornamento sono eseguite in tempo costante ammortizzato. Gli unici drawback riscontrati sono un'occupazione di spazio più grande di un fattore costante (ma sempre \complexityNPlusM{}) e una maggiore complessità nell'implementare le operazioni di \textit{bookkeeping} della classe. \\
+\noindent Quindi, tutte le operazioni di inserimento, ricerca, cancellazione e aggiornamento sono eseguite in tempo costante ammortizzato. Gli unici aspetti negativi riscontrati sono un'occupazione di spazio più grande di un fattore costante (ma sempre \complexityNPlusM{}) e una maggiore complessità nell'implementare le operazioni di \textit{bookkeeping} TODO: NON HO CAPITO della classe. \\
 
 \begin{figure}[h]
 	\caption{Rappresentazione della mappa di adiacenza}
@@ -132,13 +132,13 @@ void add_edge(const Edge<Label, Weight> &edge) noexcept {
 % 	\item \textbf{se l'arco non era già stato inserito:} si inserisce l'arco sia nella lista di adiacenza che in \codeinline{unordered\_set}.
 % \end{itemize}
 
-\noindent Le operazioni di inserimento nei container \codeinline{std::unordered\_set} e \codeinline{std::unordered\_set} hanno complessità temporale \complexityConstant{} ammortizzata. Dal momento che sappiamo a priori il numero di vertici da inserire in \codeinline{adj\_map} e il numero di archi da inserire in \codeinline{edge\_set}, abbiamo preallocato un numero di bucket sufficienti ad evitare costosi \textit{rehash} in entrambi i casi, rimuovendo di fatto il fattore ammortizzato.
+\noindent Le operazioni di inserimento nei container \codeinline{std::unordered\_map} e \codeinline{std::unordered\_set} hanno complessità temporale \complexityConstant{} ammortizzata. Dal momento che sappiamo a priori il numero di vertici da inserire in \codeinline{adj\_map} e il numero di archi da inserire in \codeinline{edge\_set}, abbiamo preallocato un numero di bucket sufficienti ad evitare costosi \textit{rehash} in entrambi i casi, rimuovendo di fatto il fattore ammortizzato.
 
 \subsubsection {Costruzione del Grafo}
 
 \textit{Shared/adjacency\_map\_graph\_factory.h} definisce una funzione di utilità che scorre tutte le righe del file in ingresso, salva gli archi in un vettore temporaneo, e lo trasferisce tramite \textit{move semantics} ad un nuovo oggetto di tipo \codeinline{AdjacencyMapGraph}. La mappa di adiacenza interpreta il grafo come spiegato nella sezione \ref{sub:graph-representation}. \\
 
-\noindent \textbf{NOTA}: la label dei nodi di ogni grafo è decrementata di 1 in fase di lettura del dataset di input. Il grafo viene quindi rappresentato con nodi le cui label sono nel range $[0, N-1]$.
+\noindent \textbf{NOTA}: la label dei nodi di ogni grafo è decrementata di 1 in fase di lettura del dataset di input. Il grafo viene quindi rappresentato con nodi le cui label sono nel range $[0, n[$.
 Questo semplifica e rende più leggibile l'implementazione di alcune strutture dati (ad esempio i Disjoint Set) e la costruzione dell'MST con Prim.
 
 \subsection{Strutture Dati}
@@ -156,9 +156,9 @@ Per generalizzare il concetto di MinHeap/MaxHeap, la classe usa un comparatore b
 
 \paragraph{Ottimizzazioni}\mbox{} \\
 
-\noindent Il parametro template \textit{IsAlreadyHeap} è usato per evitare di costruire la Heap se l'utente specifica il container dato in input alla struttura dati rispetta già la proprietà di essere una Heap. Il controllo su questo flag booleano avviene a compile-time. Questa ottimizzazione garantisce un risparmio di tempo pari a \complexityN{}, ed è usata nell'implementazione dell'algoritmo di \textbf{Prim}. \\
+\noindent Il parametro template \textit{IsAlreadyHeap} è usato per evitare di costruire la Heap se l'utente specifica che il container dato in input alla struttura dati rispetta già la proprietà di essere una Heap. Il controllo su questo flag booleano avviene a compile-time. Questa ottimizzazione garantisce un risparmio di tempo pari a \complexityN{}, ed è usata nell'implementazione dell'algoritmo di \textbf{Prim}. \\
 
-\noindent I metodi che ripristinano la prioprietà di Heap (\codeinline{heapify\_up} e \codeinline{heapify\_down}) sono definiti in modo iterativo invece che ricorsivo, per eliminare alla radice tutti i problemi di ottimizzazione legati ricorsione.
+\noindent I metodi che ripristinano la prioprietà di Heap (\codeinline{heapify\_up} e \codeinline{heapify\_down}) sono definiti in modo iterativo invece che ricorsivo, per eliminare alla radice tutti i problemi di ottimizzazione legati alla ricorsione che questo specifico linguaggio porta con se.
 
 \subsubsection{Binary Heap}
 
@@ -186,7 +186,7 @@ La semantica di PriorityQueue dipende dal comparatore passato al costruttore, ch
 
 \paragraph{Ottimizzazioni}\mbox{} \\
 
-\noindent Poichè istanziare una PriorityQueue così generica e flessibile è un'operazione non banale, abbiamo creato una serie di funzioni di utilità di facile comprensione da usare. Ad esempio, per creare una coda di priorità basata su una Min Heap binaria, esiste il metodo \codeinline{make\_min\_priority\_queue} (analogamente esiste \codeinline{make\_min\_k\_priority\_queue} per Min Heap K-ari).
+\noindent Poichè istanziare una PriorityQueue così generica e flessibile è un'operazione non banale, abbiamo creato una serie di funzioni di utilità di facile comprensione da usare. Ad esempio, per creare una coda di priorità basata su una Min Heap binaria, esiste il metodo \codeinline{make\_min\_priority\_queue} (analogamente esiste \codeinline{make\_min\_k\_priority\_queue} per Min Heap K-ary).
 L'utente finale della classe non deve preoccuparsi di inserire manualmente tutti i parametri template di tali funzioni, grazie alla \textit{type deduction} di C++17.
 
 \subsubsection{Disjoint Set}
@@ -217,11 +217,11 @@ Avremmo potuto rilassare questo vincolo usando una struttura dati \codeinline{st
 
 \noindent \codeinline{DisjointSetCompressed}, invece, adotta la policy \textit{union-by-rank} con \textit{path-compression} tramite la tecnica \textit{path-splitting}.
 Ad ogni invocazione del metodo \codeinline{find()} su un nodo $x$, ogni nodo nel percorso da $x$ all'antenato che identifica il set di $x$ è aggiornato per puntare al nodo "nonno". \\
-\noindent DisjointSetCompressed definisce un membro \codeinline{std::vector} per salvare i rank dei dei vari nodi salvati, inizializzando il rank di ogni nodo a 0. Ad ogni invocazione del metodo \codeinline{unite()} su due nodi $x$ e $y$, ci sono due possibilità:
+\noindent DisjointSetCompressed definisce un membro \codeinline{std::vector} per salvare i rank dei vari nodi salvati, inizializzando il rank di ogni nodo a 0. Ad ogni invocazione del metodo \codeinline{unite()} su due nodi $x$ e $y$, ci sono due possibilità:
 
 \begin{enumerate}
-    \item Gli alberi di $x$ e $y$ hanno lo stesso rank $\rightarrow{}$ i rank del set che unirà $x$ e $y$ viene incrementato di 1;
-    \item Gli alberi di $x$ e $y$ hanno rank diversi $\rightarrow{}$ il set che unirà $x$ e $y$ avrà rank pari a \\ $max\{ rank(find(x)), rank(find(y)) \}$.
+    \item \textbf{Gli alberi di $x$ e $y$ hanno lo stesso rank}: i rank del set che unirà $x$ e $y$ viene incrementato di 1;
+    \item \textbf{Gli alberi di $x$ e $y$ hanno rank diversi}: il set che unirà $x$ e $y$ avrà rank pari a \\ $max\{ rank(find(x)), rank(find(y)) \}$.
 \end{enumerate}
 
 \noindent La \textit{path-compression} può modificare le altezze degli alberi ad ogni esecuzione, ma non cambierà mai il valore dei rank.

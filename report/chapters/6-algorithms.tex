@@ -4,7 +4,7 @@
 
 \subsection{Prim con Binary Heap}
 
-La versione vista a lezione di Prim vista in aula prevede i seguenti step:
+La versione vista a lezione di Prim prevede i seguenti step:
 
 \begin{enumerate}
     \item Creare una lista $\pi$ non inizializzata di dimensione pari a quella dei vertici del grafo;
@@ -79,7 +79,7 @@ return mst;
 
 \subsection{Kruskal Naive}
 
-La versione vista a lezione di Kruskal vista in aula prevede i seguenti step:
+La versione vista a lezione di Kruskal Naive prevede i seguenti step:
 
 \begin{enumerate}
     \item Inizializzare l'oggetto da restituire in output $A$ (che conterrà quindi l'MST) come insieme vuoto;
@@ -128,16 +128,15 @@ return mst_set_graph.get_edges();
 
 \paragraph{Idea 1: Ricerca di un ciclo}\mbox{} \\
 
-\noindent L'idea consiste nell'aggiungere un arco alla foresta $A$, controllare se l'inserimento ha causato un ciclo, e eventualmente rimuovere l'arco appena inserito. Questo approccio risponde alla domanda "Esiste un ciclo all'interno della foresta che diventerà MST alla fine dell'algoritmo?", ed è implementato dal metodo \codeinline{has\_cycle()} della classe \codeinline{DFSCycleDetection}.
+\noindent L'idea consiste nell'aggiungere un arco alla foresta $A$, controllare se l'inserimento ha causato un ciclo, e eventualmente rimuovere l'arco appena inserito. Questo approccio risponde alla domanda "Esiste un ciclo all'interno del grafo?", ed è implementato dal metodo \codeinline{has\_cycle()} della classe \codeinline{DFSCycleDetection}.
 
-\paragraph{Idea 2: Ricerca di un path}\mbox{} \\
+\paragraph{Idea 2: Ricerca di un cammino}\mbox{} \\
 
-\noindent Quest'altra idea è meno generale ma più efficiente rispetto alla precedente. Consiste nell'assumere che la foresta $A$ sia rimasta aciclica dopo l'iterazione precedente del ciclo, per poi controllare (stavolta senza effettuare nessun inserimento preliminare dell'arco corrente) che non esista nessun path che colleghi i due estremi dell'arco corrente in $A$.
-Solo tale path esistesse già e noi inserissimo l'arco corrente, andremmo ad introdurre un ciclo in $A$, cosa che vogliamo evitare. Per dirla nei termini di DFS, andremmo ad inserire un BACK EDGE. Viceversa, se tale path non esiste (ovvero, se DFS etichetta tutti i lati di $A$ come DISCOVERY EDGE), possiamo aggiungere l'edge corrente con la sicurezza di non introdurre alcun ciclo.
+\noindent Quest'altra idea è meno generale ma più efficiente rispetto alla precedente. Consiste nell'assumere che la foresta $A$ sia rimasta aciclica dopo l'iterazione precedente del ciclo, per poi controllare (stavolta senza effettuare nessun inserimento preliminare dell'arco corrente) che non esista nessun cammino che colleghi i due estremi dell'arco corrente in $A$.
+Se tale cammino esistesse già e noi inserissimo l'arco corrente, andremmo ad introdurre un ciclo in $A$, cosa che vogliamo evitare. Per dirla nei termini di DFS, andremo ad inserire un BACK EDGE. Viceversa, se tale cammino non esiste (ovvero, se DFS etichetta tutti i lati di $A$ come DISCOVERY EDGE), possiamo aggiungere l'arco corrente con la sicurezza di non introdurre alcun ciclo.
 Questo approccio risponde alla domanda "Dato il lato $(u, v)$ e la foresta $A$, esiste un percorso tra $u$ e $v$?", ed è implementato dal metodo \codeinline{are\_connected(source, target)} della classe \codeinline{DFSCycleDetection}. \\
 
-\vspace{0.9cm}
-L'idea 2 si è rivelata più efficace per i dataset a disposizione. Nel caso di un grafo in input con 100.000 nodi e circa 130.000, quest'idea è il ~30\% più efficiente in termini di tempo rispetto all'idea 1. In nessuna delle due implementazione di DFS è stato necessario usare esplicitamente le etichettature DISCOVERY EDGE e BACK EDGE: abbiamo semplicemente usato un container di tipo \codeinline{std::unordered\_set<Label>} per tenere traccia dei nodi visitati.
+L'idea 2 si è rivelata più efficace per i dataset a disposizione. Nel caso di un grafo in input con 100.000 nodi e circa 130.000, questa idea è il ~30\% più efficiente in termini di tempo rispetto all'idea 1. In nessuna delle due implementazione di DFS è stato necessario usare esplicitamente le etichettature DISCOVERY EDGE e BACK EDGE: abbiamo semplicemente usato un container di tipo \codeinline{std::unordered\_set<Label>} per tenere traccia dei nodi visitati.
 
 \subsubsection{Osservazioni (TODO)}
 
@@ -148,7 +147,7 @@ L'idea 2 si è rivelata più efficace per i dataset a disposizione. Nel caso di 
 
     \item Se l'MST che stiamo costruendo arriva a contenere $n$ vertici prima di aver attraversato tutti gli archi, usciamo prematuramente dal ciclo.\\
 
-    \item Il modo più ``comodo'' che abbiamo a disposizione per verificare se $A \cup \{ e \}$ abbia un ciclo, dove la $A$ dell'algoritmo visto a lezione corrisponde all'oggetto $mst\_set\_graph$ e $e$ corrisponde alla variabile $edge$, è aggiungere $edge$ a $mst\_set\_graph$ ed eventualmente rimuoverlo subito dopo in caso $dfs$ abbia individuato la presenza di un ciclo.\\
+    \item Il modo più ``comodo'' che abbiamo a disposizione per verificare se $A \cup \{ e \}$ abbia un ciclo, dove $A$ dell'algoritmo visto a lezione corrisponde all'oggetto $mst\_set\_graph$ e $e$ corrisponde alla variabile $edge$, è aggiungere $edge$ a $mst\_set\_graph$ ed eventualmente rimuoverlo subito dopo in caso DFS abbia individuato la presenza di un ciclo.\\
 
     \item Menzioniamo anche la gestione dei self loop o altri casi particolari che possiamo ritrovare nei grafi in input. Per fare questo ci aiutiamo con questi 2 esempi di base, raffigurati in figura~\ref{fig:SelfLoop}.
 
@@ -193,16 +192,16 @@ bool has_cycle_helper_rec(
 \label{listing:dfs-cycle}
 \end{listing}
 
-    Per quanto riguarda invece l'esempio a destra in figura ~\ref{fig:SelfLoop}, viene automaticamente gestito dalle scelta implementativa fatta per la rappresentazione interna di un grafo. Infatti tale esempio, preso come input verrebbe trasformato in un grafo in cui sussiste un solo arco tra il nodo 0 e 1. L'arco che verrebbe preso in considerazione sarebbe quello di peso più basso, mentre l'altro viene scartato automaticamente. Pertanto all'interno della nostra struttura dati per rappresentare i grafi non sarà mai possibile avere nodi collegati in questo modo\\
+    Per quanto riguarda invece l'esempio a destra in figura ~\ref{fig:SelfLoop}, viene automaticamente gestito dalle scelta implementativa fatta per la rappresentazione interna di un grafo. Infatti tale esempio, preso come input verrebbe trasformato in un grafo in cui sussiste un solo arco tra il nodo 0 e 1. L'arco che verrebbe preso in considerazione sarebbe quello di peso più basso, mentre l'altro arco viene scartato automaticamente. Pertanto all'interno della nostra struttura dati per rappresentare i grafi non sarà mai possibile avere nodi collegati in questo modo.\\
 
-    \item Un altra ulteriore ottimizzazione di tale algoritmo è la verifica ad ogni aggiunta di un nuovo arco che non crea un ciclo nel grafo, della soglia massima di archi che un MST può avere, che come visto in classe è pari al numero di nodi totali del grafo - 1. Pertanto non appena l'MST che si sta calcolando raggiunge la soglia prestabilità e possibile ritornare immediatamente l'MST.
+    \item Un'altra ulteriore ottimizzazione di tale algoritmo è la verifica ad ogni aggiunta di un nuovo arco che non crea un ciclo nel grafo, della soglia massima di archi che un MST può avere, che come visto in classe è pari n - 1. Pertanto non appena l'MST che si sta calcolando raggiunge la soglia prestabilita e possibile ritornare immediatamente l'MST.
 
 \end{itemize}
 
 
 \subsection{Kruskal con Disjoint Set}
 
-La versione vista a lezione di Kruskal con Disjoint-Set (Union-Find) vista in aula prevede i seguenti step:
+La versione vista a lezione di Kruskal con Disjoint-Set (Union-Find) prevede i seguenti step:
 
 \begin{enumerate}
     \item Inizializzare l'oggetto da restituire in output $A$ (che conterrà quindi l'MST) come insieme vuoto;
