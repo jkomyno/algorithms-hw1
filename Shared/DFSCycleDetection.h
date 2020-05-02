@@ -15,6 +15,8 @@ class DFSCycleDetection {
     // constant pointer to a non constant graph represented as an Adjacency Map
     AdjacencyMapGraph<Label, Weight>* const adj_map_graph_ptr;
 
+    // return true iff there exist a path that links the source and target vertexes.
+    // This method assumes that the underlying graph doesn't have any cycle.
     bool are_connected_helper(const Label& source, const Label& target,
                               std::unordered_set<Label>& visited) const {
         // mark the source node as visited
@@ -51,6 +53,8 @@ class DFSCycleDetection {
         return false;
     }
 
+    // this method is left here for reference. are_connected_helper is ~100% faster than
+    // are_connected_helper_rec
     [[deprecated("use are_connected_helper instead")]] bool are_connected_helper_rec(
         const Label& source, const Label& target, std::unordered_set<Label>& visited) const {
         if (source == target || adj_map_graph_ptr->has_edge(source, target)) {
@@ -155,11 +159,27 @@ public:
     }
 
     /**
+     * Returns true iff there is a path from the source vertex to the target vertex in the graph
+     * pointed by adj_map_graph_ptr.
+     * Time: O(n + m)
+     * Space: O(n)
+     */
+    bool are_connected(const Label& source, const Label& target) const {
+        const auto n = adj_map_graph_ptr->vertexes_size();
+
+        // set that keeps track of the visited nodes
+        std::unordered_set<Label> visited;
+        visited.reserve(n);
+
+        return are_connected_helper(source, target, visited);
+    }
+
+    /**
      * Returns true iff the graph pointed by adj_map_graph_ptr has a loop.
      * Time: O(n + m)
      * Space: O(n)
      */
-    bool has_cycle() const {
+    [[deprecated("Use are_connected instead")]] bool has_cycle() const {
         const auto n = adj_map_graph_ptr->vertexes_size();
 
         // set that keeps track of the visited nodes
@@ -174,21 +194,5 @@ public:
 
         // no cycle loop found
         return false;
-    }
-
-    /**
-     * Returns true iff there is a path from the source vertex to the target vertex in the graph
-     * pointed by adj_map_graph_ptr.
-     * Time: O(n + m)
-     * Space: O(n)
-     */
-    bool are_connected(const Label& source, const Label& target) const {
-        const auto n = adj_map_graph_ptr->vertexes_size();
-
-        // set that keeps track of the visited nodes
-        std::unordered_set<Label> visited;
-        visited.reserve(n);
-
-        return are_connected_helper(source, target, visited);
     }
 };
