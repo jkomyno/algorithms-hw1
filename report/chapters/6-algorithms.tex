@@ -128,67 +128,78 @@ return mst_set_graph.get_edges();
 
 \paragraph{Idea 1: Ricerca di un ciclo}\mbox{} \\
 
-\noindent L'idea consiste nell'aggiungere un arco alla foresta $A$, controllare se l'inserimento ha causato un ciclo, e eventualmente rimuovere l'arco appena inserito. Questo approccio risponde alla domanda "Esiste un ciclo all'interno del grafo?", ed è implementato dal metodo \codeinline{has\_cycle()} della classe \codeinline{DFSCycleDetection}.
+\noindent L'idea consiste nell'aggiungere un arco alla foresta $A$, controllare se l'inserimento ha causato un ciclo, e eventualmente rimuovere l'arco appena inserito. Questo approccio risponde alla domanda "Esiste un ciclo all'interno della foresta $A$?", ed è implementato dal metodo \codeinline{has\_cycle()} della classe \codeinline{DFSCycleDetection}.
 
 \paragraph{Idea 2: Ricerca di un cammino}\mbox{} \\
 
 \noindent Quest'altra idea è meno generale ma più efficiente rispetto alla precedente. Consiste nell'assumere che la foresta $A$ sia rimasta aciclica dopo l'iterazione precedente del ciclo, per poi controllare (stavolta senza effettuare nessun inserimento preliminare dell'arco corrente) che non esista nessun cammino che colleghi i due estremi dell'arco corrente in $A$.
-Se tale cammino esistesse già e noi inserissimo l'arco corrente, andremmo ad introdurre un ciclo in $A$, cosa che vogliamo evitare. Per dirla nei termini di DFS, andremo ad inserire un BACK EDGE. Viceversa, se tale cammino non esiste (ovvero, se DFS etichetta tutti i lati di $A$ come DISCOVERY EDGE), possiamo aggiungere l'arco corrente con la sicurezza di non introdurre alcun ciclo.
+Se tale cammino esistesse già e noi inserissimo l'arco corrente, andremmo ad introdurre un ciclo in $A$, cosa che vogliamo evitare.\\
+Per dirla nei termini di DFS, andremmo ad inserire un BACK EDGE. Viceversa, se tale cammino non esiste (ovvero, se DFS etichetta tutti i lati di $A$ come DISCOVERY EDGE), possiamo aggiungere l'arco corrente con la sicurezza di non introdurre alcun ciclo.
 Questo approccio risponde alla domanda "Dato il lato $(u, v)$ e la foresta $A$, esiste un percorso tra $u$ e $v$?", ed è implementato dal metodo \codeinline{are\_connected(source, target)} della classe \codeinline{DFSCycleDetection}. \\
 
-L'idea 2 si è rivelata più efficace per i dataset a disposizione. Nel caso di un grafo in input con 100.000 nodi e circa 130.000, questa idea è il ~30\% più efficiente in termini di tempo rispetto all'idea 1. In nessuna delle due implementazione di DFS è stato necessario usare esplicitamente le etichettature DISCOVERY EDGE e BACK EDGE: abbiamo semplicemente usato un container di tipo \codeinline{std::unordered\_set<Label>} per tenere traccia dei nodi visitati.
+\vspace{0.5cm}
 
-\subsubsection{Osservazioni (TODO)}
+\noindent L'idea 2 si è rivelata più efficace per i dataset a disposizione. Nel caso di un grafo in input con 100.000 nodi e circa 130.000, questa idea è il ~30\% più efficiente in termini di tempo rispetto all'idea 1. In nessuna delle due implementazione di DFS è stato necessario usare esplicitamente le etichettature DISCOVERY EDGE e BACK EDGE: abbiamo semplicemente usato un container di tipo \codeinline{std::unordered\_set<Label>} per tenere traccia dei nodi visitati.
+
+\subsubsection{Osservazioni}
 
 \begin{itemize}
     \item Abbiamo utilizzato \mintinline{c++}{adj_map_graph.get_sorted_edges(std::less<>{})} per ricevere un \mintinline{c++}{std::vector<Edge<Label, Weight>>} contenente gli archi in ordine non decrescente. Questa operazione costa tempo \complexityMLogM{} e usa il comparatore generico \mintinline{c++}{std::less<>}.\\
 
-    \item Nello pseudo-codice non viene esplicitato in modo concreto come effettuare la verifica della ciclicità, i.e. verificare se $A \cup \{ e \}$ sia aciclico, lasciando così campo libero all'implementazione. Tra i vari modi di verificare la ciclicità abbiamo scelto di adattare l'algoritmo Depth-First Search per questo scopo.\\
+    \item Nello pseudo-codice non viene esplicitato in modo concreto come effettuare la verifica della ciclicità, i.e. verificare se $A \cup \{ e \}$ sia aciclico, lasciando così campo libero all'implementazione. Abbiamo deciso di usare DFS come spiegato nel paragrafo \textit{Idea 2: Ricerca di un cammino}. \\
 
     \item Se l'MST che stiamo costruendo arriva a contenere $n$ vertici prima di aver attraversato tutti gli archi, usciamo prematuramente dal ciclo.\\
 
-    \item Il modo più ``comodo'' che abbiamo a disposizione per verificare se $A \cup \{ e \}$ abbia un ciclo, dove $A$ dell'algoritmo visto a lezione corrisponde all'oggetto $mst\_set\_graph$ e $e$ corrisponde alla variabile $edge$, è aggiungere $edge$ a $mst\_set\_graph$ ed eventualmente rimuoverlo subito dopo in caso DFS abbia individuato la presenza di un ciclo.\\
-
-    \item Menzioniamo anche la gestione dei self loop o altri casi particolari che possiamo ritrovare nei grafi in input. Per fare questo ci aiutiamo con questi 2 esempi di base, raffigurati in figura~\ref{fig:SelfLoop}.
+    \item L'algoritmo di ricerca di cicli implementato con DFS è in grado di gestire anche i casi particolari di self-loop, come mostrato in figura \ref{fig:SelfLoop} nell'esempio a sinistra.
 
 \begin{figure}[h]
-	\caption{Esempi particolari di grafi da gestire}
+	\caption{Due esempi di grafi ciclici.}
 	\centering
 	\includegraphics[width=0.7\textwidth]{./images/ExampleSelfLoop.png}
 	\label{fig:SelfLoop}
 \end{figure}
 
-    Partendo dal caso di sinistra in cui esiste un nodo con un self loop, la funzione $has\_cycle\_$ $helper\_rec()$ è comunque in grado di rilevare la presenza di tale ciclo. Infatti come è possibile vedere dal listato \ref{listing:dfs-cycle} una volta lanciata la DFS sul nodo 0, la condizione dell'if sarà vera, in quanto il nodo 0 risulterà già visitato.
-
 \begin{listing}[!ht]
 \begin{minted}{c++}
 // Shared/DFSCycleDetection.h
 
-bool has_cycle_helper_rec(
-    const Label &v, std::unordered_set<Label> &visited,
-    const Label &parent = std::numeric_limits<Label>::max()) const {
-  // segna il nodo corrente v come visitato
-  visited.insert(v);
+bool are_connected_helper(const Label &source, const Label &target,
+                          std::unordered_set<Label> &visited) const {
+  // segna il nodo corrente come visitato
+  visited.insert(source);
 
-  // visita i nodi vicini del nodo corrente
-  for (const auto &uw : adj_map_graph_ptr->adj_map.at(v)) {
-    const auto &u = uw.first;
+  // il vertice source sarà il primo ad essere processato
+  std::stack<Label> stack;
+  stack.push(source);
 
-    // se il nodo corrente è diverso da suo padre, abbiamo 2 modi diversi
-    // di segnalare la presenza di un ciclo:
-    // 1) se il nodo u è già stato visitato, vi è un ciclo
-    // 2) se l'invocazione ricorsiva con u come nodo sorgente ha ritornato
-    // true, vi è un ciclo
-    if (u != parent &&
-        (visited.count(u) || has_cycle_helper_rec(u, visited, v))) {
+  while (!stack.empty()) {
+    // estraiamo il vertice sorgente corrente dalla pila
+    const auto curr_source = stack.top();
+    stack.pop();
+
+    // se il vertice sorgente corrente ha un self loop o se è direttamente collegato
+    // al nodo target, allora esiste un cammino da source a target
+    if (curr_source == target ||
+        adj_map_graph_ptr->has_edge(curr_source, target)) {
       return true;
+    }
+
+    if (adj_map_graph_ptr->has_vertex(curr_source)) {
+      for (const auto &[u, _] : adj_map_graph_ptr->adj_map.at(curr_source)) {
+        // inseriamo tutti i nodi adiacenti non incontrati in precedenza nella pila,
+        // per essere processati all'iterazione successiva.
+        if (!visited.count(u)) {
+          visited.insert(u);
+          stack.push(u);
+        }
+      }
     }
   }
 
   return false;
 }
 \end{minted}
-\caption{Funzione \codeinline{has\_cycle\_helper\_rec()} per la rilevazione di cicli}
+\caption{Funzione \codeinline{are\_connected\_helper()} per la rilevazione di cammini tra due nodi.}
 \label{listing:dfs-cycle}
 \end{listing}
 
@@ -215,7 +226,7 @@ La versione vista a lezione di Kruskal con Disjoint-Set (Union-Find) prevede i s
 
 \noindent Il listato \ref{listing:kruskal-union-find} contiene la nostra implementazione dell'algoritmo, step per step.
 
-\begin{listing}[!ht]
+\begin{listing}[!H]
 \begin{minted}{c++}
 // KruskalUnionFind/kruskal_mst.h
 
