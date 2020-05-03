@@ -38,21 +38,27 @@ If you are a Windows user you can look at `test.ps1`, `testall.ps1` and
 `time.ps1` scripts in order to run tests and bench algorithms.
 
 If you are a Linux user, we have created a porting of the above scripts.
-You can look at `test.sh`, `testall.sh` and `time.sh`. Note that the Linux
-scripts are not always up-to-date.
+You can look at `test.sh`, `testall.sh` and `time.sh`. Note that these Linux scripts have less features than their Windows counterpart.
 
 ## Project Structure
 
-The project is a Visual Studio solution, so you can open it with VS. Each
-algorithm is a project of the solution, while the shared data structure and
-algorithms are stored in the *Shared* folder.
+The project is structured as a unique Visual Studio solution containing multiple subprojects, one for every implemented algorithm.
+The code for each project is stored in a folder with the same name of the related algorithm.
+These projects are:
+
+* [KruskalNaive](./KruskalNaive): Kruskal MST with simple DFS cycle detection;
+* [KruskalUnionFind](./KruskalUnionFind): Kruskal MST implemented with Disjoint-Set (Union-Find) data structure, with union-by-size policy;
+* [KruskalUnionFindCompressed](./KruskalUnionFindCompressed): Kruskal MST implemented with Disjoint-Set (Union-Find) data structure, with union-by-rank policy and path-compression;
+* [PrimBinaryHeap](./PrimBinaryHeap): Prim MST with a Priority Queue based on a Binary Heap;
+* [PrimKHeap](./PrimKHeap): Prim MST with a Priority Queue based on a K-ary Heap.
+
+The shared data structures and utils are stored in the *Shared* folder.
 
 The project comes with some extra folders:
-- *benchmark*, that contains benchmark results for the algorithms;
-- *dataset*, that contains benchmakr input data, i.e. about 70 random graph
-    from 10 to 100k nodes;
-- *report*, that contains the sources for our report about the project;
-- *test*, that contains tests to verify algorithms correctness.
+* **benchmark**: it contains CSV benchmarks of the algorithm as well as the script used to analyze them ([analysis.py](analysis.py));
+* **datasets**: it contains the input data for the graphs given by our professor, i.e. 68 random connected, weighted and non-directed graphs up to 100K nodes and ~130K edges;
+* **report**: it contains the LaTeX sources for our project report;
+* **test**: it contains 68 test graphs and their exact MST value, used test our algorithms' correctness.
 
 ## Authors
 
