@@ -13,7 +13,8 @@ Un altro motivo per cui abbiamo deciso di implementare le K-ary anziché le Fibo
 L'operazione di rimozione dell'elemento con minore chiave, tuttavia, aumenta a \complexityKLogkN{} rispetto a \complexityLogN{} delle Binary Heap. Ma visto che nell'algoritmo di Prim le operazioni di cambio valore delle chiavi sono più comuni delle operazioni di estrazioni del minimo elemento, le K-ary Heap sono comunque, in linea teorica, più efficienti delle Binary Heap per quell'algoritmo. \\
 % ...
 
-\noindent Le figure \ref{fig:Prim2vsPrim4-500}, \ref{fig:Prim2vsPrim4-2k-4k} e \ref{fig:Prim2vsPrim4-80k-100k} mostrano una comparativa tra le performance
+\noindent Le figure \ref{fig:Prim2vsPrim4-500}, \ref{fig:Prim2vsPrim4-2k-4k}
+e \ref{fig:Prim2vsPrim4-80k-100k} mostrano una comparativa tra le performance
 dell'algoritmo con una binary heap e un k-ary heap dove $k = 4$.
 Da \ref{fig:Prim2vsPrim4-500} e \ref{fig:Prim2vsPrim4-2k-4k} si nota
 un lieve miglioramento delle performance utilizzando K-ary Heap,
@@ -47,7 +48,14 @@ non ci permette di asserire con certezza quale dei due sia il migliore.
 
 \subsection{Kruskal con Disjoint-Set e path-compression}
 
-Il grafico in figura \ref{fig:Kruskal-KruskalCompressed-80k-100k} mostra una lievissima differenza tra KruskalUnionFind e KruskalUnionFindCompressed che vede vincitore il secondo. La differenza però è veramente molto sottile ed entrambi gli algoritmi presentano una piccola oscillazione che copre la differenza tra i tempi di esecuzione tra i due. Le tecniche di ottimizzazione per union find quindi, nel nostro caso, non sono state efficaci.
+In generale, KruskalUnionFind si comporta leggermente meglio di
+KruskalUnionFindCompressed.  Il grafico in figura
+\ref{fig:Kruskal-KruskalCompressed-80k-100k} mostra una lievissima
+differenza tra i due, che vede vincitore il primo. La differenza però
+è veramente molto sottile ed entrambi gli algoritmi presentano una
+piccola oscillazione che copre la differenza tra i tempi di esecuzione
+tra i due. Le tecniche di ottimizzazione per union find quindi, nel
+nostro caso, non sono state efficaci.
 
 \begin{figure}[H]
     \centering
