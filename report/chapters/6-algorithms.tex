@@ -135,7 +135,7 @@ return mst_set_graph.get_edges();
 \noindent Quest'altra idea è meno generale ma più efficiente rispetto alla precedente. Consiste nell'assumere che la foresta $A$ sia rimasta aciclica dopo l'iterazione precedente del ciclo, per poi controllare (stavolta senza effettuare nessun inserimento preliminare dell'arco corrente) che non esista nessun cammino che colleghi i due estremi dell'arco corrente in $A$.
 Se tale cammino esistesse già e noi inserissimo l'arco corrente, andremmo ad introdurre un ciclo in $A$, cosa che vogliamo evitare.\\
 Per dirla nei termini di DFS, andremmo ad inserire un BACK EDGE. Viceversa, se tale cammino non esiste (ovvero, se DFS etichetta tutti i lati di $A$ come DISCOVERY EDGE), possiamo aggiungere l'arco corrente con la sicurezza di non introdurre alcun ciclo.
-Questo approccio risponde alla domanda `` il lato $(u, v)$ e la foresta $A$, esiste un percorso tra $u$ e $v$?'', ed è implementato dal metodo \codeinline{are\_connected(source, target)} della classe \codeinline{DFSCycleDetection}. \\
+Questo approccio risponde alla domanda ``Dato il lato $(u, v)$ e la foresta $A$, esiste un percorso tra $u$ e $v$?'', ed è implementato dal metodo \codeinline{are\_connected(source, target)} della classe \codeinline{DFSCycleDetection}. \\
 
 \vspace{0.5cm}
 
