@@ -57,7 +57,6 @@ The shared data structures and utils are stored in the *Shared* folder.
 The project comes with some extra folders:
 * **benchmark**: it contains CSV benchmarks of the algorithm as well as the script used to analyze them ([analysis.py](analysis.py));
 * **datasets**: it contains the input data for the graphs given by our professor, i.e. 68 random connected, weighted and non-directed graphs up to 100K nodes and ~130K edges;
-* **report**: it contains the LaTeX sources for our project report;
 * **test**: it contains 68 test graphs and their exact MST value, used test our algorithms' correctness.
 
 ## Authors
