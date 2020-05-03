@@ -216,7 +216,7 @@ Avremmo potuto rilassare questo vincolo usando una struttura dati \codeinline{st
 \end{figure}
 
 \noindent \codeinline{DisjointSetCompressed}, invece, adotta la policy \textit{union-by-rank} con \textit{path-compression} tramite la tecnica \textit{path-splitting}.
-Ad ogni invocazione del metodo \codeinline{find()} su un nodo $x$, ogni nodo nel percorso da $x$ all'antenato che identifica il set di $x$ è aggiornato per puntare al nodo "nonno". \\
+Ad ogni invocazione del metodo \codeinline{find()} su un nodo $x$, ogni nodo nel percorso da $x$ all'antenato che identifica il set di $x$ è aggiornato per puntare al nodo ``nonno''. \\
 \noindent DisjointSetCompressed definisce un membro \codeinline{std::vector} per salvare i rank dei vari nodi salvati, inizializzando il rank di ogni nodo a 0. Ad ogni invocazione del metodo \codeinline{unite()} su due nodi $x$ e $y$, ci sono due possibilità:
 
 \begin{enumerate}

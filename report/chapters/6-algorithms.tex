@@ -128,14 +128,14 @@ return mst_set_graph.get_edges();
 
 \paragraph{Idea 1: Ricerca di un ciclo}\mbox{} \\
 
-\noindent L'idea consiste nell'aggiungere un arco alla foresta $A$, controllare se l'inserimento ha causato un ciclo, e eventualmente rimuovere l'arco appena inserito. Questo approccio risponde alla domanda "Esiste un ciclo all'interno della foresta $A$?", ed è implementato dal metodo \codeinline{has\_cycle()} della classe \codeinline{DFSCycleDetection}.
+\noindent L'idea consiste nell'aggiungere un arco alla foresta $A$, controllare se l'inserimento ha causato un ciclo, e eventualmente rimuovere l'arco appena inserito. Questo approccio risponde alla domanda ``Esiste un ciclo all'interno della foresta $A$?'', ed è implementato dal metodo \codeinline{has\_cycle()} della classe \codeinline{DFSCycleDetection}.
 
 \paragraph{Idea 2: Ricerca di un cammino}\mbox{} \\
 
 \noindent Quest'altra idea è meno generale ma più efficiente rispetto alla precedente. Consiste nell'assumere che la foresta $A$ sia rimasta aciclica dopo l'iterazione precedente del ciclo, per poi controllare (stavolta senza effettuare nessun inserimento preliminare dell'arco corrente) che non esista nessun cammino che colleghi i due estremi dell'arco corrente in $A$.
 Se tale cammino esistesse già e noi inserissimo l'arco corrente, andremmo ad introdurre un ciclo in $A$, cosa che vogliamo evitare.\\
 Per dirla nei termini di DFS, andremmo ad inserire un BACK EDGE. Viceversa, se tale cammino non esiste (ovvero, se DFS etichetta tutti i lati di $A$ come DISCOVERY EDGE), possiamo aggiungere l'arco corrente con la sicurezza di non introdurre alcun ciclo.
-Questo approccio risponde alla domanda "Dato il lato $(u, v)$ e la foresta $A$, esiste un percorso tra $u$ e $v$?", ed è implementato dal metodo \codeinline{are\_connected(source, target)} della classe \codeinline{DFSCycleDetection}. \\
+Questo approccio risponde alla domanda `` il lato $(u, v)$ e la foresta $A$, esiste un percorso tra $u$ e $v$?'', ed è implementato dal metodo \codeinline{are\_connected(source, target)} della classe \codeinline{DFSCycleDetection}. \\
 
 \vspace{0.5cm}
 
@@ -226,7 +226,7 @@ La versione vista a lezione di Kruskal con Disjoint-Set (Union-Find) prevede i s
 
 \noindent Il listato \ref{listing:kruskal-union-find} contiene la nostra implementazione dell'algoritmo, step per step.
 
-\begin{listing}[!H]
+\begin{listing}[!ht]
 \begin{minted}{c++}
 // KruskalUnionFind/kruskal_mst.h
 
