@@ -1,6 +1,6 @@
 """
 Usage:
-> python3 analysis.py [--latex] [--plot [main, table, other]] [--tables] [--save-plot]
+> python3 analysis.py [--latex] [--plot] [--tables] [--save-plot]
 
 The following script analyzes benchmarks for KruskalNaive, KruskalUnionFind (and variants) and
 PrimBinaryHeap algorithms.
@@ -44,9 +44,6 @@ FOR_LATEX = '--latex' in sys.argv
 IS_TABLE_ENABLED = '--tables' in sys.argv
 # if the script is given the argument '--plot', turn on comparison plots (with options)
 IS_PLOT_ENABLED = '--plot' in sys.argv
-IS_PLOT_MAIN_ENABLED = 'main' in sys.argv
-IS_PLOT_TABLE_ENABLED = 'table' in sys.argv
-IS_PLOT_OTHER_ENABLED = 'other' in sys.argv
 # if the script is given the argument '--save-plot', save plots to folder.
 IS_SAVE_PLOT_ENABLED = '--save-plot' in sys.argv
 
@@ -499,52 +496,21 @@ if __name__ == '__main__':
     # export_dataframes_min_to_latex(dataframes_min)
 
     if IS_PLOT_ENABLED:
+    
+        # OK (the tree)
+        split_and_plot([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 300, title=f'{names_to_vs([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (300 nodes)')
+        split_and_plot([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 1000, title=f'{names_to_vs([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (1k nodes)')
+        split_and_plot([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 2000, title=f'{names_to_vs([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (2k nodes)')
+        split_and_plot([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: True, title=f'{names_to_vs([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (100k nodes)')
 
+        # OK (the two)
+        split_and_plot([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 5000, title=f'{names_to_vs([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (5k nodes)')
+        split_and_plot([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 20000, title=f'{names_to_vs([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (20k nodes)')
 
-        if IS_PLOT_OTHER_ENABLED:
-            # OK (the tree)
-            split_and_plot([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 300, title=f'{names_to_vs([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (300 nodes)')
-            split_and_plot([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 1000, title=f'{names_to_vs([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (1k nodes)')
-            split_and_plot([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 2000, title=f'{names_to_vs([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (2k nodes)')
-            split_and_plot([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: True, title=f'{names_to_vs([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (100k nodes)')
+        # OK (prim bin heap / k-ary heap)
+        split_and_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min, pred=lambda x: x['n'] <= 500, title=f'{names_to_vs([PRIM_BINARY_HEAP, PRIM_K_HEAP])} (500 nodes)')
+        split_and_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min, pred=lambda x: x['n'] >= 2000 and x['n'] <= 4000, title=f'{names_to_vs([PRIM_BINARY_HEAP, PRIM_K_HEAP])} (nodes between 2k and 4k)')
+        split_and_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min, pred=lambda x: x['n'] >= 80000, title=f'{names_to_vs([PRIM_BINARY_HEAP, PRIM_K_HEAP])} (nodes between 80k and 100k)')
 
-            # OK (the two)
-            split_and_plot([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 5000, title=f'{names_to_vs([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (5k nodes)')
-            split_and_plot([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min, pred=lambda x: x['n'] <= 20000, title=f'{names_to_vs([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP])} (20k nodes)')
-
-            # OK (prim bin heap / k-ary heap)
-            split_and_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min, pred=lambda x: x['n'] <= 500, title=f'{names_to_vs([PRIM_BINARY_HEAP, PRIM_K_HEAP])} (500 nodes)')
-            split_and_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min, pred=lambda x: x['n'] >= 2000 and x['n'] <= 4000, title=f'{names_to_vs([PRIM_BINARY_HEAP, PRIM_K_HEAP])} (nodes between 2k and 4k)')
-            split_and_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min, pred=lambda x: x['n'] >= 80000, title=f'{names_to_vs([PRIM_BINARY_HEAP, PRIM_K_HEAP])} (nodes between 80k and 100k)')
-
-            # OK (KruskalUnionFind, KruskalUnionFind w/ path compression)
-            split_and_plot([KRUSKAL_UNION_FIND, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min, pred=lambda x: x['n'] >= 80000, title=f'{names_to_vs([KRUSKAL_UNION_FIND, KRUSKAL_UNION_FIND_COMPRESSED])} (nodes between 80k and 100k)')
-
-
-        if IS_PLOT_MAIN_ENABLED:
-            names_to_plot(programs, dataframes_min)   # all
-            names_to_plot_logy(programs, dataframes_min)  # all logy
-            names_to_plot([p for p in programs if p != KRUSKAL_NAIVE], dataframes_min)  # all but naive
-            names_to_plot([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min)  # the three
-            names_to_plot_logy([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min)  # the three logy
-            names_to_plot([KRUSKAL_UNION_FIND, PRIM_BINARY_HEAP], dataframes_min)  # the two
-            names_to_plot([KRUSKAL_UNION_FIND, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)  # kruskal versions
-            names_to_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min)  # prim versions
-            names_to_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min)  # prim2 vs primK
-
-        if IS_PLOT_TABLE_ENABLED:
-            names_to_plot_logy([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND], dataframes_min)
-            names_to_plot_logy([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
-            names_to_plot_logy([KRUSKAL_NAIVE, PRIM_BINARY_HEAP], dataframes_min)
-            names_to_plot([KRUSKAL_UNION_FIND, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
-            names_to_plot_logy([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND], dataframes_min)
-            names_to_plot_logy([KRUSKAL_NAIVE, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
-            names_to_plot([PRIM_BINARY_HEAP, KRUSKAL_UNION_FIND], dataframes_min)
-            names_to_plot([PRIM_BINARY_HEAP, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
-            names_to_plot([PRIM_BINARY_HEAP, PRIM_K_HEAP], dataframes_min)
-            names_to_plot([PRIM_K_HEAP, KRUSKAL_UNION_FIND], dataframes_min)
-            names_to_plot([PRIM_K_HEAP, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min)
-
-    # plot_simple_bar(dataframes_min[KRUSKAL_NAIVE], x='ms', y='n', title='Kruskal Simple')
-    # plot_interesting_nodes_bar(dataframes_min[KRUSKAL_NAIVE].round(1), title='Kruskal Simple')
-    # plot_multiple_nodes_line(dataframes_min, title='Plot multiple', max_nodes=1000)
+        # OK (KruskalUnionFind, KruskalUnionFind w/ path compression)
+        split_and_plot([KRUSKAL_UNION_FIND, KRUSKAL_UNION_FIND_COMPRESSED], dataframes_min, pred=lambda x: x['n'] >= 80000, title=f'{names_to_vs([KRUSKAL_UNION_FIND, KRUSKAL_UNION_FIND_COMPRESSED])} (nodes between 80k and 100k)')

@@ -17,6 +17,9 @@ pdf: pdflatex pdflatex
 pdflatex:
 	pdflatex -shell-escape -interaction=nonstopmode $(MAINFILE)
 
+pdflatex_interact:
+	pdflatex -shell-escape $(MAINFILE)
+
 # read
 read:
 	evince $(MAINFILE).pdf &

@@ -19,8 +19,10 @@ Da \ref{fig:Prim2vsPrim4-500} e \ref{fig:Prim2vsPrim4-2k-4k} si nota
 un lieve miglioramento delle performance utilizzando K-ary Heap,
 anche se questo comporta più oscillazione dei tempi rispetto a input
 differenti. La figura \ref{fig:Prim2vsPrim4-80k-100k} invece mostra
-una controtendenza tale per cui su input molto grandi il binary heap
-tende a fare lievemente meglio del K-ary Heap.
+una controtendenza su taglie dell'input intorno agli 80k nodi, dove
+PrimKHeap non riesce a migliorare le performance rispetto a 
+PrimBinaryHeap. Dal grafico però si nota un'oscillazione che copre
+non ci permette di asserire con certezza quale dei due sia il migliore.
 
 \begin{figure}[H]
     \centering
