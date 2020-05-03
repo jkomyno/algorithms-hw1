@@ -19,7 +19,7 @@ La versione vista a lezione di Prim prevede i seguenti step:
 
 \noindent Il listato \ref{listing:prim-binary-heap} contiene la nostra implementazione dell'algoritmo, step per step. La coda di priorità usata si basa su una struttura dati di tipo Min Binary Heap. \\
 
-\begin{listing}[!ht]
+\begin{listing}[!hb]
 \begin{minted}{c++}
 // PrimBinaryHeap/prim_binary_heap_mst.h
 
@@ -107,7 +107,7 @@ DFSCycleDetection<Label, Weight> dfs(&mst_set_graph);
 // step 3
 for (auto it = edges.cbegin();
      !(it == edges.cend() && n == mst_set_graph.vertexes_size()); ++it) {
-  const auto &edge = *it;
+  const auto& edge = *it;
 
   // step 4
   if (!dfs.are_connected(edge.from, edge.to)) {
@@ -124,7 +124,7 @@ return mst_set_graph.get_edges();
 
 \noindent L'algoritmo Kruskal Naive è stato implementato a partire dallo pseudo codice visto in classe. Per individuare se la foresta $A \cup \{ e \}$ dello step 4 dell'algoritmo sia aciclica, abbiamo usato \textbf{Depth First Search} (DFS). \\
 
-\noindent Ci sono venute in mente 2 idee di utilizzo di \textit{DFS} (definite nel file \textit{Shared/DFSCycleDetection.h}) che affrontano il problema da 2 punti di vista diversi.
+\noindent Ci sono venute in mente 2 idee di utilizzo di DFS (definite nel file \textit{Shared/DFSCycleDetection.h}) che affrontano il problema da 2 punti di vista diversi.
 
 \paragraph{Idea 1: Ricerca di un ciclo}\mbox{} \\
 
@@ -139,7 +139,7 @@ Questo approccio risponde alla domanda ``Dato il lato $(u, v)$ e la foresta $A$,
 
 \vspace{0.5cm}
 
-\noindent L'idea 2 si è rivelata più efficace per i dataset a disposizione. Nel caso di un grafo in input con 100.000 nodi e circa 130.000, questa idea è il ~30\% più efficiente in termini di tempo rispetto all'idea 1. In nessuna delle due implementazione di DFS è stato necessario usare esplicitamente le etichettature DISCOVERY EDGE e BACK EDGE: abbiamo semplicemente usato un container di tipo \codeinline{std::unordered\_set<Label>} per tenere traccia dei nodi visitati.
+\noindent L'idea 2 si è rivelata la più efficace per i dataset a disposizione. Nel caso di un grafo in input con 100.000 nodi e circa 130.000, questa idea è il ~30\% più efficiente in termini di tempo rispetto all'idea 1. In nessuna delle due implementazione di DFS è stato necessario usare esplicitamente le etichettature DISCOVERY EDGE e BACK EDGE: abbiamo semplicemente usato un container di tipo \codeinline{std::unordered\_set<Label>} per tenere traccia dei nodi visitati.
 
 \subsubsection{Osservazioni}
 
@@ -185,7 +185,7 @@ bool are_connected_helper(const Label &source, const Label &target,
     }
 
     if (adj_map_graph_ptr->has_vertex(curr_source)) {
-      for (const auto &[u, _] : adj_map_graph_ptr->adj_map.at(curr_source)) {
+      for (const auto& [u, _] : adj_map_graph_ptr->adj_map.at(curr_source)) {
         // inseriamo tutti i nodi adiacenti non incontrati in precedenza nella pila,
         // per essere processati all'iterazione successiva.
         if (!visited.count(u)) {
@@ -226,7 +226,7 @@ La versione vista a lezione di Kruskal con Disjoint-Set (Union-Find) prevede i s
 
 \noindent Il listato \ref{listing:kruskal-union-find} contiene la nostra implementazione dell'algoritmo, step per step.
 
-\begin{listing}[!ht]
+\begin{listing}
 \begin{minted}{c++}
 // KruskalUnionFind/kruskal_mst.h
 
@@ -245,8 +245,8 @@ const auto edges = adj_map_graph.get_sorted_edges(std::less<>{});
 // step 4
 for (auto it = edges.cbegin(); !(it == edges.cend() && n_stop == mst.size());
      ++it) {
-  const auto &edge = *it;
-  const auto &[v, w, _] = edge;
+  const auto& edge = *it;
+  const auto& [v, w, _] = edge;
 
   if (!disjoint_set.are_connected(v, w)) {
     // step 5

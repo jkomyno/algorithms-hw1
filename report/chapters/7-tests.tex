@@ -3,6 +3,11 @@
 
 Abbiamo usato i dataset di \textit{stanford-algs} per confrontare i risultati delle nostre implementazioni degli algoritmi richiesti con gli output attesi.
 
-\noindent Nella cartella \textit{test} sono presenti i 68 file di input e i relativi 68 file di output atteso di tali dataset. Abbiamo usato gli script Powershell \textit{testall.ps1} e \textit{test.ps1} (presenti nella root del progetto consegnato) per automatizzare il testing dei nostri programmi.
+\noindent Nella cartella \textit{test} sono presenti i 68 file di input e i relativi 68 file di output atteso di tali dataset. Abbiamo usato gli script Powershell \textit{testall.ps1} e \textit{test.ps1} (presenti nella root del progetto consegnato) per automatizzare il testing dei nostri programmi. \\
 
-\noindent Abbiamo inoltre usato lo strumento di Continuous Integration \textit{Travis} per testare continuamente la solidità del codice nella nostra repository ad ogni push nel branch ``master''.
+\noindent Lo script \textit{benchmark/analysis.py}, scritto in Python 3 ed usato per generare le tabelle ed i grafici di questa relazione, fa inoltre un \textit{sanity check} su tutti i benchmark raccolti: se il risultato di qualche algoritmo differisce dal valore del peso dell'MST ritornato dagli altri algoritmi, segnala un errore. \\
+
+\noindent Le repository Github \href{https://github.com/jkomyno/priority-queue}{github.com/jkomyno/priority-queue} e \href{https://github.com/jkomyno/disjoint-set}{github.com/jkomyno/disjoint-set} \newline contengono qualche test di unità per le principali strutture dati di supporto create per questo progetto. Abbiamo usato la libreria \textit{GoogleTest}. \\
+
+\noindent Abbiamo inoltre adottato lo strumento di Continuous Integration \textit{Travis} per testare continuamente la solidità del codice nella nostra repository ad ogni push nel branch ``master''.
+

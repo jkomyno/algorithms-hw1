@@ -26,8 +26,9 @@ Le operazioni sui grafi di cui abbiamo bisogno sono:
     \item Rimozione di un arco.
 \end{itemize}
 
-\noindent Le due rappresentazioni più comuni per rappresentare un grafo sono \textbf{Matrici di Adiacenza} (\textit{Adj. Matrix}) o \textbf{Liste di Adiacenza} (\textit{Adj. List}). \\
-Noi abbiamo deciso invece di utilizzare una \textbf{Mappa di Adiacenza} (\textit{Adj. Map}), la quale ci permette complessità temporali migliori per le operazioni richieste a scapito di un moderato aumento della complessità spaziale, che rimane comunque \complexityNPlusM{}, lo stesso delle Matrici di Adiacenza. Nella tabella \ref{table:graph-representation-comparison} è possibile vedere un confronto tra le 3 diverse rappresentazioni di grafi possibili citate sopra. \\
+\noindent Le due rappresentazioni più comuni per rappresentare un grafo sono \textbf{Matrici di Adiacenza} (\textit{Adj. Matrix}) o \textbf{Liste di Adiacenza} (\textit{Adj. List}). L'utilizzo di Matrici di Adiacenza è solitamente giustificato da grafi molto densi (non è il nostro caso, visto che il numero di archi è sempre molto vicino al numero di nodi). Per grafi sparsi, le Liste di Adiacenza sono una buona scelta di default. \\
+
+\noindent Noi abbiamo deciso invece di utilizzare una \textbf{Mappa di Adiacenza} (\textit{Adj. Map}), la quale ci permette complessità temporali migliori per le operazioni richieste a scapito di un moderato aumento della complessità spaziale, che rimane comunque \complexityNPlusM{}, lo stesso delle Matrici di Adiacenza. Nella tabella \ref{table:graph-representation-comparison} è possibile vedere un confronto tra le 3 diverse rappresentazioni di grafi possibili citate sopra. \\
 
 \noindent L'occupazione di spazio aggiuntiva è dovuta all'utilizzo di una \codeinline{std::unordered\_map} e un \newline \codeinline{std::unordered\_set} ausiliario. Quest'ultimo tiene traccia degli archi inseriti per permettere una rapida estrazione, modifica e cancellazione degli archi del grafo. La mappa è invece usata per mappare ogni nodo ad un'altra mappa (nodo $\rightarrow{}$ peso), usata per eliminare efficacemente i nodi duplicati di peso non minimo al momento della creazione del grafo (scelta necessaria, vista la presenza di archi duplicati nei dataset dati). L'uso di mappe ci permette inoltre di individuare ed eliminare archi in tempo \complexityConstant{} ammortizzato.
 
@@ -64,7 +65,7 @@ Noi abbiamo deciso invece di utilizzare una \textbf{Mappa di Adiacenza} (\textit
 \noindent In figura \ref{fig:AdjMapGraph Abstract} è illustrato un esempio di trasformazione di un grafo in mappa di adiacenza. Si può notare che la mappa di adiacenza è composta da una prima mappa avente una chiave per ogni vertice del grafo (\codeinline{adj\_map\_t}). Ogni entry della mappa è composta dalla chiave che rappresenta il nome del nodo e da un valore che associa al nodo un'altra mappa (\codeinline{vertex\_weight\_map\_t}), che rappresenta gli archi del grafo.
 In particolare, \codeinline{vertex\_weight\_map\_t} ha come chiave l'etichetta del vertice opposto, e come valore il peso dell'arco dal vertice di origine. \\
 
-\noindent Quindi, tutte le operazioni di inserimento, ricerca, cancellazione e aggiornamento sono eseguite in tempo costante ammortizzato. Gli unici aspetti negativi riscontrati sono un'occupazione di spazio più grande di un fattore costante (ma sempre \complexityNPlusM{}) e una maggiore complessità nel mantenere le strutture dati ausiliarie sempre aggiornate. \\
+\noindent Quindi, tutte le operazioni di inserimento, ricerca, cancellazione e aggiornamento sono eseguite in tempo costante ammortizzato. Gli unici aspetti negativi sono un'occupazione di spazio più grande di un fattore costante (ma sempre \complexityNPlusM{}) e una maggiore complessità nel mantenere le strutture dati ausiliarie sempre aggiornate. Poiché i grafi del dataset assegnato occupano una porzione minima di memoria, riteniamo questi tradeoff accettabili. \\
 
 \begin{figure}[h]
 	\caption{Rappresentazione della mappa di adiacenza}

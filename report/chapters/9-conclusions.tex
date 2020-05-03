@@ -1,14 +1,16 @@
 \section{Conclusioni}
 \label{cap:conclusions}
 
-In questa relazione abbiamo descritto gli algoritmi, le scelte implementative, i tempi di esecuzioni e le strategie adottate per rendere i programmi più efficienti. \\
+In questa relazione abbiamo descritto gli algoritmi, le scelte implementative, i tempi di esecuzione degli algoritmi e le strategie adottate per renderli più efficienti. \\
+
+\noindent Come da indicazione, nel caso di più archi tra la stessa coppia di nodi di un grafo, la nostra implementazione considera solo l'arco di peso minimo. I self-loop sono invece mantenuti. Abbiamo usato solo le strutture dati base messe a disposizione dal linguaggio.
 
 \noindent Nella sezione \ref{cap:performance-analysis} abbiamo risposto alle 2 principali domande dell'homework, mentre nella sezione \ref{cap:benchmark-process} abbiamo descritto il processo di benchmark adottato, pensato per essere quanto più affidabile e stabile.
 Nelle sezioni \ref{cap:code-structure}, \ref{cap:implementation-choices} e \ref{cap:algorithms} abbiamo invece discusso i dettagli tecnici, quali struttura, scelte implementative e codice degli algoritmi. \\
 
 \noindent  La sezione \ref{cap:tests} descrive il processo di testing automatico che abbiamo adottato, che ci ha consentito di rilasciare versioni migliori degli algoritmi in più iterazioni, accorgendoci immediatamente di eventuali regressioni. La sezione \ref{cap:extensions-and-originalities} descrive infine le estensioni esplorate per soddisfare la nostra curiosità e arricchire il nostro bagaglio accademico, garantendo comunque la correttezza dei risultati. \\
 
-\noindent L'algoritmo a cui abbiamo dedicato più tempo ed energie è, paradossalmente, KruskalNaive. Sapevamo sin dall'inizio che sarebbe stato l'algoritmo con i tempi di esecuzione più lenti, ma ci siamo ugualmente adoperati per cercare di ottimizzare l'implementazione di DFS per l'individuazione di cicli nel grafo, migliorando le performance di circa il 30\% per i grafi più complessi del dataset.\\
+\noindent L'algoritmo a cui abbiamo dedicato più tempo ed energie è, paradossalmente, KruskalNaive. Sapevamo sin dall'inizio che sarebbe stato l'algoritmo con i tempi di esecuzione più lenti, ma ci siamo ugualmente adoperati per cercare di ottimizzare l'implementazione di DFS per l'individuazione di cicli nel grafo, migliorando le performance di circa il 30\% per i grafi più complessi del dataset rispetto all'implementazione iniziale.\\
 
 \noindent Questo progetto ci ha permesso di sperimentare più approcci, implementare e testare strutture dati non banali e valutare con attenzione le complessità temporali delle operazioni di base affinché quest'ultime rendano più efficienti gli algoritmi che le sfruttano. Questo homework ci ha permesso inoltre di migliorare la nostra comprensione del linguaggio di programmazione scelto e di come funziona la collaborazione da remoto di un piccolo team di persone. \\
 

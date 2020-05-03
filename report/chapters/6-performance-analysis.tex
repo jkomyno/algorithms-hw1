@@ -12,10 +12,10 @@ Eseguite i tre algoritmi che avete implementato (Prim, Kruskal Naive e Kruskal e
  e \ref{table:PrimBinaryHeap-results} in appendice \ref{cap:runtime-tables} riportano i risultati dell'MST ottenuto dagli algoritmi e il loro tempo di esecuzione per ogni file di input. \\
 
 \noindent I seguenti grafici mostrano la variazioni delle performance temporali degli algoritmi rispetto al numero di nodi del grafico. Non abbiamo incluso il numero di edges poiché tutti i grafi in input erano sparsi, ovvero gli archi non erano mai più numerosi di un fattore 1.4 rispetto al numero di vertici, quindi tale dato non avrebbe aggiunto informazioni. Le figure \ref{fig:TheThreeComparison300}, \ref{fig:TheThreeComparison1k}
-e \ref{fig:TheThreeComparison2k} mostrano una comparativa piuttosto significativa tra i tre algorimti.
-\'E possibile notare infatti che anche con taglie dell'input molto piccole il comportamento degli
-algorimti differisce in modo cosistente: in particolare, KruskalNaive assume sin da subito un
-andamento esponenziale nel numero di nodi, e non compete per nulla con KruskalUnionFind e PrimBinaryHeap.
+e \ref{fig:TheThreeComparison2k} mostrano una comparativa piuttosto significativa tra i tre algoritmi.
+È possibile notare infatti che anche con taglie dell'input molto piccole il comportamento degli
+algoritmi differisce in modo cosistente: in particolare, KruskalNaive assume sin da subito un
+andamento polinomiale nel numero di nodi, e non compete per nulla con KruskalUnionFind e PrimBinaryHeap.
 
 \begin{figure}[H]
     \centering
@@ -62,9 +62,9 @@ vedere che a meno di un piccolo fattore i due hanno lo stesso trend di crescita.
 Commentate i risultati che avete ottenuto: come si comportano gli algoritmi rispetto alle varie istanze? C'è un algoritmo che riesce sempre a fare meglio degli altri? Quale dei tre algoritmi che avete implementato è più efficiente?
 \end{displayquote}
 
-\noindent Le tabelle \ref{table:kruskal-naive-vs-kruskal-union-find}, \ref{table:kruskal-naive-vs-kruskal-union-find-compressed}, \ref{table:kruskal-naive-vs-prim-binary-heap}, \ref{table:kruskal-union-find-vs-kruskal-union-find-compressed}, \ref{table:prim-binary-heap-vs-kruskal-union-find-compressed}, \ref{table:prim-binary-heap-vs-kruskal-union-find}, \ref{table:prim-binary-heap-vs-prim-k-heap}, \ref{table:prim-k-heap-vs-kruskal-union-find}, \ref{table:prim-k-heap-vs-kruskal-union-find-compressed} mostrano il confronto tra i millisecondi di esecuzione e il numero di nodi del grafo. Per motivazioni grafiche, abbiamo scelto gli scaglioni 8.000, 10.000, 20.000, 80.000, 100.000 come numero di nodi. \\
+\noindent Le tabelle \ref{table:kruskal-naive-vs-kruskal-union-find}, \ref{table:kruskal-naive-vs-kruskal-union-find-compressed}, \ref{table:kruskal-naive-vs-prim-binary-heap}, \ref{table:kruskal-union-find-vs-kruskal-union-find-compressed}, \ref{table:prim-binary-heap-vs-kruskal-union-find}, \ref{table:prim-binary-heap-vs-kruskal-union-find-compressed}, \ref{table:prim-binary-heap-vs-prim-k-heap}, \ref{table:prim-k-heap-vs-kruskal-union-find}, \ref{table:prim-k-heap-vs-kruskal-union-find-compressed} mostrano il confronto tra i millisecondi di esecuzione e il numero di nodi del grafo. Per motivazioni grafiche, abbiamo scelto gli scaglioni 8.000 (8k), 10.000 (10k), 20.000 (20k), 80.000 (80k), 100.000 (100k) come numero di nodi. \\
 
-\noindent Dalle tabelle di confronto \ref{table:kruskal-naive-vs-kruskal-union-find}, \ref{table:prim-binary-heap-vs-kruskal-union-find} e \ref{table:prim-k-heap-vs-kruskal-union-find} è evidente che \textbf{KruskalUnionFind} è il più efficiente tra gli algoritmi di cui era richiesta l'implementazione. Inoltre, osservando la tabella di confronto \ref{table:kruskal-union-find-vs-kruskal-union-find-compressed}, è possibile notare che l'utilizzo della tecnica \textit{path-compression} nella struttura dati \textbf{Disjoint-Set} in realtà non abbia portato benefici, e anzi abbia peggiorato leggermente le performance (che sono comunque migliori di \textit{PrimBinaryHeap} e \textit{PrimKHeap}, vedasi le tabella di confronto \ref{table:prim-binary-heap-vs-kruskal-union-find-compressed} e \ref{table:prim-k-heap-vs-kruskal-union-find-compressed}). \\
+\noindent Dalle tabelle di confronto \ref{table:kruskal-naive-vs-kruskal-union-find}, \ref{table:prim-binary-heap-vs-kruskal-union-find} e \ref{table:prim-k-heap-vs-kruskal-union-find} è evidente che \textbf{KruskalUnionFind} è il più efficiente tra gli algoritmi in esame. Inoltre, osservando la tabella di confronto \ref{table:kruskal-union-find-vs-kruskal-union-find-compressed}, è possibile notare come la tecnica \textit{path-compression} nella struttura dati \textbf{Disjoint-Set} in realtà non abbia portato benefici, e anzi abbia peggiorato leggermente le performance (che sono comunque migliori di \textit{PrimBinaryHeap} e \textit{PrimKHeap}, vedasi le tabella di confronto \ref{table:prim-binary-heap-vs-kruskal-union-find-compressed} e \ref{table:prim-k-heap-vs-kruskal-union-find-compressed}). \\
 
 \begin{table}[H]
 \centering
