@@ -21,7 +21,6 @@ this process.
     compile given algorithm sources.
 - `make testall`, to run tests on our algorithms.
 - `make testall_explicit`, to run tests with verbose output on our algoritms.
-- `make report`, to build the report pdf.
 
 Within the Makefile we provieded some variables to modify our pipeline.
 In particular you can use your own compiler rewriting the `CXX` flag. Other
@@ -55,9 +54,22 @@ These projects are:
 The shared data structures and utils are stored in the *Shared* folder.
 
 The project comes with some extra folders:
-* **benchmark**: it contains CSV benchmarks of the algorithm as well as the script used to analyze them ([analysis.py](analysis.py));
+* **benchmark**: it contains CSV benchmarks of the algorithm as well as the script used to analyze them ([analysis.py](./benchmark/analysis.py));
 * **datasets**: it contains the input data for the graphs given by our professor, i.e. 68 random connected, weighted and non-directed graphs up to 100K nodes and ~130K edges;
 * **test**: it contains 68 test graphs and their exact MST value, used test our algorithms' correctness.
+
+## Related Projects
+
+Some of the data-structures created for this project are general enough that we were able to copy their source to
+separate, indipendent repositories, each with its own documentation and unit tests.
+These repositories are:
+
+* [**priority-queue**](https://github.com/jkomyno/priority-queue) contains the sources [Heap.h](./Shared/Heap.h),
+  [BinaryHeap.h](./Shared/BinaryHeap.h), [KHeap.h](./Shared/KHeap.h), [PriorityQueue.h](./Shared/PriorityQueue.h), as
+  well as unit tests and example usage documentation.
+* [**disjoint-set**](https://github.com/jkomyno/disjoint-set) contains the sources [DisjointSetBase.h](./Shared/DisjointSetBase.h),
+  [DisjointSet.h](./Shared/DisjointSet.h), [DisjointSetCompressed.h](./Shared/DisjointSetCompressed.h), as
+  well as unit tests and example usage documentation.
 
 ## Authors
 

@@ -44,8 +44,8 @@ testall_explicit:
 # TODO: Test KruskalNaive excluded due to its excessively long runtime.
 # ./test.sh ${KRUSKAL_NAIVE}.${EXT}
 
-report:
-	cd report; make pdf1
+# report:
+# 	cd report; make pdf1
 
 .PHONY: all algs ensure_build_dir
-.PHONY: ${KRUSKAL_NAIVE} ${KRUSKAL_UNION_FIND} ${KRUSKAL_UNION_FIND_COMPRESSED} ${PRIM_BINARY_HEAP} ${PRIM_K_HEAP} report
+.PHONY: ${KRUSKAL_NAIVE} ${KRUSKAL_UNION_FIND} ${KRUSKAL_UNION_FIND_COMPRESSED} ${PRIM_BINARY_HEAP} ${PRIM_K_HEAP} # report
